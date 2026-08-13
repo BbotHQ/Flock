@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Duck Battle Royale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -287,6 +290,9 @@ function labelTag(x,y,name,win){const fs=Math.max(8,Math.min(12,VIEW.w*0.008));c
   const t=shortLabel(name),tw=ctx.measureText(t).width;
   ctx.fillStyle='rgba(6,15,20,.72)';roundRect(x-tw/2-5,y-fs*0.85,tw+10,fs*1.7,5);ctx.fill();
   ctx.fillStyle=win?'#ffd76b':'#e9eef2';ctx.textAlign='left';ctx.fillText(t,x-tw/2,y+1);}
+function bodyLabel(x,y,r,name,win){const fs=Math.max(9,Math.min(r*0.9,18));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const t=shortLabel(name);ctx.lineWidth=Math.max(2,fs*0.34);ctx.strokeStyle='rgba(6,15,20,.85)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
+  ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
 function drawHpBar(x,y,r,hp){const w=r*2.4,h=Math.max(2,r*0.34),bx=x-w/2,by=y+r*1.15;
   ctx.fillStyle='rgba(0,0,0,.5)';roundRect(bx-1,by-1,w+2,h+2,2);ctx.fill();
   const col=hp>0.5?'#5cc46a':hp>0.25?'#e0b23a':'#d64b34';ctx.fillStyle=col;roundRect(bx,by,w*clamp(hp,0,1),h,2);ctx.fill();}
@@ -299,13 +305,17 @@ function drawDuck(x,y,r,label,win,color,weapon,facing,hp,simple){
     if(win){ctx.fillStyle='#ffd76b';const cw=r*1.3,cy=hy-hr-r*0.5;ctx.beginPath();ctx.moveTo(hx-cw/2,cy+r*0.5);ctx.lineTo(hx-cw/2,cy);ctx.lineTo(hx-cw/4,cy+r*0.28);ctx.lineTo(hx,cy-r*0.15);ctx.lineTo(hx+cw/4,cy+r*0.28);ctx.lineTo(hx+cw/2,cy);ctx.lineTo(hx+cw/2,cy+r*0.5);ctx.closePath();ctx.fill();}
     ctx.restore();}
   if(hp<0.999)drawHpBar(x,y,r,hp);
-  labelTag(x,y-r*1.75,label,win);}
+  bodyLabel(x,y-r*0.05,r,label,win);}
 function drawDuckGhost(x,y,r,label,color,simple){
-  ctx.save();ctx.globalAlpha=.3;if(simple){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r*0.9,0,6.283);ctx.fill();}
-  else{ctx.translate(x,y);ctx.scale(1,-1);ctx.translate(-x,-y);duckBody(r*0.9,color);}ctx.restore();
-  ctx.save();ctx.globalAlpha=.55;ctx.strokeStyle='#12181f';ctx.lineWidth=Math.max(1,r*0.13);const ex=x+r*0.7,ey=y,s=r*0.2;
+  ctx.save();ctx.globalAlpha=.34;
+  if(simple){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r*0.9,0,6.283);ctx.fill();}
+  else{ctx.translate(x,y);ctx.scale(1,-1);ctx.translate(-x,-y);duckBody(r*0.9,color);}
+  ctx.restore();
+  // X eyes
+  ctx.save();ctx.globalAlpha=.6;ctx.strokeStyle='#0c141b';ctx.lineWidth=Math.max(1,r*0.14);const ex=x+r*0.7,ey=y-r*0.2,s=r*0.22;
   ctx.beginPath();ctx.moveTo(ex-s,ey-s);ctx.lineTo(ex+s,ey+s);ctx.moveTo(ex+s,ey-s);ctx.lineTo(ex-s,ey+s);ctx.stroke();ctx.restore();
-  ctx.save();ctx.globalAlpha=.5;labelTag(x,y-r*1.5,label,false);ctx.restore();}
+  // small faint tag for the floater
+  ctx.save();ctx.globalAlpha=.45;labelTag(x,y-r*1.5,label,false);ctx.restore();}
 function drawStain(x,y,r,step){const g=eRng(step);ctx.save();ctx.fillStyle='rgba(120,20,12,.42)';
   for(let i=0;i<6;i++){const a=g()*6.283,d=g()*r*1.6,rr=r*(0.25+g()*0.5);ctx.beginPath();ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,rr,0,6.283);ctx.fill();}ctx.restore();}
 function drawSpark(x,y,r,p,word){ctx.save();ctx.globalAlpha=1-p;const rad=r*(0.4+p*1.4);ctx.strokeStyle='rgba(255,240,170,'+(1-p)+')';ctx.lineWidth=2.5;
@@ -395,8 +405,12 @@ function dropIn(cb){const P=STATE.plan,DUR=1400,t0=performance.now();cancelAnima
 function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
   const n=P.n,f0=P.frames[0],r=Math.max(6,P.RR*Math.min(aw,ah)*1.15),simple=n>200;
-  for(const pk of P.pickups)drawPickup(ax+pk.x*aw,ay+pk.y*ah,r,pk.weapon,clock);
   const ease=t=>1-Math.pow(1-t,3);
+  // weapons rain in first (slightly ahead of the ducks)
+  P.pickups.forEach((pk,pi)=>{const tx=ax+pk.x*aw,ty=ay+pk.y*ah;
+    const delay=((pi*40503)%1000)/1000*0.3;const lp=clamp((p-delay)/(1-0.3),0,1);const e=ease(lp);
+    const Y=ty-(1-e)*(ah+ay+40);drawPickup(tx,Y,r,pk.weapon,clock);
+    const land=delay+(1-0.3),sa=p-land;if(sa>=0&&sa<0.14){const sp=sa/0.14;ctx.save();ctx.globalAlpha=(1-sp)*0.5;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.5,r*(0.5+sp*1.8),r*(0.2+sp*0.7),0,0,6.283);ctx.stroke();ctx.restore();}});
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   for(let i=0;i<n;i++){const tx=ax+f0[2*i]*aw,ty=ay+f0[2*i+1]*ah;
     const delay=((i*2654435761>>>0)%1000)/1000*0.45;const lp=clamp((p-delay)/(1-0.45),0,1);const e=ease(lp);
@@ -422,7 +436,6 @@ function countdownThen(cb){const el=document.getElementById('count3');const seq=
     el.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(1.3)'}],{duration:850});k++;setTimeout(tick,900);})();}
 function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
-  const P=STATE.plan;if(P){const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15);for(const pk of P.pickups)drawPickup(ax+pk.x*aw,ay+pk.y*ah,r,pk.weapon,clock);}
   drawBarbedWire(ax,ay,aw,ah);
   const el=document.getElementById('killfeed');if(el&&!el.dataset.init){el.innerHTML='<h4>💀 Kill Feed</h4>';el.dataset.init='1';}
   const ros=document.getElementById('roster');if(ros)ros.innerHTML='<h4>🦆 ready…</h4>';}
