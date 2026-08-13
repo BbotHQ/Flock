@@ -110,7 +110,6 @@
             <ul class="podium" id="podium"></ul>
             <div class="verify" id="verify" title="Tap to copy the seed">🔓 <b>Verify:</b> <span id="verifyBody">—</span></div>
             <div class="controls">
-              <button class="btn" id="copyResult">Copy Results</button>
               <button class="btn ghost" id="copyLink">Copy Replay Link</button>
               <button class="btn ghost" id="again">New Brawl</button>
             </div>
@@ -267,13 +266,14 @@ function updateRoster(stepF){const P=STATE.plan;const living=[],dead=[];
     for(const i of dead){html+=`<div class="ritem dead"><span class="rdot" style="background:${P.meta[i].col}"></span><span class="rname">${escapeHtml(P.meta[i].nm)}</span></div>`;}}
   el.innerHTML=html;}
 
-function renderScene(stepF,curSec,clock){
+function renderScene(stepF,curSec,clock,finale){
   const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#07131a';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
   const n=P.n,S=P.S,a=Math.max(0,Math.min(S-1,Math.floor(stepF))),b=Math.min(S-1,a+1),m=stepF-a,fa=P.frames[a],fb=P.frames[b];
-  // camera: zoom into the duel when down to the last two
+  // camera: zoom into the duel when down to the last two; hero-focus the winner in the finale
   let zoom=1,cx=0.5,cy=0.5;
-  if(stepF>=P.duelStart){const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);zoom=1+1.6*ramp;
+  if(finale){zoom=2.4;const half=0.5/zoom;cx=clamp(fa[2*P.winner],half,1-half);cy=clamp(fa[2*P.winner+1],half,1-half);}
+  else if(stepF>=P.duelStart){const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);zoom=1+1.6*ramp;
     const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);}
   const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
   const r=Math.max(9,P.RR*Math.min(aw,ah)*1.15)*zoom;
@@ -295,6 +295,7 @@ function renderScene(stepF,curSec,clock){
     if(dt>=0&&dt<0.85){const wx=fa[2*P.winner],wy=fa[2*P.winner+1];drawCrownPop(W2Sx(wx),W2Sy(wy),r,dt/0.85);}}
   ctx.restore();
   if(alive===2&&stepF>=P.duelStart)drawShowdownBanner(Math.min(1,(stepF-P.duelStart)/30));
+  if(finale){const wx=W2Sx(fa[2*P.winner]),wy=W2Sy(fa[2*P.winner+1]);drawWinnerTag(wx,wy,r,P.meta[P.winner].nm);}
   const tag=document.getElementById('aliveTag');tag.style.display='block';tag.textContent=(alive<=1?'🏆 winner':`🦆 ${alive} left`);
   updateRoster(stepF);
 }
@@ -307,10 +308,21 @@ function drawCrownPop(x,y,r,p){ctx.save();const rise=(1-p)*r*3;
   ctx.beginPath();for(let i=0;i<12;i++){const a=i/12*6.283;const o=(i%2)?rad*0.5:rad;const px=x+Math.cos(a)*o,py=y+Math.sin(a)*o;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.fill();
   ctx.globalAlpha=Math.min(1,p*2);ctx.fillStyle='#ffd76b';const cw=r*2.2,cyy=y-r*2.6-rise;
   ctx.beginPath();ctx.moveTo(x-cw/2,cyy+r*0.7);ctx.lineTo(x-cw/2,cyy);ctx.lineTo(x-cw/4,cyy+r*0.42);ctx.lineTo(x,cyy-r*0.25);ctx.lineTo(x+cw/4,cyy+r*0.42);ctx.lineTo(x+cw/2,cyy);ctx.lineTo(x+cw/2,cyy+r*0.7);ctx.closePath();ctx.fill();ctx.restore();}
-function drawWinnerBanner(name,p){const {w,h}=VIEW;ctx.save();ctx.globalAlpha=Math.min(1,p);ctx.textAlign='center';
-  ctx.shadowColor='rgba(0,0,0,.75)';ctx.shadowBlur=18;
-  ctx.font=`700 ${Math.max(20,w*0.042)}px Anton, sans-serif`;ctx.fillStyle='#ffd76b';ctx.textBaseline='bottom';ctx.fillText('👑  WINNER  👑',w/2,h/2-6);
-  ctx.font=`700 ${Math.max(24,w*0.058)}px Anton, sans-serif`;ctx.fillStyle='#fff';ctx.textBaseline='top';ctx.fillText(name,w/2,h/2+8);ctx.restore();}
+function drawWinnerTag(x,y,r,name){
+  ctx.save();ctx.textAlign='center';
+  const nameSize=Math.max(20,r*1.25), ebSize=Math.max(11,r*0.6);
+  const nameY=y-r*3.5;               // name sits above the crown, never on the duck
+  const ebY=nameY-nameSize*0.95;     // 'WINNER' eyebrow above the name
+  // backing pill so it reads over the water
+  ctx.font=`700 ${nameSize}px Anton, sans-serif`;
+  const tw=Math.max(ctx.measureText(name).width, ctx.measureText('WINNER').width)+r*1.4;
+  const boxTop=ebY-ebSize*1.2, boxH=(nameY)-(boxTop)+nameSize*0.35;
+  ctx.fillStyle='rgba(7,19,26,.72)';roundRect(x-tw/2,boxTop,tw,boxH,10);ctx.fill();
+  ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=8;
+  ctx.fillStyle='#ffd76b';ctx.textBaseline='alphabetic';ctx.font=`700 ${ebSize}px Anton, sans-serif`;
+  ctx.fillText('👑 WINNER 👑',x,ebY);
+  ctx.fillStyle='#fff';ctx.font=`700 ${nameSize}px Anton, sans-serif`;ctx.fillText(name,x,nameY);
+  ctx.restore();}
 function finalOne(stepF){const P=STATE.plan;let c=0;for(let i=0;i<P.n;i++)if(stepF<P.deathStep[i])c++;return c<=1;}
 
 function playFight(onDone){const P=STATE.plan,S=P.S;
@@ -318,8 +330,8 @@ function playFight(onDone){const P=STATE.plan,S=P.S;
   const T=STATE.playDur*1000,t0=performance.now();cancelAnimationFrame(STATE.raf);
   function frame(now){let frac=(now-t0)/T;if(frac>=1){renderScene(S-1,STATE.playDur,now);playFinale(onDone);return;}
     renderScene(frac*(S-1),frac*STATE.playDur,now);STATE.raf=requestAnimationFrame(frame);}STATE.raf=requestAnimationFrame(frame);}
-function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=1700;cancelAnimationFrame(STATE.raf);
-  function frame(now){const dt=now-t0;renderScene(S-1,STATE.playDur,now);drawWinnerBanner(P.order[0].nm,Math.min(1,dt/300));
+function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=2000;cancelAnimationFrame(STATE.raf);
+  function frame(now){const dt=now-t0;renderScene(S-1,STATE.playDur+dt/1000,now,true);
     if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}STATE.raf=requestAnimationFrame(frame);}
 function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;renderScene(0,0,performance.now());
   (function tick(){if(k>=seq.length){el.style.opacity=0;cb();return;}el.textContent=seq[k];el.style.opacity=1;
@@ -332,7 +344,8 @@ async function showResults(){const P=STATE.plan;document.getElementById('winnerN
   document.getElementById('result').classList.add('show');document.getElementById('replayBtn').style.display='inline-block';}
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-function beginFight(){document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
+function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
+function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('replayBtn').style.display='none';
   VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>playFight(showResults));}
 function replayFight(){document.getElementById('result').classList.remove('show');VIEW=fitCanvas();countdownThen(()=>playFight(showResults));}
@@ -362,17 +375,15 @@ document.getElementById('start').addEventListener('click',()=>{const names=parse
   STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
 document.getElementById('again').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');STATE.seed=newSeed();refreshLock();beginFight();});
-document.getElementById('backBtn').addEventListener('click',()=>{cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
+document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
   document.getElementById('result').classList.remove('show');document.getElementById('aliveTag').style.display='none';document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
-document.getElementById('copyResult').addEventListener('click',async()=>{const o=STATE.plan.order;const lh=await sha256hex(lockInput(STATE.seed,STATE.names));
-  const lines=['🦆 **Flock — Last Duck Standing** 🦆',`🥇 ${o[0].nm}`];if(o[1])lines.push(`🥈 ${o[1].nm}`);if(o[2])lines.push(`🥉 ${o[2].nm}`);
-  lines.push('',`🔓 Lock ${lh.slice(0,16)}…`,`▶ Replay: ${replayLink()}`);copy(lines.join('\n'),'Results copied');});
 document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.playDur,performance.now());}});
 
 (function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.dur=st.d||14;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);STATE.playDur=STATE.dur;renderScene(0,0,performance.now());
+  setLedger(false);document.getElementById('backBtn').style.display='none';
   document.getElementById('replayBtn').style.display='inline-block';toast('Brawl loaded — press Replay');})();
 </script>
 </body>
