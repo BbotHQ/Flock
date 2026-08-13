@@ -130,7 +130,6 @@
             <div class="verify" id="verify" title="Tap to copy the seed">🔓 <b>Verify:</b> <span id="verifyBody">—</span></div>
             <div class="controls">
               <button class="btn ghost" id="copyLink">Copy Replay Link</button>
-              <button class="btn ghost" id="again">New Battle</button>
             </div>
           </div>
         </div>
@@ -139,7 +138,7 @@
     </div>
     <div class="controls">
       <button class="btn ghost" id="replayBtn" style="display:none">▶ Replay This Battle</button>
-      <button class="btn ghost" id="backBtn">← New List</button>
+      <button class="btn ghost" id="backBtn">← New Fight Setup</button>
     </div>
   </div>
 </div>
@@ -169,7 +168,7 @@ const WEAPONS=['sword','dagger','ballchain','cleaver','waterpistol','blunderbuss
 const HITWORDS=['BOOM','KABOOM','SLICE','CRUNCH','SPLAT','BANG','WHAM','BLAM','SKEWERED','CLEAVED'];
 const SPARKWORDS=['CLASH','PARRY','CLANG','BLOCK','STRIKE'];
 
-function battleLength(n){if(n<5)return 20;return Math.min(60,Math.max(45,45+(n-40)*0.18));}
+function battleLength(n){if(n<5)return 20;if(n>100)return Math.min(60,45+(n-100)*0.05);return 30;}
 
 function planFight(names,seed){
   const rng=rngFromSeed(seed), n=names.length;
@@ -177,7 +176,7 @@ function planFight(names,seed){
   const winner=idx[n-1], elimOrder=idx.slice(0,n-1);
   const order=[winner,...elimOrder.slice().reverse()].map(i=>({i,nm:names[i]}));
   const RR=Math.max(0.012,Math.min(0.05,0.36/Math.sqrt(n)));
-  const SPEED=0.34,dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=20,JIT=0.5;
+  const SPEED=0.34,dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5;
   const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);   // multi-hit only where it's visible
   const HCOOL = 10;
   // progress guarantee: in huge fields, each victim must fall within a few steps so the
@@ -476,7 +475,6 @@ document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'
 document.getElementById('start').addEventListener('click',()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
   STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
-document.getElementById('again').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');STATE.seed=newSeed();refreshLock();beginFight();});
 document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
   document.getElementById('result').classList.remove('show');document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
 document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
