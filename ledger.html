@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flock — Battle Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--deck:#0a1016;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--line:#26333f;}
+  *{box-sizing:border-box}html,body{margin:0;min-height:100%}
+  body{background:radial-gradient(1200px 520px at 50% -12%, #14232e 0%, var(--deck) 62%);color:var(--cream);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{width:100%;max-width:900px;margin:0 auto;padding:26px 16px 60px}
+  header{display:flex;align-items:baseline;gap:14px;justify-content:center;margin:6px 0 8px}
+  .brand{font-family:'Anton',sans-serif;font-size:clamp(34px,7vw,60px);letter-spacing:3px;text-transform:uppercase;color:var(--cream)}
+  .brand b{color:var(--gold-hi)}
+  .tag{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+  .sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 24px}
+  .sub a{color:var(--teal);text-decoration:none}
+  .state{text-align:center;color:var(--muted);padding:50px 10px;font-size:15px}
+  .row{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;
+    padding:16px 18px;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+  .row .main{flex:1;min-width:200px}
+  .rtitle{font-weight:700;font-size:16px;margin:0 0 4px;word-break:break-word}
+  .winner{font-family:'Anton';font-size:20px;color:var(--gold-hi);letter-spacing:.5px;margin:2px 0 8px}
+  .podium{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--cream);margin-bottom:8px}
+  .podium span{white-space:nowrap}
+  .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .hash{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;line-height:1.7;cursor:pointer;word-break:break-all}
+  .hash b{color:var(--teal)}
+  .side{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .replay{font-family:'Anton';letter-spacing:1px;text-transform:uppercase;background:var(--gold);color:#1a1305;
+    border:0;border-radius:9px;padding:10px 16px;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block}
+  .replay:hover{background:var(--gold-hi)}
+  .ducks{font-size:12px;color:var(--muted)}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#1a1305;
+    font-weight:600;padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;font-size:14px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{margin-top:26px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4a5b67}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="brand">Flo<b>ck</b></div><div class="tag">battle ledger</div></header>
+  <p class="sub">Every battle, recorded and replayable. <a href="./">← New battle</a></p>
+  <div id="list"><div class="state">Loading battles…</div></div>
+  <footer>Flock · Quack Commanders</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+function copy(t,m){navigator.clipboard.writeText(t).then(()=>toast(m)).catch(()=>toast('Copy failed'));}
+function fmtDate(ts){if(!ts)return'';try{return new Date(ts*1000).toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch(e){return'';}}
+
+function render(rows){
+  const list=document.getElementById('list');
+  if(!Array.isArray(rows)||rows.length===0){
+    list.innerHTML='<div class="state">No battles recorded yet. Run one and it\u2019ll show up here.</div>';return;}
+  list.innerHTML='';
+  for(const r of rows){
+    const podium=(r.podium||[]).slice(0,3);
+    const medals=['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'];
+    const podHtml=podium.map((nm,i)=>`<span>${medals[i]||''} ${esc(nm)}</span>`).join('');
+    const lock=r.lock?esc(String(r.lock).slice(0,16))+'\u2026':'\u2014';
+    const seed=r.seed?esc(String(r.seed).slice(0,14))+'\u2026':'\u2014';
+    const div=document.createElement('div');div.className='row';
+    div.innerHTML=`
+      <div class="main">
+        <div class="rtitle">${esc(r.title||'Duck Battle Royale')}</div>
+        <div class="winner">\ud83d\udc51 ${esc(r.winner||'\u2014')}</div>
+        <div class="podium">${podHtml}</div>
+        <div class="meta"><span>${fmtDate(r.ts)}</span><span>${r.ducks?esc(r.ducks)+' ducks':''}</span></div>
+        <div class="hash" data-lock="${esc(r.lock||'')}" data-seed="${esc(r.seed||'')}">\ud83d\udd12 Lock <b>${lock}</b>  \u00b7  \ud83c\udf31 Seed <b>${seed}</b></div>
+      </div>
+      <div class="side">
+        ${r.replay?`<a class="replay" href="${esc(r.replay)}" target="_blank" rel="noopener">\u25b6 Replay</a>`:''}
+      </div>`;
+    div.querySelector('.hash').addEventListener('click',function(){
+      const s=this.getAttribute('data-seed'),l=this.getAttribute('data-lock');
+      copy(`seed: ${s}\nlock: ${l}`,'Seed + Lock copied');});
+    list.appendChild(div);
+  }
+}
+
+(async function(){
+  try{
+    const res=await fetch('./races.json?ts='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error('races.json not found ('+res.status+')');
+    const data=await res.json();
+    // newest first (entries are prepended by the bot, but sort defensively)
+    if(Array.isArray(data))data.sort((a,b)=>(b.ts||0)-(a.ts||0));
+    render(data);
+  }catch(e){
+    document.getElementById('list').innerHTML=
+      '<div class="state">No ledger yet.<br><br>Once <code>races.json</code> exists in this folder, battles will appear here automatically.</div>';
+  }
+})();
+</script>
+</body>
+</html>
