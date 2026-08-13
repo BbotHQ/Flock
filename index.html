@@ -13,7 +13,7 @@
 <style>
   :root{--deck:#080d12;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--red:#d64b34;}
   *{box-sizing:border-box}html,body{margin:0;min-height:100%}
-  body{background:radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
+  body{background:linear-gradient(rgba(6,11,16,.86),rgba(6,11,16,.93)), url('arena.jpg') center/cover fixed no-repeat, radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
     font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center}
   .wrap{width:100%;max-width:1720px;padding:16px 14px 40px;flex:1;display:flex;flex-direction:column;position:relative}
   /* ---- title ---- */
@@ -58,18 +58,18 @@
   /* ---- arena ---- */
   .stage{display:none;flex-direction:column;flex:1}.stage.show{display:flex}
   .arena-row{display:flex;gap:10px;align-items:stretch}
-  .killfeed{width:230px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
-  .killfeed h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:12px;color:var(--muted);text-transform:uppercase}
-  .kfitem{font-size:12.5px;padding:4px 6px;border-radius:6px;line-height:1.4;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+  .killfeed{width:250px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
+  .killfeed h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .kfitem{font-size:15px;padding:5px 7px;border-radius:6px;line-height:1.45;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   .kfitem .kk{color:#ffd76b;font-weight:700}
   .kfitem .kx{color:var(--red)}
   .kfitem .kv{color:var(--muted);text-decoration:line-through}
   .kfitem.big .kk{color:#fff}
   .canvas-shell{position:relative;flex:1;border-radius:14px;overflow:hidden;border:1px solid #2b3a47;background:#050b10;min-width:0}
   canvas{display:block;width:100%;height:100%}
-  .roster{width:200px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
-  .roster h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:12px;color:var(--muted);text-transform:uppercase}
-  .ritem{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:7px;font-size:13px;font-weight:600;margin-bottom:3px}
+  .roster{width:220px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
+  .roster h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .ritem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:15px;font-weight:600;margin-bottom:3px}
   .rdot{width:9px;height:9px;border-radius:50%;flex:none}
   .ritem.dead{opacity:.4}.ritem.dead .rname{text-decoration:line-through;color:var(--muted)}
   .ritem.win{background:rgba(242,193,78,.14)}.ritem.win .rname{color:var(--gold-hi)}
@@ -167,6 +167,53 @@ const DUCKPAL=['#f2c14e','#e9884a','#5cb8c4','#c98fca','#8fca8f','#efc94e','#e06
 const WEAPONS=['sword','dagger','ballchain','cleaver','waterpistol','blunderbuss'];
 const HITWORDS=['BOOM','KABOOM','SLICE','CRUNCH','SPLAT','BANG','WHAM','BLAM','SKEWERED','CLEAVED'];
 const SPARKWORDS=['CLASH','PARRY','CLANG','BLOCK','STRIKE'];
+
+// ── DUCK SPRITE SHEETS ──────────────────────────────────────────────────────
+// Each duck is ONE image in the repo: a 3-col × 2-row grid of 6 poses:
+//   row0: [ idle ][ windup ][ strike ]   row1: [ hit ][ defeated ][ victory ]
+// TO ADD A DUCK: drop its PNG in the repo's ducks/ folder and add the filename
+// to this list. That's it — everything else is automatic.
+const DUCK_SHEETS = [
+  'ducks/rainbow.png',
+  'ducks/firefighter.png',
+  'ducks/unicorn.png',
+  'ducks/cop.png',
+  'ducks/king.png',
+];
+const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
+const SHEETS = [];
+let SHEETS_READY = 0;
+DUCK_SHEETS.forEach((url, k) => {
+  const rec = {img:new Image(), ready:false, cw:0, ch:0};
+  rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; SHEETS_READY++; };
+  rec.img.onerror = () => { /* missing file — falls back to vector duck */ };
+  rec.img.src = url;
+  SHEETS[k] = rec;
+});
+function spriteFor(i){ return SHEETS.length ? (((i*2654435761)>>>0) % SHEETS.length) : 0; }
+function nameAbove(x,y,r,name,win){const fs=Math.max(10,Math.min(r*0.85,17));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle='rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
+  ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
+// Draws a fighter as a sprite if its sheet is loaded, else falls back to the vector duck.
+function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple){
+  const idx=spriteFor(i), sh=SHEETS[idx];
+  if(!sh||!sh.ready){
+    if(isDead) drawDuckGhost(x,y,r,STATE.plan.meta[i].nm,STATE.plan.meta[i].col,simple);
+    else drawDuck(x,y,r,STATE.plan.meta[i].nm,win,STATE.plan.meta[i].col,weaponAt(STATE.plan,i,0),facing,hp,simple);
+    return;
+  }
+  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=sh.cw, ch=sh.ch, box=r*3.6;
+  ctx.save();
+  ctx.globalAlpha=.16;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.95,r*1.25,r*0.42,0,0,6.283);ctx.fill();ctx.globalAlpha=1;
+  if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=24;}
+  if(isDead)ctx.globalAlpha=.82;
+  ctx.translate(x,y);
+  if(facing<0)ctx.scale(-1,1);
+  ctx.drawImage(sh.img, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
+  ctx.restore();
+  if(!isDead && hp<0.999) drawHpBar(x,y,r,hp);
+  nameAbove(x, y - r*1.9, r, STATE.plan.meta[i].nm, win);
+}
 
 function battleLength(n){if(n<5)return 20;if(n>100)return Math.min(60,45+(n-100)*0.05);return 30;}
 
@@ -369,13 +416,17 @@ function renderScene(stepF,curSec,clock,finale){
   for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2)drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);}
   // weapon pickups still in the water
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
-  // dead ghosts (names remain)
-  for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawDuckGhost(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,P.meta[i].nm,P.meta[i].col,simple);}
+  // transient attack poses from kill events (killer winds up then strikes)
+  const pose=new Array(n).fill('idle');
+  for(const e of P.events){if(!e.kill||e.k==null)continue;const eSec=stepToPlaySec(e.step),d=curSec-eSec;
+    if(d>=0&&d<0.35)pose[e.k]='strike';else if(d>=-0.18&&d<0)pose[e.k]='windup';}
+  // dead ducks — defeated pose, floating in place (names remain)
+  for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple);}
   // living
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
     const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(x1-x0)>=0?1:-1,isWin=(i===P.winner)&&(alive<=1||finalOne(stepF));
-    drawDuck(X,Y,r,P.meta[i].nm,isWin,P.meta[i].col,weaponAt(P,i,stepF),facing,hpAt(P,i,stepF),simple);}
+    const ps=isWin?'victory':pose[i];drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple);}
   // hit + kill effects
   for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
     if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
@@ -413,8 +464,8 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   for(let i=0;i<n;i++){const tx=ax+f0[2*i]*aw,ty=ay+f0[2*i+1]*ah;
     const delay=((i*2654435761>>>0)%1000)/1000*0.45;const lp=clamp((p-delay)/(1-0.45),0,1);const e=ease(lp);
-    if(lp<1){const Y=ty-(1-e)*(ah+ay+40);drawDuck(tx,Y,r,P.meta[i].nm,false,P.meta[i].col,P.meta[i].weapon,1,1,simple);}
-    else{drawDuck(tx,ty,r,P.meta[i].nm,false,P.meta[i].col,P.meta[i].weapon,1,1,simple);
+    if(lp<1){const Y=ty-(1-e)*(ah+ay+40);drawFighter(tx,Y,r,i,'idle',1,false,1,false,simple);}
+    else{drawFighter(tx,ty,r,i,'idle',1,false,1,false,simple);
       const land=delay+(1-0.45),sa=p-land;if(sa>=0&&sa<0.16){const sp=sa/0.16;ctx.save();ctx.globalAlpha=(1-sp)*0.6;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.6,r*(0.6+sp*2.2),r*(0.25+sp*0.9),0,0,6.283);ctx.stroke();ctx.restore();}}}
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
