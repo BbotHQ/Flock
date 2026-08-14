@@ -83,9 +83,16 @@
   .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
   .result{display:none;position:absolute;inset:0;background:rgba(6,15,20,.9);align-items:center;justify-content:center;padding:20px}
   .result.show{display:flex}
-  .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
+  .result-card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
     box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:cardup .38s ease-out}
   @keyframes cardup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid #33454f;background:rgba(6,15,20,.55);
+    color:var(--cream);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .modal-x:hover{border-color:var(--teal);color:var(--teal)}
+  .reopen-modal{position:absolute;bottom:14px;right:14px;z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid #5a4a24;
+    background:rgba(20,28,20,.72);color:var(--gold-hi);font-size:19px;cursor:pointer;align-items:center;justify-content:center;display:none;
+    box-shadow:0 6px 16px rgba(0,0,0,.4)}
+  .reopen-modal:hover{background:rgba(242,193,78,.2)}
   .winner-eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
   .winner-name{font-family:'Anton',sans-serif;font-size:clamp(30px,8vw,46px);color:var(--gold-hi);margin:6px 0 2px;line-height:1;word-break:break-word}
   .podium{list-style:none;padding:0;margin:16px 0 14px;text-align:left}
@@ -129,6 +136,7 @@
         <div class="overlay"><div class="count3" id="count3"></div></div>
         <div class="result" id="result">
           <div class="result-card">
+            <button class="modal-x" id="closeResult" aria-label="Close">✕</button>
             <div class="winner-eyebrow">Last Duck Standing</div>
             <div class="winner-name" id="winnerName">—</div>
             <ul class="podium" id="podium"></ul>
@@ -140,6 +148,7 @@
             </div>
           </div>
         </div>
+        <button class="reopen-modal" id="reopenResult" aria-label="Show results" title="Show results">📋</button>
       </div>
       <div class="roster" id="roster"></div>
     </div>
@@ -257,8 +266,8 @@ const GRID_COLS = 220, GRID_ROWS = 138, TILE_FADE = 0.35, BLOOD_SPREAD_SEC = 130
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
 let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
 let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
-function coverFit(iw, ih, aw, ah) {
-  const s = Math.max(aw / iw, ah / ih);
+function coverFit(iw, ih, aw, ah, over) {
+  const s = Math.max(aw / iw, ah / ih) * (over || 1);
   return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
 }
 function resetBlood(aw, ah) {
@@ -278,11 +287,12 @@ function tileRectLocal(col, row, aw, ah) {
   const y0 = Math.round(row / GRID_ROWS * ah), y1 = Math.round((row + 1) / GRID_ROWS * ah);
   return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
 }
-function drawRedTile(ctx2, col, row, aw, ah, alpha) {
+function drawRedTile(ctx2, col, row, aw, ah, alpha, driftX, driftY) {
   if (!WATER_RED.okay) return;
   const rt = tileRectLocal(col, row, aw, ah);
-  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah);
-  const sx = (rt.x - fit.dx) / fit.s, sy = (rt.y - fit.dy) / fit.s;
+  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah, 1.08);
+  const dx = fit.dx + (driftX || 0), dy = fit.dy + (driftY || 0);
+  const sx = (rt.x - dx) / fit.s, sy = (rt.y - dy) / fit.s;
   const sw = rt.w / fit.s, sh = rt.h / fit.s;
   ctx2.save(); ctx2.globalAlpha = alpha;
   ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.75, rt.h + 0.75);
@@ -462,10 +472,15 @@ function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;fo
 
 function drawWater(ax,ay,aw,ah,clock,curSec){
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+  // Gentle multi-frequency drift so the (large, static) pond images read as moving
+  // water rather than a still photo — slow left/right sway plus a slight vertical
+  // bob. The image is oversized (coverFit ...,1.08) so drifting never exposes an edge.
+  const t=(clock||0)*0.001;
+  const driftX=Math.sin(t*0.11)*aw*0.018+Math.sin(t*0.29)*aw*0.007;
+  const driftY=Math.cos(t*0.095)*ah*0.014+Math.sin(t*0.23)*ah*0.006;
   if(WATER.okay){
-    const iw=WATER.naturalWidth,ih=WATER.naturalHeight,s=Math.max(aw/iw,ah/ih);
-    const dw=iw*s,dh=ih*s,dx=ax+(aw-dw)/2,dy=ay+(ah-dh)/2;
-    ctx.drawImage(WATER,dx,dy,dw,dh);
+    const fit=coverFit(WATER.naturalWidth,WATER.naturalHeight,aw,ah,1.08);
+    ctx.drawImage(WATER,ax+fit.dx+driftX,ay+fit.dy+driftY,fit.dw,fit.dh);
   } else {
     const g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,'#155066');g.addColorStop(1,'#0b2734');
     ctx.fillStyle=g;ctx.fillRect(ax,ay,aw,ah);
@@ -481,8 +496,8 @@ function drawWater(ax,ay,aw,ah,clock,curSec){
         const t=tileState[idx];const elapsed=curSec-t;
         if(elapsed<0){still.push(idx);continue;}
         const col=idx%GRID_COLS,row=(idx/GRID_COLS)|0;
-        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}       // bake permanently
-        else{ctx.save();ctx.translate(ax,ay);drawRedTile(ctx,col,row,aw,ah,elapsed/TILE_FADE);ctx.restore();still.push(idx);}
+        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}       // bake permanently, settled — no drift
+        else{ctx.save();ctx.translate(ax,ay);drawRedTile(ctx,col,row,aw,ah,elapsed/TILE_FADE,driftX,driftY);ctx.restore();still.push(idx);}
       }
       pendingTiles=still;
     }
@@ -622,7 +637,7 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   // blood stains
-  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);if(!e._blooded){e._blooded=true;triggerBloodAt(e.x,e.y,eSec+0.2);}}}
+  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){if(!e._blooded){e._blooded=true;triggerBloodAt(e.x,e.y,eSec+0.2);}}}
   // weapon pickups still in the water
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
   // transient attack poses from kill events (killer winds up then strikes)
@@ -755,7 +770,7 @@ async function showResults(){const P=STATE.plan;document.getElementById('winnerN
   P.order.slice(0,3).forEach((o,idx)=>{const medal=['🥇','🥈','🥉'][idx];const li=document.createElement('li');li.innerHTML=`<span class="pos">${medal}</span><span class="nm">${escapeHtml(o.nm)}</span>`;pod.appendChild(li);});
   const lh=await sha256hex(lockInput(STATE.seed,STATE.names));
   document.getElementById('verifyBody').innerHTML=`seed <b>${escapeHtml(STATE.seed.slice(0,10))}…</b> · seal <b>${lh.slice(0,10)}…</b>`;
-  document.getElementById('result').classList.add('show');document.getElementById('replayBtn').style.display='inline-block';document.getElementById('backBtn').style.display='';}
+  document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='inline-block';document.getElementById('backBtn').style.display='';}
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 document.getElementById('standingsBtn').addEventListener('click',()=>{
   const box=document.getElementById('standingsBox');
@@ -780,11 +795,10 @@ async function ensureSpritesReady(btn){
   if(btn){btn.disabled=false;btn.textContent=orig;}
 }
 function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
-  document.getElementById('result').classList.remove('show');document.getElementById('replayBtn').style.display='none';
-  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>dropIn(()=>playFight(showResults)));}
+  document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='none';
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
-  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
-function writeHash(){history.replaceState(null,'','#r='+encodeState({n:STATE.names,d:Math.round(STATE.plan?STATE.plan.durSec:battleLength(STATE.names.length)),s:STATE.seed}));}
+  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
@@ -809,12 +823,19 @@ document.getElementById('start').addEventListener('click',async ()=>{const names
   await ensureSpritesReady(document.getElementById('start'));
   STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
+document.getElementById('closeResult').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='flex';});
+document.getElementById('reopenResult').addEventListener('click',()=>{document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';});
 document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
   document.getElementById('result').classList.remove('show');document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
 document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
 
 SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
+// iOS Safari sometimes restores a page from its back-forward cache on "reload" instead
+// of truly re-running this script — that's what made a refresh look frozen on whatever
+// frame (including the finale) was last on screen. Forcing a real reload here guarantees
+// a clean slate every time.
+window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 (async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   setLedger(false);document.getElementById('backBtn').style.display='none';
