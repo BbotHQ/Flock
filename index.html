@@ -174,18 +174,10 @@ const SPARKWORDS=['CLASH','PARRY','CLANG','BLOCK','STRIKE'];
 // TO ADD A DUCK: drop its PNG in the repo's ducks/ folder and add the filename
 // to this list. That's it — everything else is automatic.
 const DUCK_SHEETS = [
-  'ducks/rainbow.png',
-  'ducks/firefighter.png',
-  'ducks/chef.png',
-  'ducks/sky.png',
-  'ducks/coach.png',
-  'ducks/sunglasses.png',
-  'ducks/cowboy.png',
-  'ducks/pirate.png',
-  'ducks/unicorn.png',
-  'ducks/cop.png',
-  'ducks/king.png',
-];
+  'army','astronaut','beach','chef','coach','cool','cop','cowboy','detective','dragon',
+  'fairy','firefighter','flash','gold','hawaiian','king','lifeguard','mallard','monocle','ninja',
+  'penguin','pirate','queen','rainbow','sailor','skeleton','sky','sunglasses','unicorn','vampire','yellow',
+].map(n => 'ducks/' + n + '.png');
 const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
 const SHEETS = [];
 let SHEETS_READY = 0;
@@ -208,7 +200,7 @@ function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple){
     else drawDuck(x,y,r,STATE.plan.meta[i].nm,win,STATE.plan.meta[i].col,weaponAt(STATE.plan,i,0),facing,hp,simple);
     return;
   }
-  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=sh.cw, ch=sh.ch, box=r*3.6;
+  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=sh.cw, ch=sh.ch, box=r*2.7;
   ctx.save();
   ctx.globalAlpha=.16;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.95,r*1.25,r*0.42,0,0,6.283);ctx.fill();ctx.globalAlpha=1;
   if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=24;}
@@ -238,7 +230,7 @@ function planFight(names,seed){
   const px=[],py=[],ang=[],wep=[];
   for(let i=0;i<n;i++){px[i]=MARGIN+rng()*(1-2*MARGIN);py[i]=MARGIN+rng()*(1-2*MARGIN);ang[i]=rng()*6.283;wep[i]=WEAPONS[Math.floor(rng()*WEAPONS.length)];}
   const meta=names.map((nm,i)=>({nm,col:DUCKPAL[i%DUCKPAL.length],weapon:wep[i]}));
-  const npick=Math.min(8,Math.max(3,Math.floor(n/6)));
+  const npick=0;  // sprites carry welded weapons — no floating pickups
   const pickups=[];
   for(let k=0;k<npick;k++){pickups.push({x:0.1+rng()*0.8,y:0.12+rng()*0.76,weapon:WEAPONS[Math.floor(rng()*WEAPONS.length)],takenStep:Infinity});}
   const weaponBreaks=Array.from({length:n},()=>[]);
@@ -423,16 +415,23 @@ function renderScene(stepF,curSec,clock,finale){
   // weapon pickups still in the water
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
   // transient attack poses from kill events (killer winds up then strikes)
+  // ── pose per duck: idle by default, HIT when recently damaged, WINDUP/STRIKE when landing a kill ──
+  const soleSurvivor=finalOne(stepF);   // true only when exactly one duck remains alive
   const pose=new Array(n).fill('idle');
-  for(const e of P.events){if(!e.kill||e.k==null)continue;const eSec=stepToPlaySec(e.step),d=curSec-eSec;
-    if(d>=0&&d<0.35)pose[e.k]='strike';else if(d>=-0.18&&d<0)pose[e.k]='windup';}
+  // defense: a recent HP drop → hit/flinch
+  for(let i=0;i<n;i++){const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
+  // offense: killers wind up then strike (overrides hit)
+  for(const e of P.events){if(!e.kill||e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
+    if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';}
   // dead ducks — defeated pose, floating in place (names remain)
   for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple);}
   // living
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
-    const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(x1-x0)>=0?1:-1,isWin=(i===P.winner)&&(alive<=1||finalOne(stepF));
-    const ps=isWin?'victory':pose[i];drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple);}
+    const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(x1-x0)>=0?1:-1;
+    const isWin=(i===P.winner)&&(finale||soleSurvivor);   // VICTORY only when actually won
+    const ps=isWin?'victory':pose[i];
+    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple);}
   // hit + kill effects
   for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
     if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
@@ -485,7 +484,7 @@ function playFight(onDone){const P=STATE.plan,S=P.S,dS=P.duelStart;const duelSec
 function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=2000;cancelAnimationFrame(STATE.raf);STATE.remain=null;
   function frame(now){const dt=now-t0;renderScene(S-1,P.durSec+dt/1000,now,true);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;renderEmptyPond(performance.now());
+function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
   const introT0=performance.now();let introRaf;
   (function loop(){renderEmptyPond(performance.now());introRaf=requestAnimationFrame(loop);})();
   (function tick(){if(k>=seq.length){cancelAnimationFrame(introRaf);el.style.opacity=0;cb();return;}el.textContent=seq[k];el.style.opacity=1;
@@ -493,7 +492,7 @@ function countdownThen(cb){const el=document.getElementById('count3');const seq=
 function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
   drawBarbedWire(ax,ay,aw,ah);
-  const el=document.getElementById('killfeed');if(el&&!el.dataset.init){el.innerHTML='<h4>💀 Kill Feed</h4>';el.dataset.init='1';}
+  const el=document.getElementById('killfeed');if(el)el.innerHTML='<h4>💀 Kill Feed</h4>';
   const ros=document.getElementById('roster');if(ros)ros.innerHTML='<h4>🦆 ready…</h4>';}
 async function showResults(){const P=STATE.plan;document.getElementById('winnerName').textContent=P.order[0].nm;
   const pod=document.getElementById('podium');pod.innerHTML='';
