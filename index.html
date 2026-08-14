@@ -22,7 +22,8 @@
     background:linear-gradient(180deg,#fff 0%,var(--gold-hi) 55%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 4px 18px rgba(242,193,78,.25))}
   .brand .blade{color:var(--red);-webkit-text-fill-color:var(--red)}
-  .sub-tag{margin:6px 0 0;font-family:'Anton',sans-serif;letter-spacing:6px;text-transform:uppercase;font-size:clamp(11px,2vw,15px);color:var(--teal);text-align:center}
+  .sub-tag{margin:6px 0 0;font-family:'Anton',sans-serif;letter-spacing:6px;text-transform:uppercase;font-size:clamp(11px,2vw,15px);color:var(--teal);text-align:center;
+    text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.7)}
   .synopsis{max-width:560px;margin:14px auto 22px;text-align:center;color:#aebccb;font-size:14px;line-height:1.55}
   .synopsis b{color:var(--cream)}
   /* ---- setup card ---- */
@@ -78,11 +79,7 @@
   .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
   .count3{font-family:'Anton',sans-serif;font-size:clamp(52px,15vw,130px);color:var(--gold-hi);text-shadow:0 6px 30px rgba(0,0,0,.6);opacity:0}
   .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-  .result{display:none;position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(6,15,20,0) 0%, rgba(6,15,20,0) 40%, rgba(6,15,20,.94) 56%, rgba(6,15,20,.99) 100%);
-    -webkit-mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
-    mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
-    align-items:flex-end;justify-content:center;padding:20px}
+  .result{display:none;position:absolute;inset:0;background:rgba(6,15,20,.9);align-items:center;justify-content:center;padding:20px}
   .result.show{display:flex}
   .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
     box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:cardup .38s ease-out}
@@ -130,6 +127,8 @@
         <div class="overlay"><div class="count3" id="count3"></div></div>
         <div class="result" id="result">
           <div class="result-card">
+            <div class="winner-eyebrow">Last Duck Standing</div>
+            <div class="winner-name" id="winnerName">—</div>
             <ul class="podium" id="podium"></ul>
             <button class="btn ghost" id="standingsBtn" style="width:100%;margin-bottom:12px">📋 View Full Standings</button>
             <div id="standingsBox" style="display:none;max-height:260px;overflow-y:auto;text-align:left;background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:13px;line-height:1.9"></div>
@@ -252,7 +251,7 @@ function spriteFor(i){
 // baked once into a persistent offscreen canvas (bloodCanvas) so steady-state
 // cost stays near zero. Any cells still blue at the finale ripple outward from
 // the winner's own position so the pond finishes as one continuous red wave.
-const GRID_COLS = 80, GRID_ROWS = 50, TILE_FADE = 0.4, BLOOD_SPREAD_SEC = 60;
+const GRID_COLS = 150, GRID_ROWS = 94, TILE_FADE = 0.4, BLOOD_SPREAD_SEC = 130;
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
 let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
 let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
@@ -709,7 +708,7 @@ function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fill
   drawBarbedWire(ax,ay,aw,ah);
   const el=document.getElementById('killfeed');if(el)el.innerHTML='<h4>💀 Kill Feed</h4>';
   const ros=document.getElementById('roster');if(ros)ros.innerHTML='<h4>🦆 ready…</h4>';}
-async function showResults(){const P=STATE.plan;
+async function showResults(){const P=STATE.plan;document.getElementById('winnerName').textContent=P.order[0].nm;
   const pod=document.getElementById('podium');pod.innerHTML='';
   P.order.slice(0,3).forEach((o,idx)=>{const medal=['🥇','🥈','🥉'][idx];const li=document.createElement('li');li.innerHTML=`<span class="pos">${medal}</span><span class="nm">${escapeHtml(o.nm)}</span>`;pod.appendChild(li);});
   const lh=await sha256hex(lockInput(STATE.seed,STATE.names));
