@@ -103,7 +103,7 @@
   <p class="sub-tag">Last Duck Standing</p>
 
   <div class="card setup" id="setup">
-    <p class="synopsis">A flock enters the arena and <b>fights to the death</b> — barbed wire, weapons in the water, no mercy. Ducks drop one by one until a single champion is <b>crowned</b>.</p>
+    <p class="synopsis">The flock enters juiced, jealous, and thirsty for the last pour. <b>Only blood settles this tab.</b> One by one they go down swinging — until a single duck is left standing over the bottle. <b>Last duck drinks alone.</b></p>
     <label class="lbl" for="names">Combatants</label>
     <textarea id="names" placeholder="Enter at least two duck names here — one per line. Paste straight from your list; numbering is stripped automatically."></textarea>
     <div class="count" id="count">0 ducks</div>
@@ -127,6 +127,8 @@
             <div class="winner-eyebrow">Last Duck Standing</div>
             <div class="winner-name" id="winnerName">—</div>
             <ul class="podium" id="podium"></ul>
+            <button class="btn ghost" id="standingsBtn" style="width:100%;margin-bottom:12px">📋 View Full Standings</button>
+            <div id="standingsBox" style="display:none;max-height:260px;overflow-y:auto;text-align:left;background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:13px;line-height:1.9"></div>
             <div class="verify" id="verify" title="Tap to copy the seed">🔓 <b>Verify:</b> <span id="verifyBody">—</span></div>
             <div class="controls">
               <button class="btn ghost" id="copyLink">Copy Replay Link</button>
@@ -283,7 +285,7 @@ function planFight(names,seed){
         if((touch&&step-lastHit>HCOOL) || overdue){lastHit=step;vHits++;hp[victim]=Math.max(0,overdue?0:1-vHits/MHITS);hpBreaks[victim].push({step,hp:hp[victim]});
           const ex=(px[victim]+px[target])/2,ey=(py[victim]+py[target])/2;
           if(hp[victim]<=0){events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:target,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;vHits=0;ang[target]=Math.atan2(-dy/L,-dx/L);}
-          else{events.push({step,x:ex,y:ey,kill:false,word:''});ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);}}
+          else{events.push({step,x:ex,y:ey,kill:false,word:'',k:target,v:victim});ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);}}
       } else {
         if(touch&&step-lastClash>26){lastClash=step;
           const iL=Math.min(duelIdx,(duelHitsL?duelHitsL.length:1)-1);
@@ -549,14 +551,22 @@ async function showResults(){const P=STATE.plan;document.getElementById('winnerN
   P.order.slice(0,3).forEach((o,idx)=>{const medal=['🥇','🥈','🥉'][idx];const li=document.createElement('li');li.innerHTML=`<span class="pos">${medal}</span><span class="nm">${escapeHtml(o.nm)}</span>`;pod.appendChild(li);});
   const lh=await sha256hex(lockInput(STATE.seed,STATE.names));
   document.getElementById('verifyBody').innerHTML=`seed <b>${escapeHtml(STATE.seed.slice(0,10))}…</b> · seal <b>${lh.slice(0,10)}…</b>`;
-  document.getElementById('result').classList.add('show');document.getElementById('replayBtn').style.display='inline-block';}
+  document.getElementById('result').classList.add('show');document.getElementById('replayBtn').style.display='inline-block';document.getElementById('backBtn').style.display='';}
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('standingsBtn').addEventListener('click',()=>{
+  const box=document.getElementById('standingsBox');
+  if(box.style.display==='none'){
+    const P=STATE.plan;
+    box.innerHTML=P.order.map((o,i)=>`<div>#${i+1} — ${escapeHtml(o.nm)}</div>`).join('');
+    box.style.display='block';document.getElementById('standingsBtn').textContent='📋 Hide Full Standings';
+  } else {box.style.display='none';document.getElementById('standingsBtn').textContent='📋 View Full Standings';}
+});
 
 function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
-function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
+function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('replayBtn').style.display='none';
   VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>dropIn(()=>playFight(showResults)));}
-function replayFight(){document.getElementById('result').classList.remove('show');VIEW=fitCanvas();countdownThen(()=>dropIn(()=>playFight(showResults)));}
+function replayFight(){document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();countdownThen(()=>dropIn(()=>playFight(showResults)));}
 function writeHash(){history.replaceState(null,'','#r='+encodeState({n:STATE.names,d:Math.round(STATE.plan?STATE.plan.durSec:battleLength(STATE.names.length)),s:STATE.seed}));}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
