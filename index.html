@@ -290,7 +290,7 @@ function tileRectLocal(col, row, aw, ah) {
 function drawRedTile(ctx2, col, row, aw, ah, alpha, driftX, driftY) {
   if (!WATER_RED.okay) return;
   const rt = tileRectLocal(col, row, aw, ah);
-  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah, 1.08);
+  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah, 1.16);
   const dx = fit.dx + (driftX || 0), dy = fit.dy + (driftY || 0);
   const sx = (rt.x - dx) / fit.s, sy = (rt.y - dy) / fit.s;
   const sw = rt.w / fit.s, sh = rt.h / fit.s;
@@ -476,10 +476,10 @@ function drawWater(ax,ay,aw,ah,clock,curSec){
   // water rather than a still photo — slow left/right sway plus a slight vertical
   // bob. The image is oversized (coverFit ...,1.08) so drifting never exposes an edge.
   const t=(clock||0)*0.001;
-  const driftX=Math.sin(t*0.11)*aw*0.018+Math.sin(t*0.29)*aw*0.007;
-  const driftY=Math.cos(t*0.095)*ah*0.014+Math.sin(t*0.23)*ah*0.006;
+  const driftX=Math.sin(t*0.17)*aw*0.036+Math.sin(t*0.41)*aw*0.015;
+  const driftY=Math.cos(t*0.14)*ah*0.028+Math.sin(t*0.33)*ah*0.012;
   if(WATER.okay){
-    const fit=coverFit(WATER.naturalWidth,WATER.naturalHeight,aw,ah,1.08);
+    const fit=coverFit(WATER.naturalWidth,WATER.naturalHeight,aw,ah,1.16);
     ctx.drawImage(WATER,ax+fit.dx+driftX,ay+fit.dy+driftY,fit.dw,fit.dh);
   } else {
     const g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,'#155066');g.addColorStop(1,'#0b2734');
@@ -749,11 +749,18 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
     const t=(el-timerEnd)/Math.max(0.001,(totalEl-timerEnd));return slowStep+t*(S-1-slowStep);
   }
   function frame(now){const el=(now-t0)/1000;
-    if(el>=totalEl){renderScene(S-1,totalEl,now,true,0);STATE.remain=0;playFinale(onDone);return;}
+    if(el>=totalEl){
+      // Freeze on the finishing swing at its normal (non-finale) framing so the full
+      // strike is actually visible, before the camera lifts into the victory shot.
+      renderScene(S-1,totalEl,now,false,0);STATE.remain=0;
+      setTimeout(()=>playFinale(onDone,totalEl),IMPACT_HOLD);return;
+    }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
-  function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,P.durSec+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
+const IMPACT_HOLD=650; // ms to hold on the finishing blow before the camera rises into the victory framing
+function playFinale(onDone,elBase){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
+  const base=elBase!=null?elBase:P.durSec; // continue the SAME clock playFight ended on — resetting it here was
+  function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
   const introT0=performance.now();let introRaf;
