@@ -78,9 +78,15 @@
   .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
   .count3{font-family:'Anton',sans-serif;font-size:clamp(52px,15vw,130px);color:var(--gold-hi);text-shadow:0 6px 30px rgba(0,0,0,.6);opacity:0}
   .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-  .result{display:none;position:absolute;inset:0;background:rgba(6,15,20,.92);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px}
+  .result{display:none;position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(6,15,20,0) 0%, rgba(6,15,20,0) 40%, rgba(6,15,20,.82) 58%, rgba(6,15,20,.96) 100%);
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 58%, black 100%);
+    mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 58%, black 100%);
+    align-items:flex-end;justify-content:center;padding:20px}
   .result.show{display:flex}
-  .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:26px 28px;max-width:430px;width:100%;text-align:center}
+  .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:cardup .38s ease-out}
+  @keyframes cardup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
   .winner-eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
   .winner-name{font-family:'Anton',sans-serif;font-size:clamp(30px,8vw,46px);color:var(--gold-hi);margin:6px 0 2px;line-height:1;word-break:break-word}
   .podium{list-style:none;padding:0;margin:16px 0 14px;text-align:left}
@@ -167,8 +173,9 @@ function clamp(v,a,b){return v<a?a:v>b?b:v;}
 
 const DUCKPAL=['#f2c14e','#e9884a','#5cb8c4','#c98fca','#8fca8f','#efc94e','#e0625a','#9db4c9','#d98f5a','#7fc9b8'];
 const WEAPONS=['sword','dagger','ballchain','cleaver','waterpistol','blunderbuss'];
-const HITWORDS=['BOOM','KABOOM','SLICE','CRUNCH','SPLAT','BANG','WHAM','BLAM','SKEWERED','CLEAVED'];
-const SPARKWORDS=['CLASH','PARRY','CLANG','BLOCK','STRIKE'];
+const HITWORDS=['BOOM','BANG','SLAM','SLASH','WHACK','SMACK','POW','BLAM','CRACK','THUD',
+  'CRUNCH','SPLAT','WHAM','KAPOW','CHOMP','CLOBBERED','SMASHED','WRECKED','CRUSHED','DOWN'];
+const SPARKWORDS=['CLANG','CLASH','OOF','OW','BONK','TAP','SWIPE','JAB','BLOCK','DING'];
 
 // ── DUCK SPRITE SHEETS ──────────────────────────────────────────────────────
 // Each duck is ONE image in the repo: a 3-col × 2-row grid of 6 poses:
@@ -207,6 +214,78 @@ function spriteFor(i){
 const WATER = new Image(); WATER.okay = false;
 WATER.onload = () => { WATER.okay = true; };
 WATER.src = 'water.png';
+// Same pond, but blood-red — revealed cell-by-cell as ducks die (see BLOOD TILE SYSTEM below).
+const WATER_RED = new Image(); WATER_RED.okay = false;
+WATER_RED.onload = () => { WATER_RED.okay = true; };
+WATER_RED.src = 'water_red.png';
+
+// ── BLOOD TILE SYSTEM ───────────────────────────────────────────────────────
+// The pond is divided into a GRID_COLS×GRID_ROWS mosaic (~1000 cells). Each cell
+// starts blue. When a blood-stain event lands near a cell, that cell (and a
+// jittered ring of neighbors) "ignites" and cross-fades to the red water image
+// over TILE_FADE seconds. Finished cells get baked once into a persistent
+// offscreen canvas (bloodCanvas) so steady-state cost stays near zero; only the
+// handful of cells actively mid-fade are redrawn each frame. At the finale, any
+// still-blue cells are swept red on a staggered timer so the whole pond finishes
+// red by the time the winner's card appears.
+const GRID_COLS = 40, GRID_ROWS = 25, TILE_FADE = 0.55;
+let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
+let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
+let pendingTiles = [];     // indices currently mid-fade (not yet baked)
+function coverFit(iw, ih, aw, ah) {
+  const s = Math.max(aw / iw, ah / ih);
+  return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
+}
+function resetBlood(aw, ah) {
+  bloodAW = aw; bloodAH = ah;
+  const dpr = window.devicePixelRatio || 1;
+  bloodCanvas = document.createElement('canvas');
+  bloodCanvas.width = Math.max(1, Math.round(aw * dpr));
+  bloodCanvas.height = Math.max(1, Math.round(ah * dpr));
+  bloodCtx = bloodCanvas.getContext('2d');
+  bloodCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  tileState = new Float32Array(GRID_COLS * GRID_ROWS).fill(-1);
+  pendingTiles = [];
+  STATE.bloodFinaleTriggered = false;
+}
+function tileRectLocal(col, row, aw, ah) {
+  const x0 = Math.round(col / GRID_COLS * aw), x1 = Math.round((col + 1) / GRID_COLS * aw);
+  const y0 = Math.round(row / GRID_ROWS * ah), y1 = Math.round((row + 1) / GRID_ROWS * ah);
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+function drawRedTile(ctx2, col, row, aw, ah, alpha) {
+  if (!WATER_RED.okay) return;
+  const rt = tileRectLocal(col, row, aw, ah);
+  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah);
+  const sx = (rt.x - fit.dx) / fit.s, sy = (rt.y - fit.dy) / fit.s;
+  const sw = rt.w / fit.s, sh = rt.h / fit.s;
+  ctx2.save(); ctx2.globalAlpha = alpha;
+  ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.5, rt.h + 0.5);
+  ctx2.restore();
+}
+function triggerBloodAt(nx, ny, curSec) {
+  if (!tileState) return;
+  const ccol = Math.floor(clamp(nx, 0, 0.999) * GRID_COLS), crow = Math.floor(clamp(ny, 0, 0.999) * GRID_ROWS);
+  const R = 3 + Math.floor(Math.random() * 2); // 3-4 tile radius per stain, organic edge via jitter below
+  for (let dr = -R; dr <= R; dr++) for (let dc = -R; dc <= R; dc++) {
+    const col = ccol + dc, row = crow + dr;
+    if (col < 0 || col >= GRID_COLS || row < 0 || row >= GRID_ROWS) continue;
+    const d = Math.hypot(dc, dr);
+    if (d > R || Math.random() < d / R * 0.5) continue; // ragged bleed edge, not a perfect disc
+    const idx = row * GRID_COLS + col;
+    if (tileState[idx] !== -1) continue;
+    tileState[idx] = curSec + Math.random() * 0.18;
+    pendingTiles.push(idx);
+  }
+}
+function triggerAllRemaining(curSec, spreadWindow) {
+  if (!tileState) return;
+  for (let idx = 0; idx < tileState.length; idx++) {
+    if (tileState[idx] !== -1) continue;
+    tileState[idx] = curSec + Math.random() * spreadWindow;
+    pendingTiles.push(idx);
+  }
+}
 function nameAbove(x,y,r,name,win){const fs=Math.max(10,Math.min(r*0.85,17));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
   const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle='rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
   ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
@@ -332,7 +411,7 @@ function eRng(step){let x=(step*2654435761)>>>0;return function(){x^=x<<13;x^=x>
 function hpAt(P,i,stepF){const b=P.hpBreaks[i];let v=1;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)v=b[k].hp;else break;}return v;}
 function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)w=b[k].weapon;else break;}return w;}
 
-function drawWater(ax,ay,aw,ah,clock){
+function drawWater(ax,ay,aw,ah,clock,curSec){
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   if(WATER.okay){
     const iw=WATER.naturalWidth,ih=WATER.naturalHeight,s=Math.max(aw/iw,ah/ih);
@@ -343,6 +422,21 @@ function drawWater(ax,ay,aw,ah,clock){
     ctx.fillStyle=g;ctx.fillRect(ax,ay,aw,ah);
     ctx.strokeStyle='rgba(180,230,240,.08)';ctx.lineWidth=2;
     for(let yy=ay+18;yy<ay+ah;yy+=24){ctx.beginPath();for(let xx=ax;xx<=ax+aw;xx+=10){const off=Math.sin(xx*0.03+clock*0.0022+yy*0.12)*3;xx===ax?ctx.moveTo(xx,yy+off):ctx.lineTo(xx,yy+off);}ctx.stroke();}
+  }
+  // ── blood tile overlay ──
+  if(curSec!=null && bloodCanvas && bloodAW===aw && bloodAH===ah){
+    ctx.drawImage(bloodCanvas,0,0,bloodCanvas.width,bloodCanvas.height,ax,ay,aw,ah);
+    if(pendingTiles.length){
+      const still=[];
+      for(const idx of pendingTiles){
+        const t=tileState[idx];const elapsed=curSec-t;
+        if(elapsed<0){still.push(idx);continue;}
+        const col=idx%GRID_COLS,row=(idx/GRID_COLS)|0;
+        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}       // bake permanently
+        else{ctx.save();ctx.translate(ax,ay);drawRedTile(ctx,col,row,aw,ah,elapsed/TILE_FADE);ctx.restore();still.push(idx);}
+      }
+      pendingTiles=still;
+    }
   }
   ctx.restore();}
 function drawBarbedWire(ax,ay,aw,ah){
@@ -454,18 +548,26 @@ function updateRoster(stepF){const P=STATE.plan;const living=[],dead=[];
 
 function renderScene(stepF,curSec,clock,finale){
   const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
-  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock,curSec);
   const n=P.n,S=P.S,a=Math.max(0,Math.min(S-1,Math.floor(stepF))),b=Math.min(S-1,a+1),m=stepF-a,fa=P.frames[a],fb=P.frames[b];
   const simple=n>200;
+  if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.1);}
   let zoom=1,cx=0.5,cy=0.5;
-  if(finale){zoom=2.4;const half=0.5/zoom;cx=clamp(fa[2*P.winner],half,1-half);cy=clamp(fa[2*P.winner+1],half,1-half);}
+  if(finale){
+    // Frame the winner in the UPPER portion of the arena so the result card can rise
+    // from below without ever covering the duck or its name — see .result CSS mask.
+    zoom=1.9;const half=0.5/zoom;const targetFrac=0.32;
+    cx=clamp(fa[2*P.winner],half,1-half);
+    let wantCy=fa[2*P.winner+1]-(targetFrac-0.5)/zoom;
+    cy=clamp(wantCy,half,1-half);
+  }
   else if(stepF>=P.duelStart){const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);zoom=1+1.6*ramp;
     const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);}
   const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   // blood stains
-  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2)drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);}
+  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);triggerBloodAt(e.x,e.y,eSec+0.2);}}
   // weapon pickups still in the water
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
   // transient attack poses from kill events (killer winds up then strikes)
@@ -506,11 +608,14 @@ function updateFeed(curSec){const P=STATE.plan;const shown=[];for(const e of P.e
   el.innerHTML=html;}
 function finalOne(stepF){const P=STATE.plan;let c=0;for(let i=0;i<P.n;i++)if(stepF<P.deathStep[i])c++;return c<=1;}
 
-// piecewise time map so the final duel always gets room
+// piecewise time map so the final duel always gets a dedicated, consistent window —
+// 10 seconds, regardless of total fight length or duck count — so the ending never
+// feels rushed or chaotic no matter how big the melee was.
+const FINAL_SHOWDOWN_SEC = 10;
 function _timeSplit(P){
   const dS=P.duelStart,S=P.S;
   if(dS<=4||S-dS<=4){return {preSec:0,duelSec:P.durSec};}   // duel starts ~immediately (e.g. 2-duck fights)
-  const duelSec=clamp(P.durSec*0.30,6,11);
+  const duelSec=Math.min(FINAL_SHOWDOWN_SEC,P.durSec-4);      // always 10s, but never eat the whole clock
   return {preSec:P.durSec-duelSec,duelSec};
 }
 function stepToPlaySec(step){const P=STATE.plan,S=P.S,dS=P.duelStart;const {preSec,duelSec}=_timeSplit(P);
@@ -575,10 +680,11 @@ document.getElementById('standingsBtn').addEventListener('click',()=>{
 });
 
 function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
+function _arenaDims(){const pad=16;return {aw:VIEW.w-pad*2,ah:VIEW.h-pad*2-8};}
 function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('replayBtn').style.display='none';
-  VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>dropIn(()=>playFight(showResults)));}
-function replayFight(){document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();countdownThen(()=>dropIn(()=>playFight(showResults)));}
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>dropIn(()=>playFight(showResults)));}
+function replayFight(){document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 function writeHash(){history.replaceState(null,'','#r='+encodeState({n:STATE.names,d:Math.round(STATE.plan?STATE.plan.durSec:battleLength(STATE.names.length)),s:STATE.seed}));}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
