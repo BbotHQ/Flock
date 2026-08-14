@@ -13,11 +13,11 @@
 <style>
   :root{--deck:#080d12;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--red:#d64b34;}
   *{box-sizing:border-box}html,body{margin:0;min-height:100%}
-  body{background:linear-gradient(rgba(6,11,16,.86),rgba(6,11,16,.93)), url('arena.jpg') center/cover fixed no-repeat, radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
+  body{background:linear-gradient(rgba(6,11,16,.62),rgba(6,11,16,.74)), url('arena.jpg') center/cover fixed no-repeat, radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
     font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center}
   .wrap{width:100%;max-width:1720px;padding:16px 14px 40px;flex:1;display:flex;flex-direction:column;position:relative}
   /* ---- title ---- */
-  header{text-align:center;margin:10px 0 4px}
+  header{text-align:center;margin:34px 0 4px}
   .brand{font-family:'Anton',sans-serif;font-size:clamp(34px,7.2vw,74px);letter-spacing:2px;line-height:.92;text-transform:uppercase;
     background:linear-gradient(180deg,#fff 0%,var(--gold-hi) 55%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 4px 18px rgba(242,193,78,.25))}
@@ -243,7 +243,7 @@ function planFight(names,seed){
   const weaponBreaks=Array.from({length:n},()=>[]);
   const hpBreaks=Array.from({length:n},()=>[]);
   const dead=new Array(n).fill(false), deathStep=new Array(n).fill(Infinity), hp=new Array(n).fill(1);
-  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0; const MAX=60*90;
+  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0,duelClashN=0; const MAX=60*90;
   while(alive>1&&step<MAX){
     const victim=nv<elimOrder.length?elimOrder[nv]:-1; let target=-1;
     if(victim!==curVictim){curVictim=victim;victimStart=step;}
@@ -293,8 +293,10 @@ function planFight(names,seed){
           hp[winner]=Math.max(0.03,hp[winner]-dW);hpBreaks[winner].push({step,hp:hp[winner]});
           const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
           const lethal = duelIdx>=duelK || hp[victim]<=0.0001;
+          // alternate who's shown striking vs taking the hit each clash, so it reads as a real back-and-forth fight
+          const striker=(duelClashN%2===0)?winner:victim, target=(striker===winner)?victim:winner; duelClashN++;
           if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
-          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length]});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
+          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:striker,v:target});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
       }}
     const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
   }
@@ -456,11 +458,13 @@ function renderScene(stepF,curSec,clock,finale){
   // ── pose per duck: idle by default, HIT when recently damaged, WINDUP/STRIKE when landing a kill ──
   const soleSurvivor=finalOne(stepF);   // true only when exactly one duck remains alive
   const pose=new Array(n).fill('idle');
-  // defense: a recent HP drop → hit/flinch
-  for(let i=0;i<n;i++){const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
-  // offense: killers wind up then strike (overrides hit)
-  for(const e of P.events){if(!e.kill||e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
-    if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';}
+  const duelSet=new Set(P.duelDucks);
+  // defense: a recent HP drop → hit/flinch (skip duel ducks — they use the alternating event poses below)
+  for(let i=0;i<n;i++){if(duelSet.has(i))continue;const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
+  // offense + duel clashes: striker winds up then strikes; the one on the receiving end flinches
+  for(const e of P.events){if(e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
+    if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';
+    if(e.v!=null&&d>=0&&d<0.35)pose[e.v]='hit';}
   // dead ducks — defeated pose, floating in place (names remain)
   for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple);}
   // living
