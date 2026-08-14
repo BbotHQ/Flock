@@ -82,7 +82,6 @@
     background:linear-gradient(180deg, rgba(6,15,20,0) 0%, rgba(6,15,20,0) 40%, rgba(6,15,20,.94) 56%, rgba(6,15,20,.99) 100%);
     -webkit-mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
     mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     align-items:flex-end;justify-content:center;padding:20px}
   .result.show{display:flex}
   .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
@@ -728,10 +727,22 @@ document.getElementById('standingsBtn').addEventListener('click',()=>{
 
 function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
 function _arenaDims(){const pad=16;return {aw:VIEW.w-pad*2,ah:VIEW.h-pad*2-8};}
+// Every path that can start/replay a fight (Start button, Replay button, and loading
+// a #r= replay link straight off a refresh) waits here first. Without this, a fight
+// can begin before the duck sheets finish downloading — worse in Incognito, where
+// nothing's cached — and it'll fall back to the plain vector ducks for that whole
+// playback, since each duck's sprite pick is locked in at the start of the fight.
+async function ensureSpritesReady(btn){
+  if(READY_INDICES.length)return;
+  let orig;if(btn){orig=btn.textContent;btn.disabled=true;btn.textContent='🦆 Loading fighters…';}
+  await SHEETS_READY_PROMISE;_rebuildReadyIndices();
+  if(btn){btn.disabled=false;btn.textContent=orig;}
+}
 function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('replayBtn').style.display='none';
   VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);writeHash();countdownThen(()=>dropIn(()=>playFight(showResults)));}
-function replayFight(){document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
+async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
+  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 function writeHash(){history.replaceState(null,'','#r='+encodeState({n:STATE.names,d:Math.round(STATE.plan?STATE.plan.durSec:battleLength(STATE.names.length)),s:STATE.seed}));}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
@@ -754,12 +765,7 @@ document.getElementById('shuffle').addEventListener('click',doShuffle);
 document.getElementById('seal').addEventListener('click',()=>{const f=document.getElementById('lockHash').dataset.full;if(f)copy(f,'Seal copied');});
 document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'Seed copied'));
 document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
-  const startBtn=document.getElementById('start');
-  if(!READY_INDICES.length){
-    startBtn.disabled=true;const origText=startBtn.textContent;startBtn.textContent='🦆 Loading fighters…';
-    await SHEETS_READY_PROMISE;_rebuildReadyIndices();
-    startBtn.disabled=false;startBtn.textContent=origText;
-  }
+  await ensureSpritesReady(document.getElementById('start'));
   STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
 document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
@@ -768,10 +774,11 @@ document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
 
 SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
-(function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
+(async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
-  VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);STATE.remain=null;renderScene(0,0,performance.now());
   setLedger(false);document.getElementById('backBtn').style.display='none';
+  await ensureSpritesReady(null);
+  VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);STATE.remain=null;renderScene(0,0,performance.now());
   document.getElementById('replayBtn').style.display='inline-block';toast('Battle loaded — press Replay');})();
 </script>
 </body>
