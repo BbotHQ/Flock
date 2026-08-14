@@ -182,15 +182,27 @@ const DUCK_SHEETS = [
 ].map(n => 'ducks/' + n + '.png');
 const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
 const SHEETS = [];
-let SHEETS_READY = 0;
-DUCK_SHEETS.forEach((url, k) => {
-  const rec = {img:new Image(), ready:false, cw:0, ch:0};
-  rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; SHEETS_READY++; };
-  rec.img.onerror = () => { /* missing file — falls back to vector duck */ };
-  rec.img.src = url;
-  SHEETS[k] = rec;
+let SHEETS_SETTLED = 0;   // loaded OR errored — either way, this sheet is done trying
+const SHEETS_READY_PROMISE = new Promise((resolve) => {
+  let settled = 0;
+  const done = () => { settled++; if (settled >= DUCK_SHEETS.length) resolve(); };
+  DUCK_SHEETS.forEach((url, k) => {
+    const rec = {img:new Image(), ready:false, cw:0, ch:0};
+    rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; done(); };
+    rec.img.onerror = () => { done(); };  // failed to load — excluded from the ready pool below
+    rec.img.src = url;
+    SHEETS[k] = rec;
+  });
+  if (DUCK_SHEETS.length === 0) resolve();
 });
-function spriteFor(i){ return SHEETS.length ? (((i*2654435761)>>>0) % SHEETS.length) : 0; }
+// Only ever pick from sheets that actually finished loading successfully — this is
+// rebuilt once loading settles, so random assignment never lands on a missing/broken duck.
+let READY_INDICES = [];
+function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
+function spriteFor(i){
+  if (!READY_INDICES.length) return 0;
+  return READY_INDICES[((i*2654435761)>>>0) % READY_INDICES.length];
+}
 // Pond background image (repo root). Falls back to the drawn gradient until it loads.
 const WATER = new Image(); WATER.okay = false;
 WATER.onload = () => { WATER.okay = true; };
@@ -588,7 +600,13 @@ document.getElementById('names').addEventListener('input',syncFromTextarea);
 document.getElementById('shuffle').addEventListener('click',doShuffle);
 document.getElementById('seal').addEventListener('click',()=>{const f=document.getElementById('lockHash').dataset.full;if(f)copy(f,'Seal copied');});
 document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'Seed copied'));
-document.getElementById('start').addEventListener('click',()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
+document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
+  const startBtn=document.getElementById('start');
+  if(!READY_INDICES.length){
+    startBtn.disabled=true;const origText=startBtn.textContent;startBtn.textContent='🦆 Loading fighters…';
+    await SHEETS_READY_PROMISE;_rebuildReadyIndices();
+    startBtn.disabled=false;startBtn.textContent=origText;
+  }
   STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
 document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
@@ -596,6 +614,7 @@ document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true)
 document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
 
+SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
 (function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);STATE.remain=null;renderScene(0,0,performance.now());
