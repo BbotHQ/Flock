@@ -108,7 +108,7 @@
   <div class="card setup" id="setup">
     <p class="synopsis">The flock enters juiced, jealous, and thirsty for the last pour. <b>Only blood settles this tab.</b> One by one they go down swinging — until a single duck is left standing over the bottle. <b>Last duck drinks alone.</b></p>
     <label class="lbl" for="names">Combatants</label>
-    <textarea id="names" placeholder="Enter at least two duck names here — one per line. Paste straight from your list; numbering is stripped automatically."></textarea>
+    <textarea id="names" placeholder="Enter at least two duck names here — one per line."></textarea>
     <div class="count" id="count">0 ducks</div>
     <div class="seal" id="seal" title="Tap to copy this battle's seal"><span>🔒</span> Seal <b id="lockHash">—</b></div>
     <div class="sealnote">Every battle is sealed and logged to the ledger the moment it runs — provably fair and fully replayable.</div>
@@ -251,7 +251,7 @@ function spriteFor(i){
 // baked once into a persistent offscreen canvas (bloodCanvas) so steady-state
 // cost stays near zero. Any cells still blue at the finale ripple outward from
 // the winner's own position so the pond finishes as one continuous red wave.
-const GRID_COLS = 150, GRID_ROWS = 94, TILE_FADE = 0.4, BLOOD_SPREAD_SEC = 130;
+const GRID_COLS = 220, GRID_ROWS = 138, TILE_FADE = 0.35, BLOOD_SPREAD_SEC = 130;
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
 let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
 let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
@@ -695,7 +695,7 @@ function playFight(onDone){const P=STATE.plan,S=P.S,dS=P.duelStart;const {preSec
     else if(el<=preSec)stepF=(el/Math.max(0.001,preSec))*dS;else stepF=dS+((el-preSec)/Math.max(0.001,duelSec))*(S-dS);
     STATE.remain=P.durSec-el;renderScene(stepF,curSec,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=2000,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
+function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
   function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,P.durSec+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
