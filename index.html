@@ -240,11 +240,25 @@ function planFight(names,seed){
   const weaponBreaks=Array.from({length:n},()=>[]);
   const hpBreaks=Array.from({length:n},()=>[]);
   const dead=new Array(n).fill(false), deathStep=new Array(n).fill(Infinity), hp=new Array(n).fill(1);
-  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1; const MAX=60*90;
+  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0; const MAX=60*90;
   while(alive>1&&step<MAX){
     const victim=nv<elimOrder.length?elimOrder[nv]:-1; let target=-1;
     if(victim!==curVictim){curVictim=victim;victimStart=step;}
-    if(alive===2){if(duelStart<0)duelStart=step;target=winner;}
+    if(alive===2){
+      if(duelStart<0){duelStart=step;
+        // Randomised duel: each clash deals a random amount to BOTH ducks. The loser's
+        // hits sum to exactly 1.0 (dead on the final blow); the winner's sum to less, so
+        // they survive — but leads can swap back and forth until that final blow.
+        duelK=5+Math.floor(rng()*5);              // 5–9 clashes
+        const winEnd=0.12+rng()*0.30;             // winner ends with 12–42% HP (varies)
+        let lw=[],ww=[],ls=0,ws=0;
+        for(let kk=0;kk<duelK;kk++){const a=0.3+rng();const b=0.3+rng();lw.push(a);ww.push(b);ls+=a;ws+=b;}
+        duelHitsL=lw.map(v=>v/ls);                 // sum = 1.0  → loser dies on last clash
+        duelHitsW=ww.map(v=>v/ws*(1-winEnd));      // sum = 1-winEnd → winner survives
+        duelIdx=0;
+      }
+      target=winner;
+    }
     else if(victim>=0){let bd=1e9;for(let i=0;i<n;i++){if(i===victim||dead[i])continue;const dx=px[i]-px[victim],dy=py[i]-py[victim],d=dx*dx+dy*dy;if(d<bd){bd=d;target=i;}}}
     for(let i=0;i<n;i++){if(dead[i])continue;ang[i]+=(rng()-0.5)*JIT;
       let vx=Math.cos(ang[i])*SPEED,vy=Math.sin(ang[i])*SPEED;const duelPair=(alive===2)&&(i===victim||i===target);
@@ -264,10 +278,14 @@ function planFight(names,seed){
           else{events.push({step,x:ex,y:ey,kill:false,word:''});ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);}}
       } else {
         if(touch&&step-lastClash>26){lastClash=step;
-          hp[victim]=Math.max(0,hp[victim]-0.17);hpBreaks[victim].push({step,hp:hp[victim]});
-          hp[winner]=Math.max(0.04,hp[winner]-0.09);hpBreaks[winner].push({step,hp:hp[winner]});
+          const iL=Math.min(duelIdx,(duelHitsL?duelHitsL.length:1)-1);
+          const dL=duelHitsL?duelHitsL[iL]:0.17, dW=duelHitsW?duelHitsW[iL]:0.09;
+          duelIdx++;
+          hp[victim]=Math.max(0,hp[victim]-dL);hpBreaks[victim].push({step,hp:hp[victim]});
+          hp[winner]=Math.max(0.03,hp[winner]-dW);hpBreaks[winner].push({step,hp:hp[winner]});
           const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
-          if(hp[victim]<=0){events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
+          const lethal = duelIdx>=duelK || hp[victim]<=0.0001;
+          if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
           else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length]});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
       }}
     const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
