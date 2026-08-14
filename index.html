@@ -79,9 +79,10 @@
   .count3{font-family:'Anton',sans-serif;font-size:clamp(52px,15vw,130px);color:var(--gold-hi);text-shadow:0 6px 30px rgba(0,0,0,.6);opacity:0}
   .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
   .result{display:none;position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(6,15,20,0) 0%, rgba(6,15,20,0) 40%, rgba(6,15,20,.82) 58%, rgba(6,15,20,.96) 100%);
-    -webkit-mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 58%, black 100%);
-    mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 58%, black 100%);
+    background:linear-gradient(180deg, rgba(6,15,20,0) 0%, rgba(6,15,20,0) 40%, rgba(6,15,20,.94) 56%, rgba(6,15,20,.99) 100%);
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
+    mask-image:linear-gradient(180deg, transparent 0%, transparent 40%, black 56%, black 100%);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     align-items:flex-end;justify-content:center;padding:20px}
   .result.show{display:flex}
   .result-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
@@ -178,15 +179,25 @@ const HITWORDS=['BOOM','BANG','SLAM','SLASH','WHACK','SMACK','POW','BLAM','CRACK
 const SPARKWORDS=['CLANG','CLASH','OOF','OW','BONK','TAP','SWIPE','JAB','BLOCK','DING'];
 
 // ── DUCK SPRITE SHEETS ──────────────────────────────────────────────────────
-// Each duck is ONE image in the repo: a 3-col × 2-row grid of 6 poses:
+// Each duck is TWO images in the repo, same filename in two folders:
+//   ducks/<name>.png     — normal, standing in blue water
+//   duckred/<name>.png   — identical art, standing in red water
+// Both must use the same 3-col × 2-row pose grid:
 //   row0: [ idle ][ windup ][ strike ]   row1: [ hit ][ defeated ][ victory ]
-// TO ADD A DUCK: drop its PNG in the repo's ducks/ folder and add the filename
-// to this list. That's it — everything else is automatic.
-const DUCK_SHEETS = [
+// TO ADD A DUCK: drop its PNG in ducks/, and the matching red version in
+// duckred/, and add the filename to this list. Everything else is automatic —
+// whichever version draws is picked per-frame from the duck's own tile color,
+// so a duck standing on ground the pond has already turned red always draws
+// from duckred/ (which is also why the victory pose reads red once the whole
+// pond has bled out by the finale), and the pose/cell it's drawing never
+// changes when it switches sheets — only which image the same cell comes from.
+const DUCK_NAMES = [
   'army','astronaut','beach','chef','coach','cool','cop','cowboy','detective','dragon',
   'fairy','firefighter','flash','gold','hawaiian','king','lifeguard','mallard','monocle','ninja',
   'penguin','pirate','queen','rainbow','sailor','skeleton','sky','sunglasses','unicorn','vampire','yellow',
-].map(n => 'ducks/' + n + '.png');
+];
+const DUCK_SHEETS = DUCK_NAMES.map(n => 'ducks/' + n + '.png');
+const DUCK_SHEETS_RED = DUCK_NAMES.map(n => 'duckred/' + n + '.png');
 const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
 const SHEETS = [];
 let SHEETS_SETTLED = 0;   // loaded OR errored — either way, this sheet is done trying
@@ -194,21 +205,24 @@ const SHEETS_READY_PROMISE = new Promise((resolve) => {
   let settled = 0;
   const done = () => { settled++; if (settled >= DUCK_SHEETS.length) resolve(); };
   DUCK_SHEETS.forEach((url, k) => {
-    const rec = {img:new Image(), ready:false, cw:0, ch:0};
-    rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; done(); };
-    rec.img.onerror = () => { done(); };  // failed to load — excluded from the ready pool below
+    const rec = {img:new Image(), ready:false, cw:0, ch:0, imgRed:new Image(), readyRed:false, cwR:0, chR:0};
+    let toSettle = 2; const maybeDone = () => { if (--toSettle <= 0) done(); };
+    rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; maybeDone(); };
+    rec.img.onerror = () => { maybeDone(); };  // failed to load — excluded from the ready pool below
     rec.img.src = url;
+    rec.imgRed.onload = () => { rec.cwR = rec.imgRed.naturalWidth/3; rec.chR = rec.imgRed.naturalHeight/2; rec.readyRed = true; maybeDone(); };
+    rec.imgRed.onerror = () => { maybeDone(); };  // missing red variant is fine — falls back to the blue sheet
+    rec.imgRed.src = DUCK_SHEETS_RED[k];
     SHEETS[k] = rec;
   });
   if (DUCK_SHEETS.length === 0) resolve();
 });
-// Only ever pick from sheets that actually finished loading successfully — this is
-// rebuilt once loading settles, so random assignment never lands on a missing/broken duck.
-let READY_INDICES = [];
-function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
-function spriteFor(i){
-  if (!READY_INDICES.length) return 0;
-  return READY_INDICES[((i*2654435761)>>>0) % READY_INDICES.length];
+// True once the pond tile under (nx,ny) has actually finished turning red.
+function tileBloodied(nx,ny,curSec){
+  if(!tileState||curSec==null)return false;
+  const col=Math.floor(clamp(nx,0,0.999)*GRID_COLS), row=Math.floor(clamp(ny,0,0.999)*GRID_ROWS);
+  const t=tileState[row*GRID_COLS+col];
+  return t>=0 && (curSec-t)>=TILE_FADE*0.5;
 }
 // Pond background image (repo root). Falls back to the drawn gradient until it loads.
 const WATER = new Image(); WATER.okay = false;
@@ -218,20 +232,30 @@ WATER.src = 'water.png';
 const WATER_RED = new Image(); WATER_RED.okay = false;
 WATER_RED.onload = () => { WATER_RED.okay = true; };
 WATER_RED.src = 'water_red.png';
+// Only ever pick from sheets that actually finished loading successfully — this is
+// rebuilt once loading settles, so random assignment never lands on a missing/broken duck.
+let READY_INDICES = [];
+function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
+function spriteFor(i){
+  if (!READY_INDICES.length) return 0;
+  return READY_INDICES[((i*2654435761)>>>0) % READY_INDICES.length];
+}
 
 // ── BLOOD TILE SYSTEM ───────────────────────────────────────────────────────
 // The pond is divided into a fine GRID_COLS×GRID_ROWS mosaic. Each cell starts
-// blue. A blood event doesn't stamp a fixed radius all at once — it computes
-// each nearby cell's true pixel distance from the death point and schedules
-// that cell to ignite at a delay proportional to distance (0 at the center,
-// RIPPLE_SEC at the outer edge), so the red visibly RIPPLES outward from each
-// duck that dies rather than popping in as a block. Once a cell's delay is
-// reached it cross-fades blue→red over TILE_FADE seconds, then gets baked once
-// into a persistent offscreen canvas (bloodCanvas) so steady-state cost stays
-// near zero — only cells actively mid-ripple/mid-fade are redrawn per frame.
-// At the finale, remaining blue cells ripple outward from the winner's own
-// position so the whole pond finishes red as a single wave, not a random fill.
-const GRID_COLS = 80, GRID_ROWS = 50, TILE_FADE = 0.4, RIPPLE_SEC = 0.9, STAIN_RADIUS_FRAC = 0.115;
+// blue. A blood event doesn't stamp a fixed radius — it's an unbounded wavefront:
+// every cell's ignite-delay is its true pixel distance from the death point
+// divided by a constant speed, so red keeps expanding outward for the rest of
+// the fight (not stopping at a fixed ring). BLOOD_SPREAD_SEC is tuned so a
+// single stain has time to nearly cross the whole pond before the fight ends,
+// so with the multiple kills that happen along the way, the pond is visibly
+// closing in on fully red right as the final two ducks face off. Where two
+// stains' waves overlap, whichever reaches a cell first wins. Once a cell's
+// delay is reached it cross-fades blue→red over TILE_FADE seconds, then gets
+// baked once into a persistent offscreen canvas (bloodCanvas) so steady-state
+// cost stays near zero. Any cells still blue at the finale ripple outward from
+// the winner's own position so the pond finishes as one continuous red wave.
+const GRID_COLS = 80, GRID_ROWS = 50, TILE_FADE = 0.4, BLOOD_SPREAD_SEC = 16;
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
 let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
 let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
@@ -266,29 +290,23 @@ function drawRedTile(ctx2, col, row, aw, ah, alpha) {
   ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.75, rt.h + 0.75);
   ctx2.restore();
 }
-// Schedules every cell within a circular splash radius of (nx,ny) to ignite,
-// with delay proportional to true pixel distance from the center — a real
-// radial ripple, not a stamped blob. No cells are skipped, so there are no
-// interior gaps; the higher grid resolution keeps the circular edge smooth.
+// Unbounded radial wavefront from a death point — every not-yet-claimed cell gets a
+// delay proportional to its true distance, and a cell already claimed by an earlier,
+// slower-arriving wave gets reassigned if this wave would reach it sooner.
 function triggerBloodAt(nx, ny, curSec) {
   if (!tileState) return;
   const aw = bloodAW, ah = bloodAH;
   const ex = nx * aw, ey = ny * ah;
-  const radius = STAIN_RADIUS_FRAC * Math.min(aw, ah) * (0.85 + Math.random() * 0.3);
-  const ccol = Math.floor(nx * GRID_COLS), crow = Math.floor(ny * GRID_ROWS);
-  const rCols = Math.ceil(radius / (aw / GRID_COLS)) + 1;
-  const rRows = Math.ceil(radius / (ah / GRID_ROWS)) + 1;
-  for (let dr = -rRows; dr <= rRows; dr++) {
-    const row = crow + dr; if (row < 0 || row >= GRID_ROWS) continue;
-    for (let dc = -rCols; dc <= rCols; dc++) {
-      const col = ccol + dc; if (col < 0 || col >= GRID_COLS) continue;
+  const speed = Math.hypot(aw, ah) / BLOOD_SPREAD_SEC;
+  for (let row = 0; row < GRID_ROWS; row++) {
+    const tcy = (row + 0.5) / GRID_ROWS * ah;
+    for (let col = 0; col < GRID_COLS; col++) {
       const idx = row * GRID_COLS + col;
-      if (tileState[idx] !== -1) continue;
-      const tcx = (col + 0.5) / GRID_COLS * aw, tcy = (row + 0.5) / GRID_ROWS * ah;
+      const tcx = (col + 0.5) / GRID_COLS * aw;
       const d = Math.hypot(tcx - ex, tcy - ey);
-      if (d > radius) continue;
-      tileState[idx] = curSec + (d / radius) * RIPPLE_SEC + Math.random() * 0.1;
-      pendingTiles.push(idx);
+      const candidate = curSec + d / speed + Math.random() * 0.08;
+      if (tileState[idx] === -1) { tileState[idx] = candidate; pendingTiles.push(idx); }
+      else if (candidate < tileState[idx]) { tileState[idx] = candidate; }
     }
   }
 }
@@ -312,21 +330,23 @@ function nameAbove(x,y,r,name,win){const fs=Math.max(10,Math.min(r*0.85,17));ctx
   const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle='rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
   ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
 // Draws a fighter as a sprite if its sheet is loaded, else falls back to the vector duck.
-function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple){
+function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   const idx=spriteFor(i), sh=SHEETS[idx];
   if(!sh||!sh.ready){
     if(isDead) drawDuckGhost(x,y,r,STATE.plan.meta[i].nm,STATE.plan.meta[i].col,simple);
     else drawDuck(x,y,r,STATE.plan.meta[i].nm,win,STATE.plan.meta[i].col,weaponAt(STATE.plan,i,0),facing,hp,simple);
     return;
   }
-  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=sh.cw, ch=sh.ch, box=r*2.7;
+  const useRed=!!(bloodied && sh.readyRed);
+  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=useRed?sh.cwR:sh.cw, ch=useRed?sh.chR:sh.ch, box=r*2.7;
+  const atlas=useRed?sh.imgRed:sh.img;
   ctx.save();
   ctx.globalAlpha=.16;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.95,r*1.25,r*0.42,0,0,6.283);ctx.fill();ctx.globalAlpha=1;
   if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=24;}
   if(isDead)ctx.globalAlpha=.82;
   ctx.translate(x,y);
   if(facing<0)ctx.scale(-1,1);
-  ctx.drawImage(sh.img, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
+  ctx.drawImage(atlas, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
   ctx.restore();
   if(!isDead && hp<0.999) drawHpBar(x,y,r,hp);
   nameAbove(x, y - r*1.9, r, STATE.plan.meta[i].nm, win);
@@ -568,7 +588,7 @@ function updateRoster(stepF){const P=STATE.plan;const living=[],dead=[];
   if(dead.length){html+=`<div class="rsep"></div>`;for(const i of dead){html+=`<div class="ritem dead"><span class="rdot" style="background:${P.meta[i].col}"></span><span class="rname">${escapeHtml(P.meta[i].nm)}</span></div>`;}}
   el.innerHTML=html;}
 
-function renderScene(stepF,curSec,clock,finale){
+function renderScene(stepF,curSec,clock,finale,finalePhase){
   const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock,curSec);
   const n=P.n,S=P.S,a=Math.max(0,Math.min(S-1,Math.floor(stepF))),b=Math.min(S-1,a+1),m=stepF-a,fa=P.frames[a],fb=P.frames[b];
@@ -576,9 +596,13 @@ function renderScene(stepF,curSec,clock,finale){
   if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.2,fa[2*P.winner],fa[2*P.winner+1]);}
   let zoom=1,cx=0.5,cy=0.5;
   if(finale){
-    // Frame the winner in the UPPER portion of the arena so the result card can rise
-    // from below without ever covering the duck or its name — see .result CSS mask.
-    zoom=1.9;const half=0.5/zoom;const targetFrac=0.32;
+    // Rise into position: starts at roughly the duel-end framing, then over the
+    // first ~900ms of the hold, pans/zooms the winner up into the upper third so
+    // the result card can rise from below without ever covering the duck or its
+    // name — see .result CSS mask. finalePhase is 0 at the instant of victory,
+    // 1 once settled; it then holds there for the rest of the finale.
+    const ph=finalePhase==null?1:finalePhase, ease=1-Math.pow(1-ph,3);
+    zoom=1.3+0.6*ease;const targetFrac=0.48-0.18*ease;const half=0.5/zoom;
     cx=clamp(fa[2*P.winner],half,1-half);
     let wantCy=fa[2*P.winner+1]-(targetFrac-0.5)/zoom;
     cy=clamp(wantCy,half,1-half);
@@ -589,7 +613,7 @@ function renderScene(stepF,curSec,clock,finale){
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
   // blood stains
-  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);triggerBloodAt(e.x,e.y,eSec+0.2);}}
+  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){drawStain(W2Sx(e.x),W2Sy(e.y),r,e.step);if(!e._blooded){e._blooded=true;triggerBloodAt(e.x,e.y,eSec+0.2);}}}
   // weapon pickups still in the water
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
   // transient attack poses from kill events (killer winds up then strikes)
@@ -604,14 +628,14 @@ function renderScene(stepF,curSec,clock,finale){
     if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';
     if(e.v!=null&&d>=0&&d<0.35)pose[e.v]='hit';}
   // dead ducks — defeated pose, floating in place (names remain)
-  for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple);}
+  for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple,tileBloodied(fa[2*i],fa[2*i+1],curSec));}
   // living
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
     const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(x1-x0)>=0?1:-1;
     const isWin=(i===P.winner)&&(finale||soleSurvivor);   // VICTORY only when actually won
     const ps=isWin?'victory':pose[i];
-    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple);}
+    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple,tileBloodied(x0,y0,curSec));}
   // hit + kill effects — suppressed once the finale hold begins, so the last kill's
   // word/burst never balloons over the winner or bleeds into the result card above.
   if(!finale){
@@ -670,13 +694,13 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
 function playFight(onDone){const P=STATE.plan,S=P.S,dS=P.duelStart;const {preSec,duelSec}=_timeSplit(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   function frame(now){const el=(now-t0)/1000;let stepF,curSec=el;
-    if(el>=P.durSec){renderScene(S-1,P.durSec,now);STATE.remain=0;playFinale(onDone);return;}
+    if(el>=P.durSec){renderScene(S-1,P.durSec,now,true,0);STATE.remain=0;playFinale(onDone);return;}
     if(preSec<=0)stepF=(el/Math.max(0.001,duelSec))*(S-1);
     else if(el<=preSec)stepF=(el/Math.max(0.001,preSec))*dS;else stepF=dS+((el-preSec)/Math.max(0.001,duelSec))*(S-dS);
     STATE.remain=P.durSec-el;renderScene(stepF,curSec,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=2000;cancelAnimationFrame(STATE.raf);STATE.remain=null;
-  function frame(now){const dt=now-t0;renderScene(S-1,P.durSec+dt/1000,now,true);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
+function playFinale(onDone){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=2000,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
+  function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,P.durSec+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
   const introT0=performance.now();let introRaf;
