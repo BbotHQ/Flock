@@ -220,18 +220,21 @@ WATER_RED.onload = () => { WATER_RED.okay = true; };
 WATER_RED.src = 'water_red.png';
 
 // ── BLOOD TILE SYSTEM ───────────────────────────────────────────────────────
-// The pond is divided into a GRID_COLS×GRID_ROWS mosaic (~1000 cells). Each cell
-// starts blue. When a blood-stain event lands near a cell, that cell (and a
-// jittered ring of neighbors) "ignites" and cross-fades to the red water image
-// over TILE_FADE seconds. Finished cells get baked once into a persistent
-// offscreen canvas (bloodCanvas) so steady-state cost stays near zero; only the
-// handful of cells actively mid-fade are redrawn each frame. At the finale, any
-// still-blue cells are swept red on a staggered timer so the whole pond finishes
-// red by the time the winner's card appears.
-const GRID_COLS = 40, GRID_ROWS = 25, TILE_FADE = 0.55;
+// The pond is divided into a fine GRID_COLS×GRID_ROWS mosaic. Each cell starts
+// blue. A blood event doesn't stamp a fixed radius all at once — it computes
+// each nearby cell's true pixel distance from the death point and schedules
+// that cell to ignite at a delay proportional to distance (0 at the center,
+// RIPPLE_SEC at the outer edge), so the red visibly RIPPLES outward from each
+// duck that dies rather than popping in as a block. Once a cell's delay is
+// reached it cross-fades blue→red over TILE_FADE seconds, then gets baked once
+// into a persistent offscreen canvas (bloodCanvas) so steady-state cost stays
+// near zero — only cells actively mid-ripple/mid-fade are redrawn per frame.
+// At the finale, remaining blue cells ripple outward from the winner's own
+// position so the whole pond finishes red as a single wave, not a random fill.
+const GRID_COLS = 80, GRID_ROWS = 50, TILE_FADE = 0.4, RIPPLE_SEC = 0.9, STAIN_RADIUS_FRAC = 0.115;
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
 let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
-let pendingTiles = [];     // indices currently mid-fade (not yet baked)
+let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
 function coverFit(iw, ih, aw, ah) {
   const s = Math.max(aw / iw, ah / ih);
   return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
@@ -260,29 +263,48 @@ function drawRedTile(ctx2, col, row, aw, ah, alpha) {
   const sx = (rt.x - fit.dx) / fit.s, sy = (rt.y - fit.dy) / fit.s;
   const sw = rt.w / fit.s, sh = rt.h / fit.s;
   ctx2.save(); ctx2.globalAlpha = alpha;
-  ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.5, rt.h + 0.5);
+  ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.75, rt.h + 0.75);
   ctx2.restore();
 }
+// Schedules every cell within a circular splash radius of (nx,ny) to ignite,
+// with delay proportional to true pixel distance from the center — a real
+// radial ripple, not a stamped blob. No cells are skipped, so there are no
+// interior gaps; the higher grid resolution keeps the circular edge smooth.
 function triggerBloodAt(nx, ny, curSec) {
   if (!tileState) return;
-  const ccol = Math.floor(clamp(nx, 0, 0.999) * GRID_COLS), crow = Math.floor(clamp(ny, 0, 0.999) * GRID_ROWS);
-  const R = 3 + Math.floor(Math.random() * 2); // 3-4 tile radius per stain, organic edge via jitter below
-  for (let dr = -R; dr <= R; dr++) for (let dc = -R; dc <= R; dc++) {
-    const col = ccol + dc, row = crow + dr;
-    if (col < 0 || col >= GRID_COLS || row < 0 || row >= GRID_ROWS) continue;
-    const d = Math.hypot(dc, dr);
-    if (d > R || Math.random() < d / R * 0.5) continue; // ragged bleed edge, not a perfect disc
-    const idx = row * GRID_COLS + col;
-    if (tileState[idx] !== -1) continue;
-    tileState[idx] = curSec + Math.random() * 0.18;
-    pendingTiles.push(idx);
+  const aw = bloodAW, ah = bloodAH;
+  const ex = nx * aw, ey = ny * ah;
+  const radius = STAIN_RADIUS_FRAC * Math.min(aw, ah) * (0.85 + Math.random() * 0.3);
+  const ccol = Math.floor(nx * GRID_COLS), crow = Math.floor(ny * GRID_ROWS);
+  const rCols = Math.ceil(radius / (aw / GRID_COLS)) + 1;
+  const rRows = Math.ceil(radius / (ah / GRID_ROWS)) + 1;
+  for (let dr = -rRows; dr <= rRows; dr++) {
+    const row = crow + dr; if (row < 0 || row >= GRID_ROWS) continue;
+    for (let dc = -rCols; dc <= rCols; dc++) {
+      const col = ccol + dc; if (col < 0 || col >= GRID_COLS) continue;
+      const idx = row * GRID_COLS + col;
+      if (tileState[idx] !== -1) continue;
+      const tcx = (col + 0.5) / GRID_COLS * aw, tcy = (row + 0.5) / GRID_ROWS * ah;
+      const d = Math.hypot(tcx - ex, tcy - ey);
+      if (d > radius) continue;
+      tileState[idx] = curSec + (d / radius) * RIPPLE_SEC + Math.random() * 0.1;
+      pendingTiles.push(idx);
+    }
   }
 }
-function triggerAllRemaining(curSec, spreadWindow) {
+// Finale sweep: every still-blue cell ripples outward from the winner's own
+// position, so the pond finishes as one continuous red wave centered on them.
+function triggerAllRemaining(curSec, spreadWindow, fromX, fromY) {
   if (!tileState) return;
+  const aw = bloodAW, ah = bloodAH;
+  const ex = (fromX != null ? fromX : 0.5) * aw, ey = (fromY != null ? fromY : 0.5) * ah;
+  const maxD = Math.hypot(aw, ah);
   for (let idx = 0; idx < tileState.length; idx++) {
     if (tileState[idx] !== -1) continue;
-    tileState[idx] = curSec + Math.random() * spreadWindow;
+    const col = idx % GRID_COLS, row = (idx / GRID_COLS) | 0;
+    const tcx = (col + 0.5) / GRID_COLS * aw, tcy = (row + 0.5) / GRID_ROWS * ah;
+    const d = Math.hypot(tcx - ex, tcy - ey);
+    tileState[idx] = curSec + (d / maxD) * spreadWindow + Math.random() * 0.15;
     pendingTiles.push(idx);
   }
 }
@@ -551,7 +573,7 @@ function renderScene(stepF,curSec,clock,finale){
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock,curSec);
   const n=P.n,S=P.S,a=Math.max(0,Math.min(S-1,Math.floor(stepF))),b=Math.min(S-1,a+1),m=stepF-a,fa=P.frames[a],fb=P.frames[b];
   const simple=n>200;
-  if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.1);}
+  if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.2,fa[2*P.winner],fa[2*P.winner+1]);}
   let zoom=1,cx=0.5,cy=0.5;
   if(finale){
     // Frame the winner in the UPPER portion of the arena so the result card can rise
@@ -590,10 +612,13 @@ function renderScene(stepF,curSec,clock,finale){
     const isWin=(i===P.winner)&&(finale||soleSurvivor);   // VICTORY only when actually won
     const ps=isWin?'victory':pose[i];
     drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpAt(P,i,stepF),false,simple);}
-  // hit + kill effects
-  for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
-    if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
-    else{if(dt<0.5){drawSpark(W2Sx(e.x),W2Sy(e.y),r*1.4,dt/0.5,e.word);drawHit(W2Sx(e.x),W2Sy(e.y),r,dt/0.5);}}}
+  // hit + kill effects — suppressed once the finale hold begins, so the last kill's
+  // word/burst never balloons over the winner or bleeds into the result card above.
+  if(!finale){
+    for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
+      if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
+      else{if(dt<0.5){drawSpark(W2Sx(e.x),W2Sy(e.y),r*1.4,dt/0.5,e.word);drawHit(W2Sx(e.x),W2Sy(e.y),r,dt/0.5);}}}
+  }
   ctx.restore();
   if(alive===2&&stepF>=P.duelStart)drawShowdownBanner(Math.min(1,(stepF-P.duelStart)/30));
   if(finale){const wx=W2Sx(fa[2*P.winner]),wy=W2Sy(fa[2*P.winner+1]);drawWinnerTag(wx,wy,r,P.meta[P.winner].nm);}
