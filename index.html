@@ -189,6 +189,10 @@ DUCK_SHEETS.forEach((url, k) => {
   SHEETS[k] = rec;
 });
 function spriteFor(i){ return SHEETS.length ? (((i*2654435761)>>>0) % SHEETS.length) : 0; }
+// Pond background image (repo root). Falls back to the drawn gradient until it loads.
+const WATER = new Image(); WATER.okay = false;
+WATER.onload = () => { WATER.okay = true; };
+WATER.src = 'water.png';
 function nameAbove(x,y,r,name,win){const fs=Math.max(10,Math.min(r*0.85,17));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
   const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle='rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
   ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
@@ -286,10 +290,18 @@ function eRng(step){let x=(step*2654435761)>>>0;return function(){x^=x<<13;x^=x>
 function hpAt(P,i,stepF){const b=P.hpBreaks[i];let v=1;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)v=b[k].hp;else break;}return v;}
 function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)w=b[k].weapon;else break;}return w;}
 
-function drawWater(ax,ay,aw,ah,clock){const g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,'#155066');g.addColorStop(1,'#0b2734');
-  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();ctx.fillStyle=g;ctx.fillRect(ax,ay,aw,ah);
-  ctx.strokeStyle='rgba(180,230,240,.08)';ctx.lineWidth=2;
-  for(let yy=ay+18;yy<ay+ah;yy+=24){ctx.beginPath();for(let xx=ax;xx<=ax+aw;xx+=10){const off=Math.sin(xx*0.03+clock*0.0022+yy*0.12)*3;xx===ax?ctx.moveTo(xx,yy+off):ctx.lineTo(xx,yy+off);}ctx.stroke();}
+function drawWater(ax,ay,aw,ah,clock){
+  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+  if(WATER.okay){
+    const iw=WATER.naturalWidth,ih=WATER.naturalHeight,s=Math.max(aw/iw,ah/ih);
+    const dw=iw*s,dh=ih*s,dx=ax+(aw-dw)/2,dy=ay+(ah-dh)/2;
+    ctx.drawImage(WATER,dx,dy,dw,dh);
+  } else {
+    const g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,'#155066');g.addColorStop(1,'#0b2734');
+    ctx.fillStyle=g;ctx.fillRect(ax,ay,aw,ah);
+    ctx.strokeStyle='rgba(180,230,240,.08)';ctx.lineWidth=2;
+    for(let yy=ay+18;yy<ay+ah;yy+=24){ctx.beginPath();for(let xx=ax;xx<=ax+aw;xx+=10){const off=Math.sin(xx*0.03+clock*0.0022+yy*0.12)*3;xx===ax?ctx.moveTo(xx,yy+off):ctx.lineTo(xx,yy+off);}ctx.stroke();}
+  }
   ctx.restore();}
 function drawBarbedWire(ax,ay,aw,ah){
   ctx.save();ctx.strokeStyle='rgba(200,210,220,.5)';ctx.lineWidth=2;roundRect(ax,ay,aw,ah,18);ctx.stroke();
