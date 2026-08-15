@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1538185560932487200-1",
+    "title": "test",
+    "status": "pending",
+    "ducks": 17,
+    "started_by": "BWall",
+    "started_ts": 1786802511
+  },
+  {
     "title": "Malort",
     "winner": "BWall (2)",
     "podium": [
