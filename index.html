@@ -266,9 +266,15 @@ WATER_RED.src = 'water_red.png';
 // rebuilt once loading settles, so random assignment never lands on a missing/broken duck.
 let READY_INDICES = [];
 function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
+// Seed-derived salt, set once per battle in planFight(). Without this, spriteFor(i)
+// depended only on the duck's position — spot 1 always got the same sprite, spot 2
+// always got the same sprite, every single fight. Folding the seed in makes it vary
+// per battle while staying deterministic (same seed -> same sprites, so replays still
+// render identically).
+let SPRITE_SALT = 0;
 function spriteFor(i){
   if (!READY_INDICES.length) return 0;
-  return READY_INDICES[((i*2654435761)>>>0) % READY_INDICES.length];
+  return READY_INDICES[(((i+1)*2654435761 + SPRITE_SALT)>>>0) % READY_INDICES.length];
 }
 
 // ── BLOOD TILE SYSTEM ───────────────────────────────────────────────────────
@@ -395,6 +401,7 @@ function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
 function battleLength(n){if(n<5)return 20;if(n>100)return Math.min(60,45+(n-100)*0.05);return 30;}
 
 function planFight(names,seed){
+  SPRITE_SALT = cyrb128(seed)[0];
   const rng=rngFromSeed(seed), n=names.length;
   const idx=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
   const winner=idx[n-1], elimOrder=idx.slice(0,n-1);
