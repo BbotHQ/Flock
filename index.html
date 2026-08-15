@@ -179,6 +179,29 @@ function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]
 function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
 function clamp(v,a,b){return v<a?a:v>b?b:v;}
 
+// ── SILENT SEED CAPTURE ─────────────────────────────────────────────────────
+// When a fight is started from a link !battle posted in Discord (?b=<battle_id>
+// in the URL), the instant this page settles on a seed it quietly reports that
+// exact seed here — fire-and-forget, no UI, no delay, nothing displayed
+// differently. This exists purely so that if a tab closes before the replay
+// link makes it back into Discord, a QC can run !recover and the bot can
+// finish the job using the SAME seed that actually ran, instead of the result
+// being lost. Visiting the site directly (no ?b= param) never calls this —
+// casual play is never logged anywhere.
+//
+// UPDATE THIS to your deployed endpoint (see deployment notes).
+const FLOCK_API = 'https://ducks.bbothq.com/flock';
+
+const _urlBattleId = new URLSearchParams(location.search).get('b') || null;
+
+function captureSeed(battleId, seed, names){
+  if(!battleId) return;  // no battle_id = not a Discord-triggered fight, never log it
+  fetch(FLOCK_API + '/capture', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({battle_id: battleId, seed, ducks: names})
+  }).catch(e=>console.warn('[Flock] seed capture failed (non-fatal):', e));
+}
+
 const DUCKPAL=['#f2c14e','#e9884a','#5cb8c4','#c98fca','#8fca8f','#efc94e','#e0625a','#9db4c9','#d98f5a','#7fc9b8'];
 const WEAPONS=['sword','dagger','ballchain','cleaver','waterpistol','blunderbuss'];
 const HITWORDS=['BOOM','BANG','SLAM','SLASH','WHACK','SMACK','POW','BLAM','CRACK','THUD',
@@ -828,7 +851,9 @@ document.getElementById('seal').addEventListener('click',()=>{const f=document.g
 document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'Seed copied'));
 document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
   await ensureSpritesReady(document.getElementById('start'));
-  STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();beginFight();});
+  STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();
+  captureSeed(_urlBattleId, STATE.seed, STATE.names);
+  beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
 document.getElementById('closeResult').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='flex';});
 document.getElementById('reopenResult').addEventListener('click',()=>{document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';});
