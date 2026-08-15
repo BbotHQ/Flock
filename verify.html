@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duck Battle Royale — Verify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--deck:#0a1016;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--line:#26333f;--green:#5cc46a;--red:#d64b34;}
+  *{box-sizing:border-box}html,body{margin:0;min-height:100%}
+  body{background:linear-gradient(rgba(6,11,16,.5),rgba(6,11,16,.6)), url('arena.jpg') center/cover fixed no-repeat, radial-gradient(1200px 520px at 50% -12%, #14232e 0%, var(--deck) 62%);color:var(--cream);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{width:100%;max-width:760px;margin:0 auto;padding:26px 16px 60px}
+  header{text-align:center;margin:34px 0 4px}
+  .brand{font-family:'Anton',sans-serif;font-size:clamp(30px,6.4vw,58px);letter-spacing:2px;line-height:.92;text-transform:uppercase;
+    -webkit-text-stroke:3px rgba(0,0,0,.85);paint-order:stroke fill;
+    background:linear-gradient(180deg,#fff 0%,var(--gold-hi) 55%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 18px rgba(242,193,78,.25))}
+  .brand .blade{color:var(--red);-webkit-text-fill-color:var(--red)}
+  .tag{margin:6px 0 0;font-family:'Anton',sans-serif;font-size:clamp(11px,2vw,15px);letter-spacing:6px;text-transform:uppercase;color:var(--teal);text-align:center;
+    -webkit-text-stroke:1.5px rgba(0,0,0,.9);paint-order:stroke fill;
+    text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.7)}
+  .sub{text-align:center;color:var(--muted);font-size:13.5px;margin:16px auto 22px;max-width:560px;line-height:1.6}
+  .navrow{display:flex;justify-content:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+  .navlink{font-family:'Anton',sans-serif;letter-spacing:1px;text-transform:uppercase;font-size:13px;color:var(--gold-hi);text-decoration:none;
+    background:rgba(242,193,78,.08);border:1px solid #5a4a24;border-radius:10px;padding:9px 16px}
+  .navlink:hover{background:rgba(242,193,78,.16)}
+  .manual{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:18px;margin-bottom:24px}
+  .manual h3{margin:0 0 4px;font-family:'Anton';font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .manual p{margin:0 0 14px;font-size:12.5px;color:var(--muted);line-height:1.6}
+  .manual input{width:100%;background:#0a0f14;border:1px solid #2b3a47;border-radius:9px;color:var(--cream);font-family:'JetBrains Mono',monospace;font-size:13px;padding:11px 13px;margin-bottom:10px}
+  .manual button{font-family:'Anton';letter-spacing:1px;text-transform:uppercase;background:var(--gold);color:#1a1305;border:0;border-radius:9px;padding:10px 18px;font-size:14px;cursor:pointer}
+  .manual button:hover{background:var(--gold-hi)}
+  .manual-result{margin-top:14px}
+  .state{text-align:center;color:var(--muted);padding:40px 10px;font-size:15px}
+  .row{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;
+    padding:16px 18px;margin-bottom:12px}
+  .rtitle{font-weight:700;font-size:15px;margin:0 0 6px;word-break:break-word}
+  .flag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.3px;border-radius:7px;padding:5px 10px;margin-bottom:9px}
+  .flag.green{background:rgba(92,196,106,.14);border:1px solid #3a6b40;color:#8fe19a}
+  .flag.red{background:rgba(214,75,52,.14);border:1px solid #6b3a34;color:#f2a89c}
+  .flag.gray{background:rgba(125,148,163,.1);border:1px solid #33454f;color:var(--muted)}
+  .detail{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);line-height:1.8;word-break:break-all}
+  .detail b{color:var(--teal)}
+  .detail .mismatch{color:var(--red)}
+  footer{margin-top:26px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4a5b67}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="brand">Duck <span class="blade">Battle</span> Royale</div><div class="tag">verify</div></header>
+  <p class="sub">Every recorded result recomputed independently, right here in your own browser, from the seed and duck list that were logged. Nothing here has to be trusted — the math either matches or it doesn't.</p>
+  <div class="navrow">
+    <a class="navlink" href="./">⚔️ New Battle</a>
+    <a class="navlink" href="ledger.html">📜 Ledger</a>
+  </div>
+
+  <div class="manual">
+    <h3>Check a specific replay link</h3>
+    <p>Paste any Flock replay link (or just the part after <code>#r=</code>) to independently recompute its winner.</p>
+    <input id="manualInput" type="text" placeholder="https://.../Flock/#r=...">
+    <button id="manualCheck">Verify</button>
+    <div class="manual-result" id="manualResult"></div>
+  </div>
+
+  <div id="list"><div class="state">Loading ledger…</div></div>
+  <footer>Duck Battle Royale</footer>
+</div>
+
+<script>
+// Same shuffle algorithm as index.html and the bot — ported here so results
+// can be recomputed completely independently, with no server involved at all.
+function cyrb128(str){let h1=1779033703,h2=3144134277,h3=1013904242,h4=2773480762;
+  for(let i=0,k;i<str.length;i++){k=str.charCodeAt(i);h1=h2^Math.imul(h1^k,597399067);h2=h3^Math.imul(h2^k,2869860233);
+    h3=h4^Math.imul(h3^k,951274213);h4=h1^Math.imul(h4^k,2716044179);}
+  h1=Math.imul(h3^(h1>>>18),597399067);h2=Math.imul(h4^(h2>>>22),2869860233);
+  h3=Math.imul(h1^(h3>>>17),951274213);h4=Math.imul(h2^(h4>>>19),2716044179);
+  return [(h1^h2^h3^h4)>>>0,(h2^h1)>>>0,(h3^h1)>>>0,(h4^h1)>>>0];}
+function sfc32(a,b,c,d){return function(){a>>>=0;b>>>=0;c>>>=0;d>>>=0;let t=(a+b)|0;
+  a=b^b>>>9;b=c+(c<<3)|0;c=(c<<21|c>>>11);d=d+1|0;t=t+d|0;c=c+t|0;return (t>>>0)/4294967296;};}
+function rngFromSeed(seed){const s=cyrb128(seed);return sfc32(s[0],s[1],s[2],s[3]);}
+function winnerOrder(names, seed){
+  const rng=rngFromSeed(seed), n=names.length;
+  const idx=[...Array(n).keys()];
+  for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const winner=idx[n-1], elim=idx.slice(0,n-1);
+  return [winner,...elim.slice().reverse()].map(i=>names[i]);
+}
+function decodeState(str){try{let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';return JSON.parse(decodeURIComponent(escape(atob(b))));}catch(e){return null;}}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&lt;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function fmtDate(ts){if(!ts)return'';try{return new Date(ts*1000).toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch(e){return'';}}
+
+function verifyRow(r){
+  // The ledger only stores a duck COUNT, not the full name list — the actual
+  // names + seed live inside the replay link itself, so pull them from there.
+  if(!r.replay || !r.winner){
+    return {flag:'gray', label:'⚪ Not enough data to verify', detail:'This row doesn\u2019t have a replay link and a result on record yet — usually means the fight hasn\u2019t run.'};
+  }
+  const m = String(r.replay).match(/#r=([A-Za-z0-9\-_]+)/);
+  if(!m){
+    return {flag:'gray', label:'⚪ Could not read replay link', detail:'The stored replay link doesn\u2019t look like a valid Flock link.'};
+  }
+  const st = decodeState(m[1]);
+  if(!st || !Array.isArray(st.n) || !st.s){
+    return {flag:'gray', label:'⚪ Could not decode replay link', detail:'The replay payload didn\u2019t decode into a valid duck list + seed.'};
+  }
+  let recomputed;
+  try{ recomputed = winnerOrder(st.n, st.s); }
+  catch(e){ return {flag:'gray', label:'⚪ Could not recompute', detail:'Error running the algorithm on this row\u2019s data.'}; }
+  const match = recomputed[0] === r.winner;
+  const podiumMatch = !r.podium || r.podium.every((nm,i)=>recomputed[i]===nm);
+  if(match && podiumMatch){
+    return {flag:'green', label:'✅ Verified — recomputed winner matches', detail:`Recomputed winner: <b>${esc(recomputed[0])}</b> from seed <b>${esc(st.s)}</b>`};
+  }
+  return {flag:'red', label:'❌ Mismatch — recomputed result differs from what was logged', detail:`Logged winner: <b>${esc(r.winner)}</b> · Recomputed: <b class="mismatch">${esc(recomputed[0])}</b>`};
+}
+
+function render(rows){
+  const list=document.getElementById('list');
+  if(!Array.isArray(rows)||rows.length===0){
+    list.innerHTML='<div class="state">No battles recorded yet.</div>';return;}
+  list.innerHTML='';
+  for(const r of rows){
+    const v = verifyRow(r);
+    const div=document.createElement('div');div.className='row';
+    div.innerHTML=`
+      <div class="flag ${v.flag}">${v.label}</div>
+      <div class="rtitle">${esc(r.title||'Duck Battle Royale')} — 👑 ${esc(r.winner||'no result yet')}</div>
+      <div class="detail">${v.detail}<br>${fmtDate(r.ts)}</div>`;
+    list.appendChild(div);
+  }
+}
+
+async function manualVerify(){
+  const box = document.getElementById('manualResult');
+  const raw = document.getElementById('manualInput').value.trim();
+  const m = raw.match(/#r=([A-Za-z0-9\-_]+)/) || raw.match(/^([A-Za-z0-9\-_]+)$/);
+  if(!m){ box.innerHTML = '<div class="flag red">❌ Couldn\u2019t find a replay payload in that link</div>'; return; }
+  const st = decodeState(m[1]);
+  if(!st || !Array.isArray(st.n) || !st.s){ box.innerHTML = '<div class="flag red">❌ Couldn\u2019t decode that link</div>'; return; }
+  const order = winnerOrder(st.n, st.s);
+  box.innerHTML = `<div class="flag green">✅ Recomputed independently</div>
+    <div class="detail">Winner: <b>${esc(order[0])}</b><br>
+    Podium: <b>${esc(order.slice(0,3).join(', '))}</b><br>
+    Seed: <b>${esc(st.s)}</b> · ${st.n.length} ducks</div>`;
+}
+document.getElementById('manualCheck').addEventListener('click', manualVerify);
+
+(async function(){
+  try{
+    const res=await fetch('./races.json?ts='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error('races.json not found ('+res.status+')');
+    const data=await res.json();
+    if(Array.isArray(data))data.sort((a,b)=>(b.ts||0)-(a.ts||0));
+    render(data);
+  }catch(e){
+    document.getElementById('list').innerHTML='<div class="state">No ledger yet.</div>';
+  }
+})();
+</script>
+</body>
+</html>
