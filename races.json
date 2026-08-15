@@ -2,10 +2,18 @@
   {
     "battle_id": "1538185560932487200-1",
     "title": "test",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (8)",
+    "podium": [
+      "BWall (8)",
+      "BWall (16)",
+      "BWall (13)"
+    ],
     "ducks": 17,
-    "started_by": "BWall",
-    "started_ts": 1786802511
+    "lock": "b883ac376ab6f8aa6b5e229c7cf59baf3480246c1c70c30c96586d407400cf46",
+    "seed": "oi64n31nnf23n129zobrfu034",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICgxNikiLCJCV2FsbCAoMTQpIiwiQldhbGwgKDE3KSIsIkJXYWxsICg0KSIsIkJXYWxsICgxMCkiLCJCV2FsbCAoOCkiLCJCV2FsbCAoMTMpIiwiQldhbGwgKDE1KSIsIkJXYWxsICgxMSkiLCJCV2FsbCAoMikiLCJCV2FsbCAoMTIpIiwiQldhbGwgKDcpIiwiQldhbGwgKDYpIiwiQldhbGwgKDUpIiwiQldhbGwgKDEpIiwiQldhbGwgKDMpIiwiQldhbGwgKDkpIl0sImQiOjMwLCJzIjoib2k2NG4zMW5uZjIzbjEyOXpvYnJmdTAzNCJ9",
+    "ts": 1786802607
   },
   {
     "title": "Malort",
