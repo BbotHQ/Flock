@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1538290223543361717-1",
+    "title": "Test 3",
+    "status": "pending",
+    "ducks": 67,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1786832014
+  },
+  {
     "battle_id": "1538185560932487200-1",
     "title": "test",
     "status": "official",
