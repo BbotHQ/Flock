@@ -44,6 +44,12 @@
     border:0;border-radius:9px;padding:10px 16px;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block}
   .replay:hover{background:var(--gold-hi)}
   .ducks{font-size:12px;color:var(--muted)}
+  .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.3px;
+    border-radius:7px;padding:4px 9px;margin-bottom:8px}
+  .status-badge.official{background:rgba(92,196,106,.14);border:1px solid #3a6b40;color:#8fe19a}
+  .status-badge.unofficial{background:rgba(214,75,52,.14);border:1px solid #6b3a34;color:#f2a89c}
+  .status-badge.committed{background:rgba(75,184,176,.14);border:1px solid #2f5f5b;color:#8fdcd5}
+  .status-badge.pending{background:rgba(242,193,78,.12);border:1px solid #5a4a24;color:var(--gold-hi)}
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#1a1305;
     font-weight:600;padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;font-size:14px}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -65,6 +71,21 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 function copy(t,m){navigator.clipboard.writeText(t).then(()=>toast(m)).catch(()=>toast('Copy failed'));}
 function fmtDate(ts){if(!ts)return'';try{return new Date(ts*1000).toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch(e){return'';}}
 
+function statusBadge(r){
+  // Legacy rows (written before the commit/reveal system existed) never had a
+  // status field, but only ever got written once a real winner was computed —
+  // so they're equivalent to "official" and are labeled that way.
+  const status = r.status || 'official';
+  const map = {
+    official:   {cls:'official',   label:'✅ Verified'},
+    unofficial: {cls:'unofficial', label:'⚠️ Unofficial — no result posted'},
+    committed:  {cls:'committed',  label:'🔒 Committed — awaiting reveal'},
+    pending:    {cls:'pending',    label:'⏳ Pending — fight in progress'},
+  };
+  const m = map[status] || map.official;
+  return `<div class="status-badge ${m.cls}">${m.label}</div>`;
+}
+
 function render(rows){
   const list=document.getElementById('list');
   if(!Array.isArray(rows)||rows.length===0){
@@ -75,22 +96,27 @@ function render(rows){
     const medals=['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'];
     const podHtml=podium.map((nm,i)=>`<span>${medals[i]||''} ${esc(nm)}</span>`).join('');
     const lock=r.lock?esc(String(r.lock).slice(0,16))+'\u2026':'\u2014';
-    const seed=r.seed?esc(String(r.seed).slice(0,14))+'\u2026':'\u2014';
+    const seed=(r.seed||r.arena_seed)?esc(String(r.seed||r.arena_seed).slice(0,14))+'\u2026':'\u2014';
+    const hasWinner = !!r.winner;
     const div=document.createElement('div');div.className='row';
     div.innerHTML=`
       <div class="main">
+        ${statusBadge(r)}
         <div class="rtitle">${esc(r.title||'Duck Battle Royale')}</div>
-        <div class="winner">\ud83d\udc51 ${esc(r.winner||'\u2014')}</div>
-        <div class="podium">${podHtml}</div>
+        ${hasWinner ? `<div class="winner">\ud83d\udc51 ${esc(r.winner)}</div><div class="podium">${podHtml}</div>`
+                    : `<div class="winner" style="color:var(--muted);font-size:15px">No result yet</div>`}
         <div class="meta"><span>${fmtDate(r.ts)}</span><span>${r.ducks?esc(r.ducks)+' ducks':''}</span></div>
-        <div class="hash" data-lock="${esc(r.lock||'')}" data-seed="${esc(r.seed||'')}">\ud83d\udd12 Lock <b>${lock}</b>  \u00b7  \ud83c\udf31 Seed <b>${seed}</b></div>
+        ${(r.lock||r.seed||r.arena_seed) ? `<div class="hash" data-lock="${esc(r.lock||'')}" data-seed="${esc(r.seed||r.arena_seed||'')}">\ud83d\udd12 Lock <b>${lock}</b>  \u00b7  \ud83c\udf31 Seed <b>${seed}</b></div>` : ''}
       </div>
       <div class="side">
         ${r.replay?`<a class="replay" href="${esc(r.replay)}" target="_blank" rel="noopener">\u25b6 Replay</a>`:''}
       </div>`;
-    div.querySelector('.hash').addEventListener('click',function(){
-      const s=this.getAttribute('data-seed'),l=this.getAttribute('data-lock');
-      copy(`seed: ${s}\nlock: ${l}`,'Seed + Lock copied');});
+    const hashEl = div.querySelector('.hash');
+    if(hashEl){
+      hashEl.addEventListener('click',function(){
+        const s=this.getAttribute('data-seed'),l=this.getAttribute('data-lock');
+        copy(`seed: ${s}\nlock: ${l}`,'Seed + Lock copied');});
+    }
     list.appendChild(div);
   }
 }
