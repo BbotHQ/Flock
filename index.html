@@ -491,6 +491,21 @@ function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,
 function shortLabel(s){return s.length>16?s.slice(0,15)+'…':s;}
 function eRng(step){let x=(step*2654435761)>>>0;return function(){x^=x<<13;x^=x>>>17;x^=x<<5;x>>>=0;return x/4294967296;};}
 function hpAt(P,i,stepF){const b=P.hpBreaks[i];let v=1;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)v=b[k].hp;else break;}return v;}
+// Smooth version used during live playback: the raw hpBreaks timeline jumps to the
+// new HP value the instant a hit event's step is reached, but the swing/impact
+// animation for that hit is still playing for ~0.3s after that point — snapping the
+// bar instantly made it look like damage landed before the swing finished. This eases
+// the bar from its previous value into the new one over that same window instead.
+function hpAtSmooth(P,i,curSec){
+  const b=P.hpBreaks[i];const EASE=0.3;let prev=1;
+  for(let k=0;k<b.length;k++){
+    const t=stepToPlaySec(b[k].step);
+    if(curSec<t)return prev;
+    if(curSec<t+EASE){const p=(curSec-t)/EASE;return prev+(b[k].hp-prev)*p;}
+    prev=b[k].hp;
+  }
+  return prev;
+}
 function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)w=b[k].weapon;else break;}return w;}
 
 function drawWater(ax,ay,aw,ah,clock,curSec){
@@ -599,14 +614,14 @@ function drawStain(x,y,r,step){const g=eRng(step);ctx.save();ctx.fillStyle='rgba
   for(let i=0;i<6;i++){const a=g()*6.283,d=g()*r*1.6,rr=r*(0.25+g()*0.5);ctx.beginPath();ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,rr,0,6.283);ctx.fill();}ctx.restore();}
 function drawSpark(x,y,r,p,word){ctx.save();ctx.globalAlpha=1-p;const rad=r*(0.4+p*1.4);ctx.strokeStyle='rgba(255,240,170,'+(1-p)+')';ctx.lineWidth=2.5;
   for(let i=0;i<6;i++){const a=i/6*6.283+p;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*rad*0.4,y+Math.sin(a)*rad*0.4);ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);ctx.stroke();}
-  if(word&&p<0.6){ctx.fillStyle='#fff3c0';ctx.font=`700 ${r*0.42}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.8);}ctx.restore();}
+  if(word&&p<0.6){ctx.fillStyle='#fff3c0';ctx.font=`700 ${Math.min(r*0.42,22)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.8);}ctx.restore();}
 function drawHit(x,y,r,p){ctx.save();ctx.fillStyle='#b41e10';const g=eRng((x*97+y)|0);
   for(let i=0;i<8;i++){const a=g()*6.283,sp=r*(1.5+g()*3),t=p*0.4;const dx=Math.cos(a)*sp*t,dy=Math.sin(a)*sp*t+r*5*t*t;ctx.globalAlpha=Math.max(0,1-p);ctx.beginPath();ctx.arc(x+dx,y+dy,r*0.18,0,6.283);ctx.fill();}ctx.restore();}
 function drawKill(x,y,r,p,word,step){const g=eRng(step);ctx.save();
   const rad=r*(0.6+p*3.2);ctx.globalAlpha=1-p;ctx.strokeStyle='rgba(255,170,50,'+(1-p)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,rad,0,6.283);ctx.stroke();
   ctx.fillStyle='rgba(255,120,40,'+(1-p)+')';ctx.beginPath();for(let i=0;i<16;i++){const a=i/16*6.283;const o=(i%2)?rad*0.45:rad*0.9;const px=x+Math.cos(a)*o,py=y+Math.sin(a)*o;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.fill();ctx.restore();
   ctx.save();ctx.fillStyle='#b41e10';for(let i=0;i<20;i++){const a=g()*6.283,sp=r*(2+g()*5),t=p*0.55;const dx=Math.cos(a)*sp*t,dy=Math.sin(a)*sp*t+r*9*t*t;ctx.globalAlpha=Math.max(0,1-p*1.1);ctx.beginPath();ctx.arc(x+dx,y+dy,Math.max(0.6,r*0.2*(1-p)),0,6.283);ctx.fill();}ctx.restore();
-  if(word&&p<0.55){ctx.save();ctx.globalAlpha=1-p/0.55;ctx.fillStyle='#3a0d06';ctx.font=`700 ${r*0.6}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.4);ctx.restore();}}
+  if(word&&p<0.55){ctx.save();ctx.globalAlpha=1-p/0.55;ctx.fillStyle='#3a0d06';ctx.font=`700 ${Math.min(r*0.6,30)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.4);ctx.restore();}}
 function drawTimer(remain){if(remain==null)return;const {w}=VIEW;const s=Math.max(0,remain);const mm=Math.floor(s/60),ss=Math.floor(s%60);
   const txt=`${mm}:${String(ss).padStart(2,'0')}`;ctx.save();ctx.font=`700 ${Math.max(15,w*0.022)}px 'JetBrains Mono', monospace`;ctx.textAlign='center';ctx.textBaseline='top';
   const tw=ctx.measureText(txt).width;ctx.fillStyle='rgba(6,15,20,.66)';roundRect(w/2-tw/2-12,14,tw+24,26,7);ctx.fill();
@@ -671,18 +686,27 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   // defense: a recent HP drop → hit/flinch (skip duel ducks — they use the alternating event poses below)
   for(let i=0;i<n;i++){if(duelSet.has(i))continue;const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
   // offense + duel clashes: striker winds up then strikes; the one on the receiving end flinches
+  // Also lock the attacker's facing toward its actual target for this whole window —
+  // raw frame-to-frame movement (approach then retreat right after a hit lands) was
+  // flipping facing mid-swing, which read as the duck turning around or swinging backwards.
+  const lockedFacing={};
   for(const e of P.events){if(e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
     if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';
-    if(e.v!=null&&d>=0&&d<0.35)pose[e.v]='hit';}
+    if(e.v!=null&&d>=0&&d<0.35)pose[e.v]='hit';
+    if(d>=-0.25&&d<0.4){
+      const fe=P.frames[Math.max(0,Math.min(P.S-1,e.step))];
+      const ax=fe[2*e.k];const tx=(e.v!=null)?fe[2*e.v]:e.x;
+      lockedFacing[e.k]=(tx>=ax)?1:-1;
+    }}
   // dead ducks — defeated pose, floating in place (names remain)
   for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple,tileBloodied(fa[2*i],fa[2*i+1],curSec));}
   // living
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
-    const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(x1-x0)>=0?1:-1;
+    const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(lockedFacing[i]!==undefined)?lockedFacing[i]:((x1-x0)>=0?1:-1);
     const isWin=(i===P.winner)&&(finale||soleSurvivor);   // VICTORY only when actually won
     const ps=isWin?'victory':pose[i];
-    let hpShow=hpAt(P,i,stepF);
+    let hpShow=hpAtSmooth(P,i,curSec);
     if(duelSet.has(i)){
       // Suspense: as the duel closes in on its decisive blow, both ducks' displayed
       // HP gets pulled down toward critical — nobody watching can tell who wins from
@@ -877,4 +901,3 @@ window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 </script>
 </body>
 </html>
-
