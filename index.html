@@ -734,7 +734,7 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   if(!finale){
     for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
       const isFinalBlow=(e.kill && e.step===P.finalKillStep);
-      if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,isFinalBlow?'':e.word,e.step);}
+      if(e.kill){if(dt<0.55&&!isFinalBlow)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
       else{if(dt<0.5){drawSpark(W2Sx(e.x),W2Sy(e.y),r*1.4,dt/0.5,e.word);drawHit(W2Sx(e.x),W2Sy(e.y),r,dt/0.5);}}}
   }
   ctx.restore();
@@ -867,7 +867,7 @@ function beginFight(){setLedger(false);document.getElementById('backBtn').style.
   document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='none';
   VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
-  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);countdownThen(()=>dropIn(()=>playFight(showResults)));}
+  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults)));}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
