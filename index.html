@@ -718,16 +718,15 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
     const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(lockedFacing[i]!==undefined)?lockedFacing[i]:((x1-x0)>=0?1:-1);
-    const isWin=(i===P.winner)&&(finale||soleSurvivor);   // VICTORY only when actually won
+    // VICTORY only once actually won — AND only once the winner's own finishing
+    // swing (windup/strike, timed on the real-elapsed-seconds clock) has actually
+    // played out. soleSurvivor flips true on a different, step-based clock that
+    // isn't synced to that swing timing, so without this it could cut the swing
+    // off mid-animation the instant the victim's death step was reached.
+    const midSwing=(pose[i]==='strike'||pose[i]==='windup');
+    const isWin=(i===P.winner)&&(finale||soleSurvivor)&&!midSwing;
     const ps=isWin?'victory':pose[i];
     let hpShow=hpAtSmooth(P,i,curSec);
-    if(duelSet.has(i)){
-      // Suspense: as the duel closes in on its decisive blow, both ducks' displayed
-      // HP gets pulled down toward critical — nobody watching can tell who wins from
-      // the bar alone anymore, even though the outcome was already decided at the seed.
-      const dp=clamp((stepF-P.duelStart)/Math.max(1,(P.S-1-P.duelStart)),0,1);
-      if(dp>0.45){const t=(dp-0.45)/0.55;const cap=0.36-0.22*t;hpShow=Math.min(hpShow,Math.max(0.05,cap));}
-    }
     drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpShow,false,simple,tileBloodied(x0,y0,curSec));}
   // hit + kill effects — suppressed once the finale hold begins, so the last kill's
   // word/burst never balloons over the winner or bleeds into the result card above.
