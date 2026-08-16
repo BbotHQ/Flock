@@ -479,10 +479,15 @@ function planFight(names,seed){
           hp[winner]=Math.max(0.03,hp[winner]-dW);hpBreaks[winner].push({step,hp:hp[winner]});
           const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
           const lethal = duelIdx>=duelK || hp[victim]<=0.0001;
-          // alternate who's shown striking vs taking the hit each clash, so it reads as a real back-and-forth fight
-          const striker=(duelClashN%2===0)?winner:victim, target=(striker===winner)?victim:winner; duelClashN++;
+          // The animated striker/target now always match who's actually taking the
+          // damage that clash (winner strikes, victim defends) — this used to
+          // alternate independently of the real HP change above, which meant the
+          // duck shown winding up and swinging could still be the one losing more
+          // health, while the duck shown flinching lost almost nothing. Confusing
+          // and wrong; the visual and the actual damage have to agree.
+          duelClashN++;
           if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
-          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:striker,v:target});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
+          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:winner,v:victim});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
       }}
     const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
   }
@@ -671,17 +676,19 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   const simple=n>200;
   if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.2,fa[2*P.winner],fa[2*P.winner+1]);}
   let zoom=1,cx=0.5,cy=0.5;
-  if(finale){
-    // Hold exactly where the finishing blow froze — no panning, no re-centering.
-    // The result card rises up from below over this frame once it's ready.
-    zoom=3.1;const half=0.5/zoom;
-    cx=clamp(fa[2*P.winner],half,1-half);
-    cy=clamp(fa[2*P.winner+1],half,1-half);
-  }
-  else if(stepF>=P.duelStart){const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);
+  if(stepF>=P.duelStart){
+    // One continuous camera formula for the whole final stretch — live combat,
+    // the frozen finishing-blow hold, and the victory finale all render at
+    // stepF=S-1 by the time finale kicks in, so this naturally settles into the
+    // same framing throughout. Previously the frozen/finale phase switched to a
+    // DIFFERENT formula (fixed zoom, centered on the winner alone) than the live
+    // approach was using (zoom up to 3.5, centered between both fighters) —
+    // two different formulas meeting at a boundary is exactly what caused the jolt.
+    const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);
     const nearEnd=clamp((stepF-(P.S-1-70))/70,0,1); // extra zoom as the decisive swing approaches
     zoom=1+1.6*ramp+0.9*nearEnd;
-    const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);}
+    const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);
+  }
   const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
