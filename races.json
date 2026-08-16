@@ -2,10 +2,18 @@
   {
     "battle_id": "1538547659059503217-1",
     "title": "test 5",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (25)",
+    "podium": [
+      "BWall (25)",
+      "BWall (9)",
+      "BWall (17)"
+    ],
     "ducks": 27,
-    "started_by": "BWall",
-    "started_ts": 1786888835
+    "lock": "4295a795a87e912937bf4aaac2bb0bcf0416c95847fa0568be993b4fe75c2158",
+    "seed": "1b7k84jnburyh87d5dlo2hboq",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICg5KSIsIkJXYWxsICg1KSIsIkJXYWxsICgxMSkiLCJCV2FsbCAoMjQpIiwiQldhbGwgKDcpIiwiQldhbGwgKDgpIiwiQldhbGwgKDIwKSIsIkJXYWxsICgzKSIsIkJXYWxsICg2KSIsIkJXYWxsICg0KSIsIkJXYWxsICgyMSkiLCJCV2FsbCAoMjUpIiwiQldhbGwgKDE4KSIsIkJXYWxsICgyMykiLCJCV2FsbCAoMTcpIiwiQldhbGwgKDEpIiwiQldhbGwgKDEzKSIsIkJXYWxsICgxMCkiLCJCV2FsbCAoMTYpIiwiQldhbGwgKDE0KSIsIkJXYWxsICgyKSIsIkJXYWxsICgyMikiLCJCV2FsbCAoMTkpIiwiQldhbGwgKDI2KSIsIkJXYWxsICgxNSkiLCJCV2FsbCAoMjcpIiwiQldhbGwgKDEyKSJdLCJkIjoxNCwicyI6IjFiN2s4NGpuYnVyeWg4N2Q1ZGxvMmhib3EifQ",
+    "ts": 1786888943
   },
   {
     "battle_id": "1538408078289145877-1",
