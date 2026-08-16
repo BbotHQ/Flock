@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1538355894209880105-1",
+    "title": "VWFRR",
+    "status": "pending",
+    "ducks": 80,
+    "started_by": "Neww_",
+    "started_ts": 1786843339
+  },
+  {
     "battle_id": "1538290223543361717-1",
     "title": "Test 3",
     "status": "official",
