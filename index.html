@@ -51,6 +51,8 @@
   .btn:hover{background:var(--gold-hi)}.btn:active{transform:translateY(1px)}
   .btn.ghost{background:transparent;color:var(--cream);border:1px solid #33454f;box-shadow:none}
   .btn.ghost:hover{border-color:var(--teal);color:var(--teal)}
+  .btn.replay{background:linear-gradient(180deg,var(--teal),#3a9089);color:#08201d;border:1px solid #2f7a73;box-shadow:0 4px 14px rgba(75,184,176,.35);font-weight:700}
+  .btn.replay:hover{background:linear-gradient(180deg,#5cd0c7,var(--teal))}
   .btn.shuffle{background:transparent;color:var(--gold-hi);border:1px solid #5a4a24;box-shadow:none}
   .btn.shuffle:hover{background:rgba(242,193,78,.1)}
   .ledger-link{position:absolute;top:16px;right:16px;display:inline-flex;align-items:center;gap:6px;font-family:'Anton',sans-serif;
@@ -153,7 +155,7 @@
       <div class="roster" id="roster"></div>
     </div>
     <div class="controls">
-      <button class="btn ghost" id="replayBtn" style="display:none">▶ Replay This Battle</button>
+      <button class="btn replay" id="replayBtn" style="display:none">▶ Replay This Battle</button>
       <button class="btn ghost" id="backBtn">← New Fight Setup</button>
     </div>
   </div>
@@ -372,9 +374,9 @@ function triggerAllRemaining(curSec, spreadWindow, fromX, fromY) {
     pendingTiles.push(idx);
   }
 }
-function nameAbove(x,y,r,name,win){const fs=Math.max(10,Math.min(r*0.85,17));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle='rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
-  ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
+function nameAbove(x,y,r,name,win,isDead){const fs=Math.max(10,Math.min(r*0.85,17));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle=isDead?'rgba(6,15,20,.55)':'rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
+  ctx.fillStyle=win?'#ffd76b':(isDead?'rgba(255,255,255,.42)':'#ffffff');ctx.fillText(t,x,y);ctx.restore();}
 // Draws a fighter as a sprite if its sheet is loaded, else falls back to the vector duck.
 function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   const idx=spriteFor(i), sh=SHEETS[idx];
@@ -395,7 +397,7 @@ function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   ctx.drawImage(atlas, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
   ctx.restore();
   if(!isDead && hp<0.999) drawHpBar(x,y,r,hp);
-  nameAbove(x, y - r*1.9, r, STATE.plan.meta[i].nm, win);
+  nameAbove(x, y - r*1.9, r, STATE.plan.meta[i].nm, win, isDead);
 }
 
 function battleLength(n){if(n<5)return 20;if(n>100)return Math.min(60,45+(n-100)*0.05);return 30;}
@@ -483,7 +485,8 @@ function planFight(names,seed){
     const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
   }
   while(nv<elimOrder.length){const v=elimOrder[nv];if(!dead[v]){dead[v]=true;deathStep[v]=step;events.push({step,x:px[v],y:py[v],kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:v});}nv++;}
-  return {frames,S:frames.length,events,deathStep,meta,order,winner,n,RR,hpBreaks,pickups,weaponBreaks,
+  let finalKillStep=-1;for(const e of events){if(e.kill&&e.step>finalKillStep)finalKillStep=e.step;}
+  return {frames,S:frames.length,events,deathStep,meta,order,winner,n,RR,hpBreaks,pickups,weaponBreaks,finalKillStep,
     duelStart:duelStart<0?frames.length:duelStart,duelDucks:[winner,(elimOrder.length?elimOrder[elimOrder.length-1]:winner)],durSec:battleLength(n)};
 }
 
@@ -655,6 +658,10 @@ function updateRoster(stepF){const P=STATE.plan;const living=[],dead=[];
   if(dead.length){html+=`<div class="rsep"></div>`;for(const i of dead){html+=`<div class="ritem dead"><span class="rdot" style="background:${P.meta[i].col}"></span><span class="rname">${escapeHtml(P.meta[i].nm)}</span></div>`;}}
   el.innerHTML=html;}
 
+function drawEmptyArena(){
+  VIEW=fitCanvas();const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,performance.now(),0);
+}
 function renderScene(stepF,curSec,clock,finale,finalePhase){
   const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock,curSec);
@@ -726,7 +733,8 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   // word/burst never balloons over the winner or bleeds into the result card above.
   if(!finale){
     for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
-      if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);}
+      const isFinalBlow=(e.kill && e.step===P.finalKillStep);
+      if(e.kill){if(dt<0.55)drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,isFinalBlow?'':e.word,e.step);}
       else{if(dt<0.5){drawSpark(W2Sx(e.x),W2Sy(e.y),r*1.4,dt/0.5,e.word);drawHit(W2Sx(e.x),W2Sy(e.y),r,dt/0.5);}}}
   }
   ctx.restore();
@@ -902,8 +910,7 @@ window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 (async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   setLedger(false);document.getElementById('backBtn').style.display='none';
-  await ensureSpritesReady(null);
-  VIEW=fitCanvas();STATE.plan=planFight(STATE.names,STATE.seed);STATE.remain=null;renderScene(0,0,performance.now());
+  drawEmptyArena();
   document.getElementById('replayBtn').style.display='inline-block';toast('Battle loaded — press Replay');})();
 </script>
 </body>
