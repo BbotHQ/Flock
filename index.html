@@ -815,9 +815,11 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
   }
   function frame(now){const el=(now-t0)/1000;
     if(el>=totalEl){
-      // Freeze on the finishing swing at its normal (non-finale) framing so the full
-      // strike is actually visible, before the camera lifts into the victory shot.
-      renderScene(S-1,totalEl,now,false,0);STATE.remain=0;
+      // Freeze right where the finishing blow landed, using the SAME camera framing
+      // the victory hold uses — previously this used the duel-zoom camera (centered
+      // between both fighters) while the finale used a different one (centered on
+      // just the winner), causing a visible jump/snap the instant victory kicked in.
+      renderScene(S-1,totalEl,now,true,1);STATE.remain=0;
       setTimeout(()=>playFinale(onDone,totalEl),IMPACT_HOLD);return;
     }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
