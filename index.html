@@ -773,14 +773,21 @@ function _timeMap(P){
   const slowStep=hasDuel?dS+Math.floor((S-dS)*(1-SLOWMO_STEP_FRAC)):S-1;
   const normalDuelSec=hasDuel?duelSec*(1-SLOWMO_STEP_FRAC):duelSec;
   const timerEnd=preSec+normalDuelSec;                        // timer hits 0:00 here
-  const totalEl=timerEnd+(hasDuel?SLOWMO_SEC:0);               // full playback duration
-  return {dS,S,preSec,duelSec,hasDuel,slowStep,normalDuelSec,timerEnd,totalEl};
+  const mapEnd=timerEnd+(hasDuel?SLOWMO_SEC:0);                // where step S-1 lands — fixed, event/FX timing anchor
+  // The decisive blow is always step S-1, which by construction maps to mapEnd —
+  // so simply padding "the end" doesn't help, since the pad becomes the new
+  // mapEnd and the blow keeps landing exactly on it. Instead: mapEnd stays fixed
+  // (so event FX have a real, non-moving target time), and totalEl — when
+  // playback actually stops — gets extra real seconds tacked on afterward, so
+  // the windup/strike/impact can play out fully before the freeze-and-cut.
+  const totalEl=(P.finalKillStep!=null && P.finalKillStep>=0)?mapEnd+0.75:mapEnd;
+  return {dS,S,preSec,duelSec,hasDuel,slowStep,normalDuelSec,timerEnd,mapEnd,totalEl};
 }
 function stepToPlaySec(step){
-  const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,totalEl}=_timeMap(P);
+  const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   if(step<=dS)return preSec<=0?0:(step/Math.max(1,dS))*preSec;
   if(step<=slowStep)return preSec+((step-dS)/Math.max(1,(slowStep-dS)))*(timerEnd-preSec);
-  return timerEnd+((step-slowStep)/Math.max(1,(S-1-slowStep)))*(totalEl-timerEnd);
+  return timerEnd+((step-slowStep)/Math.max(1,(S-1-slowStep)))*(mapEnd-timerEnd);
 }
 
 function dropIn(cb){const P=STATE.plan,DUR=1400,t0=performance.now();cancelAnimationFrame(STATE.raf);STATE.remain=null;lastRosterKey=-1;lastFeedKey=-1;
@@ -803,12 +810,12 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
       const land=delay+(1-0.45),sa=p-land;if(sa>=0&&sa<0.16){const sp=sa/0.16;ctx.save();ctx.globalAlpha=(1-sp)*0.6;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.6,r*(0.6+sp*2.2),r*(0.25+sp*0.9),0,0,6.283);ctx.stroke();ctx.restore();}}}
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
-function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,totalEl}=_timeMap(P);
+function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd,totalEl}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   function stepAtEl(el){
     if(el<=preSec)return (el/Math.max(0.001,preSec))*dS;
     if(el<=timerEnd)return dS+((el-preSec)/Math.max(0.001,(timerEnd-preSec)))*(slowStep-dS);
-    const t=(el-timerEnd)/Math.max(0.001,(totalEl-timerEnd));return slowStep+t*(S-1-slowStep);
+    const t=Math.min(1,(el-timerEnd)/Math.max(0.001,(mapEnd-timerEnd)));return slowStep+t*(S-1-slowStep);
   }
   function frame(now){const el=(now-t0)/1000;
     if(el>=totalEl){
@@ -819,7 +826,7 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
     }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-const IMPACT_HOLD=650; // ms to hold on the finishing blow before the camera rises into the victory framing
+const IMPACT_HOLD=1250; // ms to hold on the finishing blow before the camera rises into the victory framing
 function playFinale(onDone,elBase){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
   const base=elBase!=null?elBase:P.durSec; // continue the SAME clock playFight ended on — resetting it here was
   function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
