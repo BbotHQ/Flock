@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1538734982816866417-1",
+    "title": "OG RC",
+    "status": "pending",
+    "ducks": 20,
+    "started_by": "Skizzo82",
+    "started_ts": 1786934023
+  },
+  {
     "battle_id": "1538560749335486468-1",
     "title": "test 6",
     "status": "official",
