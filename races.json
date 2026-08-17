@@ -1,5 +1,21 @@
 [
   {
+    "battle_id": null,
+    "title": "- test 8",
+    "status": "official",
+    "winner": "BWall (1)",
+    "podium": [
+      "BWall (1)",
+      "Skizzo82 (12)",
+      "Skizzo82 (3)"
+    ],
+    "ducks": 17,
+    "lock": "8f100c641c51fe0cf3b65f83ab4674158a4aa9033244818d9d8b4ae3c4212833",
+    "seed": "1kwswre1bu2d2x1puncy51utxz65",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIlNraXp6bzgyICgxMikiLCJTa2l6em84MiAoMTUpIiwiU2tpenpvODIgKDMpIiwiU2tpenpvODIgKDEwKSIsIlNraXp6bzgyICgyKSIsIlNraXp6bzgyICg0KSIsIkJXYWxsICgxKSIsIlNraXp6bzgyICgxMSkiLCJTa2l6em84MiAoOCkiLCJTa2l6em84MiAoMTYpIiwiU2tpenpvODIgKDcpIiwiU2tpenpvODIgKDUpIiwiU2tpenpvODIgKDE0KSIsIlNraXp6bzgyICgxNykiLCJTa2l6em84MiAoNikiLCJTa2l6em84MiAoMTMpIiwiU2tpenpvODIgKDkpIl0sImQiOjMwLCJzIjoiMWt3c3dyZTFidTJkMngxcHVuY3k1MXV0eHo2NSJ9",
+    "ts": 1786936160
+  },
+  {
     "battle_id": "1538744074096349277-1",
     "title": "test 8",
     "status": "official",
