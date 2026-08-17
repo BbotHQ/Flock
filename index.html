@@ -350,7 +350,7 @@ function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   ctx.drawImage(atlas, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
   ctx.restore();
   if(!isDead && hp<0.999) drawHpBar(x,y,r,hp);
-  nameAbove(x, y - r*1.9, r, STATE.plan.meta[i].nm, win, isDead);
+  nameAbove(x, Math.max(16, y - r*1.9), r, STATE.plan.meta[i].nm, win, isDead);
 }
 
 function battleLength(n){if(n<5)return 20;if(n>100)return Math.min(60,45+(n-100)*0.05);return 30;}
@@ -598,9 +598,13 @@ function drawShowdownBanner(p){const {w}=VIEW;ctx.save();ctx.globalAlpha=0.9*Mat
   ctx.font=`700 ${Math.max(16,w*0.028)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=10;ctx.fillStyle='#ffd76b';
   ctx.fillText('⚔️  FINAL SHOWDOWN  ⚔️',w/2,46);ctx.restore();}
 function drawWinnerTag(x,y,r,name){ctx.save();ctx.textAlign='center';
-  const nameSize=Math.max(20,r*1.25), ebSize=Math.max(11,r*0.6),nameY=y-r*3.5,ebY=nameY-nameSize*0.95;
-  ctx.font=`700 ${nameSize}px Anton, sans-serif`;const tw=Math.max(ctx.measureText(name).width,ctx.measureText('WINNER').width)+r*1.4;
-  const boxTop=ebY-ebSize*1.2,boxH=nameY-boxTop+nameSize*0.35;
+  const nameSize=Math.max(20,r*1.25), ebSize=Math.max(11,r*0.6);
+  let nameY=y-r*3.5, ebY=nameY-nameSize*0.95;
+  let boxTop=ebY-ebSize*1.2;
+  if(boxTop<16){const shift=16-boxTop;nameY+=shift;ebY+=shift;boxTop=16;}
+  ctx.font=`700 ${nameSize}px Anton, sans-serif`;
+  const tw=Math.max(ctx.measureText(name).width,ctx.measureText('WINNER').width)+r*1.4;
+  const boxH=nameY-boxTop+nameSize*0.35;
   ctx.fillStyle='rgba(7,19,26,.78)';roundRect(x-tw/2,boxTop,tw,boxH,10);ctx.fill();
   ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=8;ctx.fillStyle='#ffd76b';ctx.textBaseline='alphabetic';ctx.font=`700 ${ebSize}px Anton, sans-serif`;ctx.fillText('👑 WINNER 👑',x,ebY);
   ctx.fillStyle='#fff';ctx.font=`700 ${nameSize}px Anton, sans-serif`;ctx.fillText(name,x,nameY);ctx.restore();}
