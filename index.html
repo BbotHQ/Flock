@@ -838,30 +838,35 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
       const land=delay+(1-0.45),sa=p-land;if(sa>=0&&sa<0.16){const sp=sa/0.16;ctx.save();ctx.globalAlpha=(1-sp)*0.6;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.6,r*(0.6+sp*2.2),r*(0.25+sp*0.9),0,0,6.283);ctx.stroke();ctx.restore();}}}
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
-function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd,totalEl}=_timeMap(P);
+function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
+  // Confirmed via live console logging: the ordinary frame-by-frame loop was
+  // reaching victory pose ON ITS OWN around mapEnd+0.4 (the instant the strike
+  // window naturally closes) — well BEFORE the old totalEl=mapEnd+0.75 cutoff
+  // that triggered the deliberate freeze/hold. So the audience already saw
+  // victory, and THEN the freeze fired using an earlier curSec (mapEnd+0.15,
+  // still mid-strike) — a real jump backward in time, showing attack again
+  // after victory had already appeared. Fix: stop the live loop BEFORE the
+  // strike window closes, so the deliberate two-beat hold is the ONLY place
+  // victory is ever shown — the live loop can never get there on its own.
+  const liveLoopCutoff=mapEnd+0.3;    // still inside [0,0.4) — strike pose holds
+  const hitFreezeSec=mapEnd+0.15;     // stage 1: frozen mid-strike
+  const victoryFreezeSec=mapEnd+0.6;  // stage 2: safely past the strike window
   function stepAtEl(el){
     if(el<=preSec)return (el/Math.max(0.001,preSec))*dS;
     if(el<=timerEnd)return dS+((el-preSec)/Math.max(0.001,(timerEnd-preSec)))*(slowStep-dS);
     const t=Math.min(1,(el-timerEnd)/Math.max(0.001,(mapEnd-timerEnd)));return slowStep+t*(S-1-slowStep);
   }
   function frame(now){if(myGen!==PLAY_GEN)return;const el=(now-t0)/1000;
-    if(el>=totalEl){
-      // Two-beat hold: freeze on the finishing blow itself (still mid-swing,
-      // weapon connecting) for HIT_HOLD_MS, then switch ONCE to the victory pose
-      // and hold for VICTORY_HOLD_MS before the finale rise begins. Picking a
-      // curSec still inside the strike window (d in [0,0.4) relative to the
-      // event) naturally keeps the winner in 'strike' pose via the existing
-      // midSwing check — same camera framing throughout, so nothing jumps.
-      // Both setTimeouts below check myGen too — without that, a fight replayed
-      // while this hold was still pending would have this stale sequence keep
+    if(el>=liveLoopCutoff){
+      // Both setTimeouts check myGen — without that, a fight replayed while
+      // this hold was still pending would have this stale sequence keep
       // firing and rendering on top of the new one at unpredictable times.
-      const hitFreezeSec=Math.min(totalEl,mapEnd+0.15);
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
         if(myGen!==PLAY_GEN)return;
-        renderScene(S-1,totalEl,now,true,1);
-        setTimeout(()=>{if(myGen===PLAY_GEN)playFinale(onDone,totalEl,myGen);},VICTORY_HOLD_MS);
+        renderScene(S-1,victoryFreezeSec,now,true,1);
+        setTimeout(()=>{if(myGen===PLAY_GEN)playFinale(onDone,victoryFreezeSec,myGen);},VICTORY_HOLD_MS);
       },HIT_HOLD_MS);
       return;
     }
