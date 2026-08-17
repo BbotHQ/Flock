@@ -2,10 +2,18 @@
   {
     "battle_id": "1538741472558583950-1",
     "title": "test 7",
-    "status": "pending",
+    "status": "official",
+    "winner": "Skizzo82 (6)",
+    "podium": [
+      "Skizzo82 (6)",
+      "Skizzo82 (13)",
+      "Skizzo82 (5)"
+    ],
     "ducks": 27,
-    "started_by": "BWall",
-    "started_ts": 1786935079
+    "lock": "a6f218226ddbeb1d8d9e1192f02b2915c4a1cae5c4b9bb8a4490a15098736376",
+    "seed": "1slckqkvjp4daokztrs11dq5h1",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIlNraXp6bzgyICgxMikiLCJTa2l6em84MiAoNSkiLCJTa2l6em84MiAoMjIpIiwiQldhbGwgKDEpIiwiU2tpenpvODIgKDE1KSIsIlNraXp6bzgyICg0KSIsIlNraXp6bzgyICgxNikiLCJTa2l6em84MiAoNykiLCJTa2l6em84MiAoMTApIiwiU2tpenpvODIgKDExKSIsIlNraXp6bzgyICgxMykiLCJTa2l6em84MiAoMTQpIiwiU2tpenpvODIgKDI3KSIsIlNraXp6bzgyICg4KSIsIlNraXp6bzgyICgyNCkiLCJTa2l6em84MiAoMjYpIiwiU2tpenpvODIgKDI1KSIsIlNraXp6bzgyICgxNykiLCJTa2l6em84MiAoMykiLCJTa2l6em84MiAoMikiLCJTa2l6em84MiAoMTgpIiwiU2tpenpvODIgKDIzKSIsIlNraXp6bzgyICgyMSkiLCJTa2l6em84MiAoNikiLCJTa2l6em84MiAoOSkiLCJTa2l6em84MiAoMTkpIiwiU2tpenpvODIgKDIwKSJdLCJkIjozMCwicyI6IjFzbGNrcWt2anA0ZGFva3p0cnMxMWRxNWgxIn0",
+    "ts": 1786935216
   },
   {
     "battle_id": "1538734982816866417-1",
