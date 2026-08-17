@@ -181,23 +181,12 @@ function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]
 function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
 function clamp(v,a,b){return v<a?a:v>b?b:v;}
 
-// ── SILENT SEED CAPTURE ─────────────────────────────────────────────────────
-// When a fight is started from a link !battle posted in Discord (?b=<battle_id>
-// in the URL), the instant this page settles on a seed it quietly reports that
-// exact seed here — fire-and-forget, no UI, no delay, nothing displayed
-// differently. This exists purely so that if a tab closes before the replay
-// link makes it back into Discord, a QC can run !recover and the bot can
-// finish the job using the SAME seed that actually ran, instead of the result
-// being lost. Visiting the site directly (no ?b= param) never calls this —
-// casual play is never logged anywhere.
-//
-// UPDATE THIS to your deployed endpoint (see deployment notes).
 const FLOCK_API = 'https://ducks.bbothq.com/flock';
 
 const _urlBattleId = new URLSearchParams(location.search).get('b') || null;
 
 function captureSeed(battleId, seed, names){
-  if(!battleId) return;  // no battle_id = not a Discord-triggered fight, never log it
+  if(!battleId) return;
   fetch(FLOCK_API + '/capture', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({battle_id: battleId, seed, ducks: names})
@@ -210,19 +199,6 @@ const HITWORDS=['BOOM','BANG','SLAM','SLASH','WHACK','SMACK','POW','BLAM','CRACK
   'CRUNCH','SPLAT','WHAM','KAPOW','CHOMP','CLOBBERED','SMASHED','WRECKED','CRUSHED','DOWN'];
 const SPARKWORDS=['CLANG','CLASH','OOF','OW','BONK','TAP','SWIPE','JAB','BLOCK','DING'];
 
-// ── DUCK SPRITE SHEETS ──────────────────────────────────────────────────────
-// Each duck is TWO images in the repo, same filename in two folders:
-//   ducks/<name>.png     — normal, standing in blue water
-//   duckred/<name>.png   — identical art, standing in red water
-// Both must use the same 3-col × 2-row pose grid:
-//   row0: [ idle ][ windup ][ strike ]   row1: [ hit ][ defeated ][ victory ]
-// TO ADD A DUCK: drop its PNG in ducks/, and the matching red version in
-// duckred/, and add the filename to this list. Everything else is automatic —
-// whichever version draws is picked per-frame from the duck's own tile color,
-// so a duck standing on ground the pond has already turned red always draws
-// from duckred/ (which is also why the victory pose reads red once the whole
-// pond has bled out by the finale), and the pose/cell it's drawing never
-// changes when it switches sheets — only which image the same cell comes from.
 const DUCK_NAMES = [
   'army','astronaut','beach','chef','coach','cool','cop','cowboy','detective','dragon',
   'fairy','firefighter','flash','gold','hawaiian','king','lifeguard','mallard','monocle','ninja',
@@ -232,7 +208,7 @@ const DUCK_SHEETS = DUCK_NAMES.map(n => 'ducks/' + n + '.png');
 const DUCK_SHEETS_RED = DUCK_NAMES.map(n => 'duckred/' + n + '.png');
 const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
 const SHEETS = [];
-let SHEETS_SETTLED = 0;   // loaded OR errored — either way, this sheet is done trying
+let SHEETS_SETTLED = 0;
 const SHEETS_READY_PROMISE = new Promise((resolve) => {
   let settled = 0;
   const done = () => { settled++; if (settled >= DUCK_SHEETS.length) resolve(); };
@@ -240,63 +216,44 @@ const SHEETS_READY_PROMISE = new Promise((resolve) => {
     const rec = {img:new Image(), ready:false, cw:0, ch:0, imgRed:new Image(), readyRed:false, cwR:0, chR:0};
     let toSettle = 2; const maybeDone = () => { if (--toSettle <= 0) done(); };
     rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; maybeDone(); };
-    rec.img.onerror = () => { maybeDone(); };  // failed to load — excluded from the ready pool below
+    rec.img.onerror = () => { maybeDone(); };
     rec.img.src = url;
     rec.imgRed.onload = () => { rec.cwR = rec.imgRed.naturalWidth/3; rec.chR = rec.imgRed.naturalHeight/2; rec.readyRed = true; maybeDone(); };
-    rec.imgRed.onerror = () => { maybeDone(); };  // missing red variant is fine — falls back to the blue sheet
+    rec.imgRed.onerror = () => { maybeDone(); };
     rec.imgRed.src = DUCK_SHEETS_RED[k];
     SHEETS[k] = rec;
   });
   if (DUCK_SHEETS.length === 0) resolve();
 });
-// True once the pond tile under (nx,ny) has actually finished turning red.
+
 function tileBloodied(nx,ny,curSec){
   if(!tileState||curSec==null)return false;
   const col=Math.floor(clamp(nx,0,0.999)*GRID_COLS), row=Math.floor(clamp(ny,0,0.999)*GRID_ROWS);
   const t=tileState[row*GRID_COLS+col];
   return t>=0 && (curSec-t)>=TILE_FADE*0.5;
 }
-// Pond background image (repo root). Falls back to the drawn gradient until it loads.
+
 const WATER = new Image(); WATER.okay = false;
 WATER.onload = () => { WATER.okay = true; };
 WATER.src = 'water.png';
-// Same pond, but blood-red — revealed cell-by-cell as ducks die (see BLOOD TILE SYSTEM below).
+
 const WATER_RED = new Image(); WATER_RED.okay = false;
 WATER_RED.onload = () => { WATER_RED.okay = true; };
 WATER_RED.src = 'water_red.png';
-// Only ever pick from sheets that actually finished loading successfully — this is
-// rebuilt once loading settles, so random assignment never lands on a missing/broken duck.
+
 let READY_INDICES = [];
 function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
-// Seed-derived salt, set once per battle in planFight(). Without this, spriteFor(i)
-// depended only on the duck's position — spot 1 always got the same sprite, spot 2
-// always got the same sprite, every single fight. Folding the seed in makes it vary
-// per battle while staying deterministic (same seed -> same sprites, so replays still
-// render identically).
+
 let SPRITE_SALT = 0;
 function spriteFor(i){
   if (!READY_INDICES.length) return 0;
   return READY_INDICES[(((i+1)*2654435761 + SPRITE_SALT)>>>0) % READY_INDICES.length];
 }
 
-// ── BLOOD TILE SYSTEM ───────────────────────────────────────────────────────
-// The pond is divided into a fine GRID_COLS×GRID_ROWS mosaic. Each cell starts
-// blue. A blood event doesn't stamp a fixed radius — it's an unbounded wavefront:
-// every cell's ignite-delay is its true pixel distance from the death point
-// divided by a constant speed, so red keeps expanding outward for the rest of
-// the fight (not stopping at a fixed ring). BLOOD_SPREAD_SEC is tuned so a
-// single stain has time to nearly cross the whole pond before the fight ends,
-// so with the multiple kills that happen along the way, the pond is visibly
-// closing in on fully red right as the final two ducks face off. Where two
-// stains' waves overlap, whichever reaches a cell first wins. Once a cell's
-// delay is reached it cross-fades blue→red over TILE_FADE seconds, then gets
-// baked once into a persistent offscreen canvas (bloodCanvas) so steady-state
-// cost stays near zero. Any cells still blue at the finale ripple outward from
-// the winner's own position so the pond finishes as one continuous red wave.
 const GRID_COLS = 220, GRID_ROWS = 138, TILE_FADE = 0.35, BLOOD_SPREAD_SEC = 130;
 let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
-let tileState = null;      // per-cell trigger time in curSec, or -1 if untouched
-let pendingTiles = [];     // indices currently mid-ripple/mid-fade (not yet baked)
+let tileState = null;
+let pendingTiles = [];
 function coverFit(iw, ih, aw, ah, over) {
   const s = Math.max(aw / iw, ah / ih) * (over || 1);
   return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
@@ -329,12 +286,7 @@ function drawRedTile(ctx2, col, row, aw, ah, alpha, driftX, driftY) {
   ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.75, rt.h + 0.75);
   ctx2.restore();
 }
-// Unbounded wavefront from a death point — but not a perfect circle. Each event gets
-// its own random angular "warp" (a few sine harmonics at random phase/strength), which
-// stretches the front further out in some directions than others, so it reads as an
-// irregular bloodstain spreading rather than a stamped disc. Cells get a delay from
-// this warped distance, and a cell already claimed by an earlier, slower wave gets
-// reassigned if this wave would reach it sooner.
+
 function triggerBloodAt(nx, ny, curSec) {
   if (!tileState) return;
   const aw = bloodAW, ah = bloodAH;
@@ -358,8 +310,7 @@ function triggerBloodAt(nx, ny, curSec) {
     }
   }
 }
-// Finale sweep: every still-blue cell ripples outward from the winner's own
-// position, so the pond finishes as one continuous red wave centered on them.
+
 function triggerAllRemaining(curSec, spreadWindow, fromX, fromY) {
   if (!tileState) return;
   const aw = bloodAW, ah = bloodAH;
@@ -379,7 +330,7 @@ function nameAbove(x,y,r,name,win,isDead){
   ctx.save();ctx.font=win?`700 ${fs}px Anton, sans-serif`:`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
   const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle=isDead?'rgba(6,15,20,.55)':'rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
   ctx.fillStyle=win?'#ffd76b':(isDead?'rgba(255,255,255,.42)':'#ffffff');ctx.fillText(t,x,y);ctx.restore();}
-// Draws a fighter as a sprite if its sheet is loaded, else falls back to the vector duck.
+
 function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   const idx=spriteFor(i), sh=SHEETS[idx];
   if(!sh||!sh.ready){
@@ -412,18 +363,17 @@ function planFight(names,seed){
   const order=[winner,...elimOrder.slice().reverse()].map(i=>({i,nm:names[i]}));
   const RR=Math.max(0.012,Math.min(0.05,0.36/Math.sqrt(n)));
   const density=Math.max(1,n/15);
-  const speedScale=Math.min(1,1/Math.sqrt(density));           // e.g. n=92 -> ~0.40x, n=500 -> floor
-  const jitScale=Math.min(1,1/density);                        // falls off faster than speed
+  const speedScale=Math.min(1,1/Math.sqrt(density));
+  const jitScale=Math.min(1,1/density);
   const SPEED=0.34*Math.max(0.22,speedScale),dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5*Math.max(0.10,jitScale);
-  const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);   // multi-hit only where it's visible
+  const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);
   const HCOOL = 10;
-  // progress guarantee: in huge fields, each victim must fall within a few steps so the
-  // melee always thins to two (duel always runs) and frames stay bounded.
+
   const FORCE_AFTER = Math.max(3, Math.floor(3200/Math.max(1,n-1)));
   const px=[],py=[],ang=[],wep=[];
   for(let i=0;i<n;i++){px[i]=MARGIN+rng()*(1-2*MARGIN);py[i]=MARGIN+rng()*(1-2*MARGIN);ang[i]=rng()*6.283;wep[i]=WEAPONS[Math.floor(rng()*WEAPONS.length)];}
   const meta=names.map((nm,i)=>({nm,col:DUCKPAL[i%DUCKPAL.length],weapon:wep[i]}));
-  const npick=0;  // sprites carry welded weapons — no floating pickups
+  const npick=0;
   const pickups=[];
   for(let k=0;k<npick;k++){pickups.push({x:0.1+rng()*0.8,y:0.12+rng()*0.76,weapon:WEAPONS[Math.floor(rng()*WEAPONS.length)],takenStep:Infinity});}
   const weaponBreaks=Array.from({length:n},()=>[]);
@@ -435,26 +385,17 @@ function planFight(names,seed){
     if(victim!==curVictim){curVictim=victim;victimStart=step;}
     if(alive===2){
       if(duelStart<0){duelStart=step;
-        // Randomised duel: each clash has exactly ONE target that clash — only they
-        // lose health; the other duck (shown attacking) takes nothing that beat.
-        // The loser's hits (whenever they're the target) sum to exactly 1.0, dead on
-        // the last clash; the winner's hits (on the rarer beats THEY'RE the target)
-        // sum to less, so they survive — but which duck is actually landing the blow
-        // varies clash to clash, driven by the same randomness that decides the
-        // amounts, so it's never just one duck attacking the whole fight.
-        duelK=4+Math.floor(rng()*7);              // 4–10 clashes
-        const winEnd=0.05+rng()*0.50;              // winner ends with 5–55% HP (much wider spread)
+
+        duelK=4+Math.floor(rng()*7);
+        const winEnd=0.05+rng()*0.50;
         let a=[],b=[];
         for(let kk=0;kk<duelK;kk++){
-          let av=0.15+rng()*1.2, bv=0.15+rng()*1.2;   // wide base range per clash
-          if(rng()<0.22)av*=1.6+rng()*0.8;             // ~22% chance of a big swing for the loser
-          if(rng()<0.22)bv*=1.6+rng()*0.8;             // same chance for the winner's side
+          let av=0.15+rng()*1.2, bv=0.15+rng()*1.2;
+          if(rng()<0.22)av*=1.6+rng()*0.8;
+          if(rng()<0.22)bv*=1.6+rng()*0.8;
           a.push(av);b.push(bv);
         }
-        // Decide, from those same raw draws, who's actually landing the blow each
-        // clash — target is whichever duck's raw value is bigger that beat (a
-        // genuine swing in momentum, not a coin flip). The final clash is always
-        // forced to be the victim's, so the fight still ends on their death.
+
         duelTarget=new Array(duelK);
         for(let kk=0;kk<duelK;kk++)duelTarget[kk]=(b[kk]>a[kk])?'winner':'victim';
         duelTarget[duelK-1]='victim';
@@ -463,8 +404,8 @@ function planFight(names,seed){
         duelHitsL=new Array(duelK).fill(0);
         duelHitsW=new Array(duelK).fill(0);
         for(let kk=0;kk<duelK;kk++){
-          if(duelTarget[kk]==='victim')duelHitsL[kk]=a[kk]/Math.max(0.0001,lsum);           // sum over victim-target beats = 1.0
-          else duelHitsW[kk]=b[kk]/Math.max(0.0001,wsum)*(1-winEnd);                        // sum over winner-target beats = 1-winEnd
+          if(duelTarget[kk]==='victim')duelHitsL[kk]=a[kk]/Math.max(0.0001,lsum);
+          else duelHitsW[kk]=b[kk]/Math.max(0.0001,wsum)*(1-winEnd);
         }
         duelIdx=0;
       }
@@ -512,16 +453,7 @@ function planFight(names,seed){
 }
 
 const STATE={names:[],seed:'',plan:null,raf:null,playDur:14,remain:null};
-// Bumped every time a fight sequence starts (Start, Replay, or a #r= link load).
-// cancelAnimationFrame stops a stale rAF loop, but does nothing for setTimeout
-// chains — the countdown ticks and the finishing-blow hold both use setTimeout.
-// If a fight got replayed while a previous sequence's timers were still
-// pending (even just a fast double-tap), the old ones kept firing and
-// rendering stale frames on top of the new sequence at unpredictable staggered
-// times — that was the actual cause of both the garbled countdown text and
-// the attack/victory pose appearing to flicker back and forth. Every such
-// callback now checks its captured generation against this before doing
-// anything; a stale one just silently no-ops instead.
+
 let PLAY_GEN=0;
 
 const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
@@ -533,11 +465,7 @@ function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,
 function shortLabel(s){return s.length>16?s.slice(0,15)+'…':s;}
 function eRng(step){let x=(step*2654435761)>>>0;return function(){x^=x<<13;x^=x>>>17;x^=x<<5;x>>>=0;return x/4294967296;};}
 function hpAt(P,i,stepF){const b=P.hpBreaks[i];let v=1;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)v=b[k].hp;else break;}return v;}
-// Smooth version used during live playback: the raw hpBreaks timeline jumps to the
-// new HP value the instant a hit event's step is reached, but the swing/impact
-// animation for that hit is still playing for ~0.3s after that point — snapping the
-// bar instantly made it look like damage landed before the swing finished. This eases
-// the bar from its previous value into the new one over that same window instead.
+
 function hpAtSmooth(P,i,curSec){
   const b=P.hpBreaks[i];const EASE=0.3;let prev=1;
   for(let k=0;k<b.length;k++){
@@ -552,9 +480,7 @@ function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;fo
 
 function drawWater(ax,ay,aw,ah,clock,curSec){
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
-  // Gentle multi-frequency drift so the (large, static) pond images read as moving
-  // water rather than a still photo — slow left/right sway plus a slight vertical
-  // bob. The image is oversized (coverFit ...,1.08) so drifting never exposes an edge.
+
   const t=(clock||0)*0.001;
   const driftX=Math.sin(t*0.17)*aw*0.036+Math.sin(t*0.41)*aw*0.015;
   const driftY=Math.cos(t*0.14)*ah*0.028+Math.sin(t*0.33)*ah*0.012;
@@ -567,7 +493,7 @@ function drawWater(ax,ay,aw,ah,clock,curSec){
     ctx.strokeStyle='rgba(180,230,240,.08)';ctx.lineWidth=2;
     for(let yy=ay+18;yy<ay+ah;yy+=24){ctx.beginPath();for(let xx=ax;xx<=ax+aw;xx+=10){const off=Math.sin(xx*0.03+clock*0.0022+yy*0.12)*3;xx===ax?ctx.moveTo(xx,yy+off):ctx.lineTo(xx,yy+off);}ctx.stroke();}
   }
-  // ── blood tile overlay ──
+
   if(curSec!=null && bloodCanvas && bloodAW===aw && bloodAH===ah){
     ctx.drawImage(bloodCanvas,0,0,bloodCanvas.width,bloodCanvas.height,ax,ay,aw,ah);
     if(pendingTiles.length){
@@ -576,7 +502,7 @@ function drawWater(ax,ay,aw,ah,clock,curSec){
         const t=tileState[idx];const elapsed=curSec-t;
         if(elapsed<0){still.push(idx);continue;}
         const col=idx%GRID_COLS,row=(idx/GRID_COLS)|0;
-        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}       // bake permanently, settled — no drift
+        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}
         else{ctx.save();ctx.translate(ax,ay);drawRedTile(ctx,col,row,aw,ah,elapsed/TILE_FADE,driftX,driftY);ctx.restore();still.push(idx);}
       }
       pendingTiles=still;
@@ -611,7 +537,7 @@ function drawWeapon(r,type){ctx.save();ctx.translate(r*1.2,-r*0.15);ctx.rotate(-
     ctx.fillStyle='#ffbe5c';ctx.fillRect(-r*0.1,r*0.05,r*0.45,r*0.9);
     ctx.fillStyle='#4bb8c4';ctx.fillRect(r*1.05,-r*0.28,r*0.55,r*0.56);
     ctx.fillStyle='#2b7f8a';ctx.beginPath();ctx.arc(r*1.6,0,r*0.2,0,6.283);ctx.fill();ctx.restore();}
-  else {/* blunderbuss */ ctx.save();ctx.rotate(0.2);ctx.fillStyle='#5a3d22';ctx.fillRect(-r*0.5,-r*0.16,r*1.5,r*0.34);
+  else { ctx.save();ctx.rotate(0.2);ctx.fillStyle='#5a3d22';ctx.fillRect(-r*0.5,-r*0.16,r*1.5,r*0.34);
     ctx.strokeStyle='#3a2814';ctx.lineWidth=r*0.28;ctx.beginPath();ctx.moveTo(-r*0.45,r*0.05);ctx.lineTo(-r*0.9,r*0.6);ctx.stroke();
     ctx.fillStyle='#9aa3ab';ctx.beginPath();ctx.moveTo(r*1.0,-r*0.16);ctx.lineTo(r*1.7,-r*0.5);ctx.lineTo(r*1.7,r*0.5);ctx.lineTo(r*1.0,r*0.16);ctx.closePath();ctx.fill();ctx.restore();}
   ctx.restore();}
@@ -647,10 +573,10 @@ function drawDuckGhost(x,y,r,label,color,simple){
   if(simple){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r*0.9,0,6.283);ctx.fill();}
   else{ctx.translate(x,y);ctx.scale(1,-1);ctx.translate(-x,-y);duckBody(r*0.9,color);}
   ctx.restore();
-  // X eyes
+
   ctx.save();ctx.globalAlpha=.6;ctx.strokeStyle='#0c141b';ctx.lineWidth=Math.max(1,r*0.14);const ex=x+r*0.7,ey=y-r*0.2,s=r*0.22;
   ctx.beginPath();ctx.moveTo(ex-s,ey-s);ctx.lineTo(ex+s,ey+s);ctx.moveTo(ex+s,ey-s);ctx.lineTo(ex-s,ey+s);ctx.stroke();ctx.restore();
-  // small faint tag for the floater
+
   ctx.save();ctx.globalAlpha=.45;labelTag(x,y-r*1.5,label,false);ctx.restore();}
 function drawStain(x,y,r,step){const g=eRng(step);ctx.save();ctx.fillStyle='rgba(120,20,12,.42)';
   for(let i=0;i<6;i++){const a=g()*6.283,d=g()*r*1.6,rr=r*(0.25+g()*0.5);ctx.beginPath();ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,rr,0,6.283);ctx.fill();}ctx.restore();}
@@ -702,36 +628,26 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
   if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.2,fa[2*P.winner],fa[2*P.winner+1]);}
   let zoom=1,cx=0.5,cy=0.5;
   if(stepF>=P.duelStart){
-    // One continuous camera formula for the whole final stretch — live combat,
-    // the frozen finishing-blow hold, and the victory finale all render at
-    // stepF=S-1 by the time finale kicks in, so this naturally settles into the
-    // same framing throughout. Previously the frozen/finale phase switched to a
-    // DIFFERENT formula (fixed zoom, centered on the winner alone) than the live
-    // approach was using (zoom up to 3.5, centered between both fighters) —
-    // two different formulas meeting at a boundary is exactly what caused the jolt.
+
     const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);
-    const nearEnd=clamp((stepF-(P.S-1-70))/70,0,1); // extra zoom as the decisive swing approaches
+    const nearEnd=clamp((stepF-(P.S-1-70))/70,0,1);
     zoom=1+1.6*ramp+0.9*nearEnd;
     const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);
   }
   const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
-  // blood stains
+
   for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){if(!e._blooded){e._blooded=true;triggerBloodAt(e.x,e.y,eSec+0.2);}}}
-  // weapon pickups still in the water
+
   for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
-  // transient attack poses from kill events (killer winds up then strikes)
-  // ── pose per duck: idle by default, HIT when recently damaged, WINDUP/STRIKE when landing a kill ──
-  const soleSurvivor=finalOne(stepF);   // true only when exactly one duck remains alive
+
+  const soleSurvivor=finalOne(stepF);
   const pose=new Array(n).fill('idle');
   const duelSet=new Set(P.duelDucks);
-  // defense: a recent HP drop → hit/flinch (skip duel ducks — they use the alternating event poses below)
+
   for(let i=0;i<n;i++){if(duelSet.has(i))continue;const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
-  // offense + duel clashes: striker winds up then strikes; the one on the receiving end flinches
-  // Also lock the attacker's facing toward its actual target for this whole window —
-  // raw frame-to-frame movement (approach then retreat right after a hit lands) was
-  // flipping facing mid-swing, which read as the duck turning around or swinging backwards.
+
   const lockedFacing={};
   for(const e of P.events){if(e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
     if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';
@@ -741,24 +657,19 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
       const ax=fe[2*e.k];const tx=(e.v!=null)?fe[2*e.v]:e.x;
       lockedFacing[e.k]=(tx>=ax)?1:-1;
     }}
-  // dead ducks — defeated pose, floating in place (names remain)
+
   for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple,tileBloodied(fa[2*i],fa[2*i+1],curSec));}
-  // living
+
   let alive=0;
   for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
     const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(lockedFacing[i]!==undefined)?lockedFacing[i]:((x1-x0)>=0?1:-1);
-    // VICTORY only once actually won — AND only once the winner's own finishing
-    // swing (windup/strike, timed on the real-elapsed-seconds clock) has actually
-    // played out. soleSurvivor flips true on a different, step-based clock that
-    // isn't synced to that swing timing, so without this it could cut the swing
-    // off mid-animation the instant the victim's death step was reached.
+
     const midSwing=(pose[i]==='strike'||pose[i]==='windup');
     const isWin=(i===P.winner)&&(finale||soleSurvivor)&&!midSwing;
     const ps=isWin?'victory':pose[i];
     let hpShow=hpAtSmooth(P,i,curSec);
     drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpShow,false,simple,tileBloodied(x0,y0,curSec));}
-  // hit + kill effects — suppressed once the finale hold begins, so the last kill's
-  // word/burst never balloons over the winner or bleeds into the result card above.
+
   if(!finale){
     for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
       const isFinalBlow=(e.kill && e.step===P.finalKillStep);
@@ -779,20 +690,13 @@ function updateFeed(curSec){const P=STATE.plan;const shown=[];for(const e of P.e
   el.innerHTML=html;}
 function finalOne(stepF){const P=STATE.plan;let c=0;for(let i=0;i<P.n;i++)if(stepF<P.deathStep[i])c++;return c<=1;}
 
-// piecewise time map so the final duel always gets a dedicated, consistent window —
-// 10 seconds, regardless of total fight length or duck count — so the ending never
-// feels rushed or chaotic no matter how big the melee was.
 const FINAL_SHOWDOWN_SEC = 10;
-// The last chunk of duel steps before the decisive blow gets stretched into real
-// slow motion: the on-screen timer hits 0:00 right as it begins (SLOWMO_STEP_FRAC of
-// the duel's simulated steps), then that stretch plays out over SLOWMO_SEC of real
-// time — zoomed in tight — before cutting to the winner. stepToPlaySec and playFight
-// share this exact mapping so kill/hit FX timing stays in sync with what's on screen.
+
 const SLOWMO_STEP_FRAC = 0.16, SLOWMO_SEC = 2.2;
 function _timeSplit(P){
   const dS=P.duelStart,S=P.S;
-  if(dS<=4||S-dS<=4){return {preSec:0,duelSec:P.durSec};}   // duel starts ~immediately (e.g. 2-duck fights)
-  const duelSec=Math.min(FINAL_SHOWDOWN_SEC,P.durSec-4);      // always 10s, but never eat the whole clock
+  if(dS<=4||S-dS<=4){return {preSec:0,duelSec:P.durSec};}
+  const duelSec=Math.min(FINAL_SHOWDOWN_SEC,P.durSec-4);
   return {preSec:P.durSec-duelSec,duelSec};
 }
 function _timeMap(P){
@@ -800,14 +704,9 @@ function _timeMap(P){
   const hasDuel=(S-dS)>20;
   const slowStep=hasDuel?dS+Math.floor((S-dS)*(1-SLOWMO_STEP_FRAC)):S-1;
   const normalDuelSec=hasDuel?duelSec*(1-SLOWMO_STEP_FRAC):duelSec;
-  const timerEnd=preSec+normalDuelSec;                        // timer hits 0:00 here
-  const mapEnd=timerEnd+(hasDuel?SLOWMO_SEC:0);                // where step S-1 lands — fixed, event/FX timing anchor
-  // The decisive blow is always step S-1, which by construction maps to mapEnd —
-  // so simply padding "the end" doesn't help, since the pad becomes the new
-  // mapEnd and the blow keeps landing exactly on it. Instead: mapEnd stays fixed
-  // (so event FX have a real, non-moving target time), and totalEl — when
-  // playback actually stops — gets extra real seconds tacked on afterward, so
-  // the windup/strike/impact can play out fully before the freeze-and-cut.
+  const timerEnd=preSec+normalDuelSec;
+  const mapEnd=timerEnd+(hasDuel?SLOWMO_SEC:0);
+
   const totalEl=(P.finalKillStep!=null && P.finalKillStep>=0)?mapEnd+0.75:mapEnd;
   return {dS,S,preSec,duelSec,hasDuel,slowStep,normalDuelSec,timerEnd,mapEnd,totalEl};
 }
@@ -825,7 +724,7 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
   const n=P.n,f0=P.frames[0],r=Math.max(6,P.RR*Math.min(aw,ah)*1.15),simple=n>200;
   const ease=t=>1-Math.pow(1-t,3);
-  // weapons rain in first (slightly ahead of the ducks)
+
   P.pickups.forEach((pk,pi)=>{const tx=ax+pk.x*aw,ty=ay+pk.y*ah;
     const delay=((pi*40503)%1000)/1000*0.3;const lp=clamp((p-delay)/(1-0.3),0,1);const e=ease(lp);
     const Y=ty-(1-e)*(ah+ay+40);drawPickup(tx,Y,r,pk.weapon,clock);
@@ -840,18 +739,10 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
 function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
-  // Confirmed via live console logging: the ordinary frame-by-frame loop was
-  // reaching victory pose ON ITS OWN around mapEnd+0.4 (the instant the strike
-  // window naturally closes) — well BEFORE the old totalEl=mapEnd+0.75 cutoff
-  // that triggered the deliberate freeze/hold. So the audience already saw
-  // victory, and THEN the freeze fired using an earlier curSec (mapEnd+0.15,
-  // still mid-strike) — a real jump backward in time, showing attack again
-  // after victory had already appeared. Fix: stop the live loop BEFORE the
-  // strike window closes, so the deliberate two-beat hold is the ONLY place
-  // victory is ever shown — the live loop can never get there on its own.
-  const liveLoopCutoff=mapEnd+0.3;    // still inside [0,0.4) — strike pose holds
-  const hitFreezeSec=mapEnd+0.15;     // stage 1: frozen mid-strike
-  const victoryFreezeSec=mapEnd+0.6;  // stage 2: safely past the strike window
+
+  const liveLoopCutoff=mapEnd+0.3;
+  const hitFreezeSec=mapEnd+0.15;
+  const victoryFreezeSec=mapEnd+0.6;
   function stepAtEl(el){
     if(el<=preSec)return (el/Math.max(0.001,preSec))*dS;
     if(el<=timerEnd)return dS+((el-preSec)/Math.max(0.001,(timerEnd-preSec)))*(slowStep-dS);
@@ -859,9 +750,7 @@ function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,
   }
   function frame(now){if(myGen!==PLAY_GEN)return;const el=(now-t0)/1000;
     if(el>=liveLoopCutoff){
-      // Both setTimeouts check myGen — without that, a fight replayed while
-      // this hold was still pending would have this stale sequence keep
-      // firing and rendering on top of the new one at unpredictable times.
+
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
         if(myGen!==PLAY_GEN)return;
@@ -872,10 +761,10 @@ function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,
     }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-const HIT_HOLD_MS=1250;      // ms frozen on the finishing attack pose
-const VICTORY_HOLD_MS=2000;  // ms frozen on the victory pose, before the finale rise begins
+const HIT_HOLD_MS=1250;
+const VICTORY_HOLD_MS=2000;
 function playFinale(onDone,elBase,myGen){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
-  const base=elBase!=null?elBase:P.durSec; // continue the SAME clock playFight ended on — resetting it here was
+  const base=elBase!=null?elBase:P.durSec;
   function frame(now){if(myGen!==PLAY_GEN)return;const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 function countdownThen(cb,myGen){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
@@ -884,18 +773,15 @@ function countdownThen(cb,myGen){const el=document.getElementById('count3');cons
   let curAnim=null;
   (function tick(){if(myGen!==PLAY_GEN){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();return;}
     if(k>=seq.length){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();el.style.opacity=0;cb();return;}
-    // Cancel the previous number's fade before starting the next — without this,
-    // if the new number's animation started while the old one's fade-out was
-    // still rendering its last frame(s), the two could briefly overlap on
-    // screen, reading as garbled/concatenated text ("3" bleeding into "2", etc).
+
     if(curAnim)curAnim.cancel();
-    el.textContent=seq[k];el.style.opacity=1;
+    el.textContent=seq[k];
     curAnim=el.animate([
-      {opacity:0,transform:'scale(0.85)',offset:0},
-      {opacity:1,transform:'scale(1)',offset:0.18},
-      {opacity:1,transform:'scale(1)',offset:0.75},
-      {opacity:0,transform:'scale(1)',offset:1}
-    ],{duration:850,easing:'ease-out'});
+      {opacity:0,offset:0},
+      {opacity:1,offset:0.18},
+      {opacity:1,offset:0.75},
+      {opacity:0,offset:1}
+    ],{duration:850,easing:'linear'});
     k++;setTimeout(tick,900);})();}
 function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
@@ -920,11 +806,7 @@ document.getElementById('standingsBtn').addEventListener('click',()=>{
 
 function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
 function _arenaDims(){const pad=16;return {aw:VIEW.w-pad*2,ah:VIEW.h-pad*2-8};}
-// Every path that can start/replay a fight (Start button, Replay button, and loading
-// a #r= replay link straight off a refresh) waits here first. Without this, a fight
-// can begin before the duck sheets finish downloading — worse in Incognito, where
-// nothing's cached — and it'll fall back to the plain vector ducks for that whole
-// playback, since each duck's sprite pick is locked in at the start of the fight.
+
 async function ensureSpritesReady(btn){
   if(READY_INDICES.length)return;
   let orig;if(btn){orig=btn.textContent;btn.disabled=true;btn.textContent='🦆 Loading fighters…';}
@@ -973,10 +855,7 @@ document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
 
 SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
-// iOS Safari sometimes restores a page from its back-forward cache on "reload" instead
-// of truly re-running this script — that's what made a refresh look frozen on whatever
-// frame (including the finale) was last on screen. Forcing a real reload here guarantees
-// a clean slate every time.
+
 window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 (async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
