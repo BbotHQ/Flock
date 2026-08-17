@@ -429,27 +429,43 @@ function planFight(names,seed){
   const weaponBreaks=Array.from({length:n},()=>[]);
   const hpBreaks=Array.from({length:n},()=>[]);
   const dead=new Array(n).fill(false), deathStep=new Array(n).fill(Infinity), hp=new Array(n).fill(1);
-  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0,duelClashN=0,duelWBudget=1; const MAX=60*90;
+  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelTarget=null,duelK=0,duelIdx=0,duelClashN=0; const MAX=60*90;
   while(alive>1&&step<MAX){
     const victim=nv<elimOrder.length?elimOrder[nv]:-1; let target=-1;
     if(victim!==curVictim){curVictim=victim;victimStart=step;}
     if(alive===2){
       if(duelStart<0){duelStart=step;
-        // Randomised duel: each clash deals a random amount to BOTH ducks. The loser's
-        // hits sum to exactly 1.0 (dead on the final blow); the winner's sum to less, so
-        // they survive — but leads can swap back and forth until that final blow.
+        // Randomised duel: each clash has exactly ONE target that clash — only they
+        // lose health; the other duck (shown attacking) takes nothing that beat.
+        // The loser's hits (whenever they're the target) sum to exactly 1.0, dead on
+        // the last clash; the winner's hits (on the rarer beats THEY'RE the target)
+        // sum to less, so they survive — but which duck is actually landing the blow
+        // varies clash to clash, driven by the same randomness that decides the
+        // amounts, so it's never just one duck attacking the whole fight.
         duelK=4+Math.floor(rng()*7);              // 4–10 clashes
         const winEnd=0.05+rng()*0.50;              // winner ends with 5–55% HP (much wider spread)
-        let lw=[],ww=[],ls=0,ws=0;
+        let a=[],b=[];
         for(let kk=0;kk<duelK;kk++){
-          let a=0.15+rng()*1.2, b=0.15+rng()*1.2;   // wide base range per clash
-          if(rng()<0.22)a*=1.6+rng()*0.8;           // ~22% chance of a big swing for the loser
-          if(rng()<0.22)b*=1.6+rng()*0.8;           // same chance for the winner's side
-          lw.push(a);ww.push(b);ls+=a;ws+=b;
+          let av=0.15+rng()*1.2, bv=0.15+rng()*1.2;   // wide base range per clash
+          if(rng()<0.22)av*=1.6+rng()*0.8;             // ~22% chance of a big swing for the loser
+          if(rng()<0.22)bv*=1.6+rng()*0.8;             // same chance for the winner's side
+          a.push(av);b.push(bv);
         }
-        duelHitsL=lw.map(v=>v/ls);                 // sum = 1.0  → loser dies on last clash
-        duelHitsW=ww.map(v=>v/ws*(1-winEnd));      // sum = 1-winEnd → winner survives
-        duelWBudget=Math.max(0.001,1-winEnd);      // winner's total budget, captured for later normalization
+        // Decide, from those same raw draws, who's actually landing the blow each
+        // clash — target is whichever duck's raw value is bigger that beat (a
+        // genuine swing in momentum, not a coin flip). The final clash is always
+        // forced to be the victim's, so the fight still ends on their death.
+        duelTarget=new Array(duelK);
+        for(let kk=0;kk<duelK;kk++)duelTarget[kk]=(b[kk]>a[kk])?'winner':'victim';
+        duelTarget[duelK-1]='victim';
+        let lsum=0,wsum=0;
+        for(let kk=0;kk<duelK;kk++){if(duelTarget[kk]==='victim')lsum+=a[kk];else wsum+=b[kk];}
+        duelHitsL=new Array(duelK).fill(0);
+        duelHitsW=new Array(duelK).fill(0);
+        for(let kk=0;kk<duelK;kk++){
+          if(duelTarget[kk]==='victim')duelHitsL[kk]=a[kk]/Math.max(0.0001,lsum);           // sum over victim-target beats = 1.0
+          else duelHitsW[kk]=b[kk]/Math.max(0.0001,wsum)*(1-winEnd);                        // sum over winner-target beats = 1-winEnd
+        }
         duelIdx=0;
       }
       target=winner;
@@ -473,25 +489,16 @@ function planFight(names,seed){
           else{events.push({step,x:ex,y:ey,kill:false,word:'',k:target,v:victim});ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);}}
       } else {
         if(touch&&step-lastClash>26){lastClash=step;
-          const iL=Math.min(duelIdx,(duelHitsL?duelHitsL.length:1)-1);
-          const dL=duelHitsL?duelHitsL[iL]:0.17, dW=duelHitsW?duelHitsW[iL]:0.09;
+          const iL=Math.min(duelIdx,duelK-1);
+          const isVictimTarget=duelTarget?duelTarget[iL]==='victim':true;
+          const target=isVictimTarget?victim:winner, striker=isVictimTarget?winner:victim;
           duelIdx++;
-          hp[victim]=Math.max(0,hp[victim]-dL);hpBreaks[victim].push({step,hp:hp[victim]});
-          hp[winner]=Math.max(0.03,hp[winner]-dW);hpBreaks[winner].push({step,hp:hp[winner]});
+          const dHit=isVictimTarget?(duelHitsL?duelHitsL[iL]:0.17):(duelHitsW?duelHitsW[iL]:0.09);
+          if(isVictimTarget)hp[victim]=Math.max(0,hp[victim]-dHit);
+          else hp[winner]=Math.max(0.03,hp[winner]-dHit);
+          hpBreaks[target].push({step,hp:hp[target]});
           const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
-          const lethal = duelIdx>=duelK || hp[victim]<=0.0001;
-          // Whoever actually lost MORE of their OWN total damage budget this
-          // specific clash is shown taking the hit; the other is shown landing it.
-          // Comparing raw amounts (dL vs dW) biased heavily toward the loser always
-          // "losing" every exchange whenever the winner's total budget (1-winEnd)
-          // was small — in decisive wins the loser could go the whole duel without
-          // ever visually landing a blow. Comparing each duck's share of their OWN
-          // budget instead keeps this fair and varied regardless of how lopsided
-          // the final outcome is, while the visual and the real damage still can
-          // never disagree.
-          const victimShare=dL, winnerShare=dW/duelWBudget;
-          const victimTookMore = victimShare>=winnerShare;
-          const striker=victimTookMore?winner:victim, target=victimTookMore?victim:winner;
+          const lethal = isVictimTarget && (duelIdx>=duelK || hp[victim]<=0.0001);
           duelClashN++;
           if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
           else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:striker,v:target});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
@@ -505,6 +512,17 @@ function planFight(names,seed){
 }
 
 const STATE={names:[],seed:'',plan:null,raf:null,playDur:14,remain:null};
+// Bumped every time a fight sequence starts (Start, Replay, or a #r= link load).
+// cancelAnimationFrame stops a stale rAF loop, but does nothing for setTimeout
+// chains — the countdown ticks and the finishing-blow hold both use setTimeout.
+// If a fight got replayed while a previous sequence's timers were still
+// pending (even just a fast double-tap), the old ones kept firing and
+// rendering stale frames on top of the new sequence at unpredictable staggered
+// times — that was the actual cause of both the garbled countdown text and
+// the attack/victory pose appearing to flicker back and forth. Every such
+// callback now checks its captured generation against this before doing
+// anything; a stale one just silently no-ops instead.
+let PLAY_GEN=0;
 
 const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
 function fitCanvas(){const shell=cv.parentElement;const w=shell.clientWidth||shell.getBoundingClientRect().width;
@@ -800,8 +818,8 @@ function stepToPlaySec(step){
   return timerEnd+((step-slowStep)/Math.max(1,(S-1-slowStep)))*(mapEnd-timerEnd);
 }
 
-function dropIn(cb){const P=STATE.plan,DUR=1400,t0=performance.now();cancelAnimationFrame(STATE.raf);STATE.remain=null;lastRosterKey=-1;lastFeedKey=-1;
-  function frame(now){const p=Math.min(1,(now-t0)/DUR);renderDrop(p,now);if(p>=1){cb();return;}STATE.raf=requestAnimationFrame(frame);}
+function dropIn(cb,myGen){const P=STATE.plan,DUR=1400,t0=performance.now();cancelAnimationFrame(STATE.raf);STATE.remain=null;lastRosterKey=-1;lastFeedKey=-1;
+  function frame(now){if(myGen!==PLAY_GEN)return;const p=Math.min(1,(now-t0)/DUR);renderDrop(p,now);if(p>=1){cb();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
@@ -820,14 +838,14 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
       const land=delay+(1-0.45),sa=p-land;if(sa>=0&&sa<0.16){const sp=sa/0.16;ctx.save();ctx.globalAlpha=(1-sp)*0.6;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.6,r*(0.6+sp*2.2),r*(0.25+sp*0.9),0,0,6.283);ctx.stroke();ctx.restore();}}}
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
-function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd,totalEl}=_timeMap(P);
+function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd,totalEl}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   function stepAtEl(el){
     if(el<=preSec)return (el/Math.max(0.001,preSec))*dS;
     if(el<=timerEnd)return dS+((el-preSec)/Math.max(0.001,(timerEnd-preSec)))*(slowStep-dS);
     const t=Math.min(1,(el-timerEnd)/Math.max(0.001,(mapEnd-timerEnd)));return slowStep+t*(S-1-slowStep);
   }
-  function frame(now){const el=(now-t0)/1000;
+  function frame(now){if(myGen!==PLAY_GEN)return;const el=(now-t0)/1000;
     if(el>=totalEl){
       // Two-beat hold: freeze on the finishing blow itself (still mid-swing,
       // weapon connecting) for HIT_HOLD_MS, then switch ONCE to the victory pose
@@ -835,11 +853,15 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
       // curSec still inside the strike window (d in [0,0.4) relative to the
       // event) naturally keeps the winner in 'strike' pose via the existing
       // midSwing check — same camera framing throughout, so nothing jumps.
+      // Both setTimeouts below check myGen too — without that, a fight replayed
+      // while this hold was still pending would have this stale sequence keep
+      // firing and rendering on top of the new one at unpredictable times.
       const hitFreezeSec=Math.min(totalEl,mapEnd+0.15);
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
+        if(myGen!==PLAY_GEN)return;
         renderScene(S-1,totalEl,now,true,1);
-        setTimeout(()=>playFinale(onDone,totalEl),VICTORY_HOLD_MS);
+        setTimeout(()=>{if(myGen===PLAY_GEN)playFinale(onDone,totalEl,myGen);},VICTORY_HOLD_MS);
       },HIT_HOLD_MS);
       return;
     }
@@ -847,15 +869,16 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
   STATE.raf=requestAnimationFrame(frame);}
 const HIT_HOLD_MS=1250;      // ms frozen on the finishing attack pose
 const VICTORY_HOLD_MS=2000;  // ms frozen on the victory pose, before the finale rise begins
-function playFinale(onDone,elBase){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
+function playFinale(onDone,elBase,myGen){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
   const base=elBase!=null?elBase:P.durSec; // continue the SAME clock playFight ended on — resetting it here was
-  function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
+  function frame(now){if(myGen!==PLAY_GEN)return;const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
+function countdownThen(cb,myGen){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
   const introT0=performance.now();let introRaf;
-  (function loop(){renderEmptyPond(performance.now());introRaf=requestAnimationFrame(loop);})();
+  (function loop(){if(myGen!==PLAY_GEN)return;renderEmptyPond(performance.now());introRaf=requestAnimationFrame(loop);})();
   let curAnim=null;
-  (function tick(){if(k>=seq.length){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();el.style.opacity=0;cb();return;}
+  (function tick(){if(myGen!==PLAY_GEN){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();return;}
+    if(k>=seq.length){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();el.style.opacity=0;cb();return;}
     // Cancel the previous number's fade before starting the next — without this,
     // if the new number's animation started while the old one's fade-out was
     // still rendering its last frame(s), the two could briefly overlap on
@@ -900,9 +923,12 @@ async function ensureSpritesReady(btn){
 }
 function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='none';
-  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults)));}
+  const myGen=++PLAY_GEN;
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
 async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
-  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults)));}
+  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';
+  const myGen=++PLAY_GEN;
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
 function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
@@ -931,7 +957,7 @@ document.getElementById('start').addEventListener('click',async ()=>{const names
 document.getElementById('replayBtn').addEventListener('click',replayFight);
 document.getElementById('closeResult').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='flex';});
 document.getElementById('reopenResult').addEventListener('click',()=>{document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';});
-document.getElementById('backBtn').addEventListener('click',()=>{setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
+document.getElementById('backBtn').addEventListener('click',()=>{PLAY_GEN++;setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
   document.getElementById('result').classList.remove('show');document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
 document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
