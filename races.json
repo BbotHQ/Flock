@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1538741472558583950-1",
+    "title": "test 7",
+    "status": "pending",
+    "ducks": 27,
+    "started_by": "BWall",
+    "started_ts": 1786935079
+  },
+  {
     "battle_id": "1538734982816866417-1",
     "title": "OG RC",
     "status": "official",
