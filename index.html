@@ -829,22 +829,24 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
   }
   function frame(now){const el=(now-t0)/1000;
     if(el>=totalEl){
-      // Two-beat hold: first freeze on the finishing blow itself (still mid-swing,
-      // weapon connecting), then switch to the victory pose for the second half.
-      // Picking a curSec still inside the strike window (d in [0,0.4) relative to
-      // the event) naturally keeps the winner in 'strike' pose via the existing
+      // Two-beat hold: freeze on the finishing blow itself (still mid-swing,
+      // weapon connecting) for HIT_HOLD_MS, then switch ONCE to the victory pose
+      // and hold for VICTORY_HOLD_MS before the finale rise begins. Picking a
+      // curSec still inside the strike window (d in [0,0.4) relative to the
+      // event) naturally keeps the winner in 'strike' pose via the existing
       // midSwing check — same camera framing throughout, so nothing jumps.
       const hitFreezeSec=Math.min(totalEl,mapEnd+0.15);
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
         renderScene(S-1,totalEl,now,true,1);
-        setTimeout(()=>playFinale(onDone,totalEl),IMPACT_HOLD/2);
-      },IMPACT_HOLD/2);
+        setTimeout(()=>playFinale(onDone,totalEl),VICTORY_HOLD_MS);
+      },HIT_HOLD_MS);
       return;
     }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
-const IMPACT_HOLD=1250; // ms to hold on the finishing blow before the camera rises into the victory framing
+const HIT_HOLD_MS=1250;      // ms frozen on the finishing attack pose
+const VICTORY_HOLD_MS=2000;  // ms frozen on the victory pose, before the finale rise begins
 function playFinale(onDone,elBase){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
   const base=elBase!=null?elBase:P.durSec; // continue the SAME clock playFight ended on — resetting it here was
   function frame(now){const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
@@ -852,8 +854,16 @@ function playFinale(onDone,elBase){const P=STATE.plan,S=P.S,t0=performance.now()
 function countdownThen(cb){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
   const introT0=performance.now();let introRaf;
   (function loop(){renderEmptyPond(performance.now());introRaf=requestAnimationFrame(loop);})();
-  (function tick(){if(k>=seq.length){cancelAnimationFrame(introRaf);el.style.opacity=0;cb();return;}el.textContent=seq[k];el.style.opacity=1;
-    el.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(1.3)'}],{duration:850});k++;setTimeout(tick,900);})();}
+  let curAnim=null;
+  (function tick(){if(k>=seq.length){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();el.style.opacity=0;cb();return;}
+    // Cancel the previous number's fade before starting the next — without this,
+    // if the new number's animation started while the old one's fade-out was
+    // still rendering its last frame(s), the two could briefly overlap on
+    // screen, reading as garbled/concatenated text ("3" bleeding into "2", etc).
+    if(curAnim)curAnim.cancel();
+    el.textContent=seq[k];el.style.opacity=1;
+    curAnim=el.animate([{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(1.3)'}],{duration:850});
+    k++;setTimeout(tick,900);})();}
 function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
   const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
   drawBarbedWire(ax,ay,aw,ah);
