@@ -429,7 +429,7 @@ function planFight(names,seed){
   const weaponBreaks=Array.from({length:n},()=>[]);
   const hpBreaks=Array.from({length:n},()=>[]);
   const dead=new Array(n).fill(false), deathStep=new Array(n).fill(Infinity), hp=new Array(n).fill(1);
-  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0,duelClashN=0; const MAX=60*90;
+  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelK=0,duelIdx=0,duelClashN=0,duelWBudget=1; const MAX=60*90;
   while(alive>1&&step<MAX){
     const victim=nv<elimOrder.length?elimOrder[nv]:-1; let target=-1;
     if(victim!==curVictim){curVictim=victim;victimStart=step;}
@@ -449,6 +449,7 @@ function planFight(names,seed){
         }
         duelHitsL=lw.map(v=>v/ls);                 // sum = 1.0  → loser dies on last clash
         duelHitsW=ww.map(v=>v/ws*(1-winEnd));      // sum = 1-winEnd → winner survives
+        duelWBudget=Math.max(0.001,1-winEnd);      // winner's total budget, captured for later normalization
         duelIdx=0;
       }
       target=winner;
@@ -479,15 +480,21 @@ function planFight(names,seed){
           hp[winner]=Math.max(0.03,hp[winner]-dW);hpBreaks[winner].push({step,hp:hp[winner]});
           const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
           const lethal = duelIdx>=duelK || hp[victim]<=0.0001;
-          // The animated striker/target now always match who's actually taking the
-          // damage that clash (winner strikes, victim defends) — this used to
-          // alternate independently of the real HP change above, which meant the
-          // duck shown winding up and swinging could still be the one losing more
-          // health, while the duck shown flinching lost almost nothing. Confusing
-          // and wrong; the visual and the actual damage have to agree.
+          // Whoever actually lost MORE of their OWN total damage budget this
+          // specific clash is shown taking the hit; the other is shown landing it.
+          // Comparing raw amounts (dL vs dW) biased heavily toward the loser always
+          // "losing" every exchange whenever the winner's total budget (1-winEnd)
+          // was small — in decisive wins the loser could go the whole duel without
+          // ever visually landing a blow. Comparing each duck's share of their OWN
+          // budget instead keeps this fair and varied regardless of how lopsided
+          // the final outcome is, while the visual and the real damage still can
+          // never disagree.
+          const victimShare=dL, winnerShare=dW/duelWBudget;
+          const victimTookMore = victimShare>=winnerShare;
+          const striker=victimTookMore?winner:victim, target=victimTookMore?victim:winner;
           duelClashN++;
           if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
-          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:winner,v:victim});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
+          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:striker,v:target});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
       }}
     const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
   }
@@ -927,4 +934,3 @@ window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 </script>
 </body>
 </html>
-
