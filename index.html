@@ -829,12 +829,18 @@ function playFight(onDone){const P=STATE.plan;const {dS,S,preSec,slowStep,timerE
   }
   function frame(now){const el=(now-t0)/1000;
     if(el>=totalEl){
-      // Freeze right where the finishing blow landed, using the SAME camera framing
-      // the victory hold uses — previously this used the duel-zoom camera (centered
-      // between both fighters) while the finale used a different one (centered on
-      // just the winner), causing a visible jump/snap the instant victory kicked in.
-      renderScene(S-1,totalEl,now,true,1);STATE.remain=0;
-      setTimeout(()=>playFinale(onDone,totalEl),IMPACT_HOLD);return;
+      // Two-beat hold: first freeze on the finishing blow itself (still mid-swing,
+      // weapon connecting), then switch to the victory pose for the second half.
+      // Picking a curSec still inside the strike window (d in [0,0.4) relative to
+      // the event) naturally keeps the winner in 'strike' pose via the existing
+      // midSwing check — same camera framing throughout, so nothing jumps.
+      const hitFreezeSec=Math.min(totalEl,mapEnd+0.15);
+      renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
+      setTimeout(()=>{
+        renderScene(S-1,totalEl,now,true,1);
+        setTimeout(()=>playFinale(onDone,totalEl),IMPACT_HOLD/2);
+      },IMPACT_HOLD/2);
+      return;
     }
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
