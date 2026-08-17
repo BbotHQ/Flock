@@ -598,12 +598,13 @@ function drawShowdownBanner(p){const {w}=VIEW;ctx.save();ctx.globalAlpha=0.9*Mat
   ctx.font=`700 ${Math.max(16,w*0.028)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=10;ctx.fillStyle='#ffd76b';
   ctx.fillText('⚔️  FINAL SHOWDOWN  ⚔️',w/2,46);ctx.restore();}
 function drawWinnerTag(x,y,r,name){ctx.save();ctx.textAlign='center';
-  const nameSize=Math.max(20,r*1.25), ebSize=Math.max(11,r*0.6);
+  name=shortLabel(name);
+  const nameSize=Math.min(Math.max(20,r*1.25),34), ebSize=Math.min(Math.max(11,r*0.6),18);
   let nameY=y-r*3.5, ebY=nameY-nameSize*0.95;
   let boxTop=ebY-ebSize*1.2;
   if(boxTop<16){const shift=16-boxTop;nameY+=shift;ebY+=shift;boxTop=16;}
   ctx.font=`700 ${nameSize}px Anton, sans-serif`;
-  const tw=Math.max(ctx.measureText(name).width,ctx.measureText('WINNER').width)+r*1.4;
+  const tw=Math.min(Math.max(ctx.measureText(name).width,ctx.measureText('WINNER').width)+r*1.4, VIEW.w-24);
   const boxH=nameY-boxTop+nameSize*0.35;
   ctx.fillStyle='rgba(7,19,26,.78)';roundRect(x-tw/2,boxTop,tw,boxH,10);ctx.fill();
   ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=8;ctx.fillStyle='#ffd76b';ctx.textBaseline='alphabetic';ctx.font=`700 ${ebSize}px Anton, sans-serif`;ctx.fillText('👑 WINNER 👑',x,ebY);
