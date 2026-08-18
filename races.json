@@ -2,10 +2,18 @@
   {
     "battle_id": "1539238239548866581-1",
     "title": "test 3",
-    "status": "pending",
+    "status": "official",
+    "winner": "Juggernaut (8)",
+    "podium": [
+      "Juggernaut (8)",
+      "BWall (4)",
+      "Juggernaut (9)"
+    ],
     "ducks": 20,
-    "started_by": "BWall",
-    "started_ts": 1787053784
+    "lock": "31c7669a9fd0ee4021b9269774b8a429f688f364307add3cb083bcd3fe5902dc",
+    "seed": "1ayicw61yvea8l1lsg41l1q1xi0p",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkp1Z2dlcm5hdXQgKDIwKSIsIkp1Z2dlcm5hdXQgKDExKSIsIkp1Z2dlcm5hdXQgKDE5KSIsIkJXYWxsICgxKSIsIkp1Z2dlcm5hdXQgKDEwKSIsIkp1Z2dlcm5hdXQgKDE2KSIsIkJXYWxsICg0KSIsIkp1Z2dlcm5hdXQgKDE4KSIsIkp1Z2dlcm5hdXQgKDkpIiwiQldhbGwgKDIpIiwiSnVnZ2VybmF1dCAoNSkiLCJKdWdnZXJuYXV0ICgxNCkiLCJCV2FsbCAoMykiLCJKdWdnZXJuYXV0ICgxMykiLCJKdWdnZXJuYXV0ICg2KSIsIkp1Z2dlcm5hdXQgKDE3KSIsIkp1Z2dlcm5hdXQgKDgpIiwiSnVnZ2VybmF1dCAoMTUpIiwiSnVnZ2VybmF1dCAoMTIpIiwiSnVnZ2VybmF1dCAoNykiXSwiZCI6NDAsInMiOiIxYXlpY3c2MXl2ZWE4bDFsc2c0MWwxcTF4aTBwIn0",
+    "ts": 1787053866
   },
   {
     "battle_id": "1539135770919436309-1",
