@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1539253828187062357-1",
+    "title": "final test?",
+    "status": "pending",
+    "ducks": 50,
+    "started_by": "BWall",
+    "started_ts": 1787057220
+  },
+  {
     "battle_id": "1539238239548866581-1",
     "title": "test 3",
     "status": "official",
