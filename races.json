@@ -2,9 +2,17 @@
   {
     "battle_id": "1539356273026273411-1",
     "title": "Testing",
-    "status": "pending",
+    "status": "official",
+    "winner": "Campo (34)",
+    "podium": [
+      "Campo (34)",
+      "Campo (2)",
+      "Campo (19)"
+    ],
     "ducks": 40,
-    "started_by": "BWall",
-    "started_ts": 1787086353
+    "lock": "ffb4345a4604ace68e7b4b5d2956d6398c189d28d0b9ff6d2d9bf29ee870430d",
+    "seed": "1m91sz21if4p5a1q9jpdvme2uyj",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIk15RHVja3NTdWNrICg2KSIsIkNhbXBvICgzMCkiLCJDYW1wbyAoMTkpIiwiQ2FtcG8gKDM3KSIsIkNhbXBvICgyOCkiLCJDYW1wbyAoMTMpIiwiQ2FtcG8gKDM5KSIsIkNhbXBvICgzNCkiLCJDYW1wbyAoMjkpIiwiSmFycm9kQiAoMTEpIiwiQ2FtcG8gKDIwKSIsIkphcnJvZEIgKDkpIiwiQ2FtcG8gKDE0KSIsIkNhbXBvICgzOCkiLCJNeUR1Y2tzU3VjayAoMSkiLCJDYW1wbyAoMykiLCJDYW1wbyAoMikiLCJDYW1wbyAoMjUpIiwiQ2FtcG8gKDI3KSIsIkNhbXBvICgxNikiLCJDYW1wbyAoMzMpIiwiTXlEdWNrc1N1Y2sgKDgpIiwiQ2FtcG8gKDE1KSIsIkNhbXBvICgyMSkiLCJDYW1wbyAoMzYpIiwiQ2FtcG8gKDQpIiwiQ2FtcG8gKDIzKSIsIkxvbmVzdGFyICg1KSIsIkNhbXBvICgyNikiLCJKYXJyb2RCICgxMCkiLCJDYW1wbyAoMzUpIiwiQ2FtcG8gKDQwKSIsIk15RHVja3NTdWNrICg3KSIsIkNhbXBvICgzMikiLCJDYW1wbyAoMjIpIiwiQ2FtcG8gKDI0KSIsIkNhbXBvICgxMikiLCJDYW1wbyAoMTgpIiwiQ2FtcG8gKDE3KSIsIkNhbXBvICgzMSkiXSwiZCI6NjAsInMiOiIxbTkxc3oyMWlmNHA1YTFxOWpwZHZtZTJ1eWoifQ",
+    "ts": 1787086572
   }
 ]
