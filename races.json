@@ -2,9 +2,17 @@
   {
     "battle_id": "1539101241257238610-1",
     "title": "Test options",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (4)",
+    "podium": [
+      "BWall (4)",
+      "BWall (10)",
+      "BWall (1)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787024824
+    "lock": "79d95c722065963ed8d824f7a0d6a0725d1b4a1fc3fde6e82ed32c7e61b18c54",
+    "seed": "os8cq4a23wr4nlfv7p1i1glvk",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICgxKSIsIkJXYWxsICg2KSIsIkJXYWxsICg3KSIsIkJXYWxsICg0KSIsIkJXYWxsICg5KSIsIkJXYWxsICg4KSIsIkJXYWxsICgzKSIsIkJXYWxsICgxMCkiLCJCV2FsbCAoNSkiLCJCV2FsbCAoMikiXSwiZCI6NDAsInMiOiJvczhjcTRhMjN3cjRubGZ2N3AxaTFnbHZrIn0",
+    "ts": 1787024929
   }
 ]
