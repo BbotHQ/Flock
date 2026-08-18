@@ -10,10 +10,18 @@
   {
     "battle_id": "1539253828187062357-1",
     "title": "final test?",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (1)",
+    "podium": [
+      "BWall (1)",
+      "BWall (39)",
+      "BWall (50)"
+    ],
     "ducks": 50,
-    "started_by": "BWall",
-    "started_ts": 1787057220
+    "lock": "9c194ad5c2bd5fee51fb1759e58162f85b3000c681cc5191ce79020197be5964",
+    "seed": "1ug2iamnj1zcmic2rl91fip9pr",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICgxMykiLCJCV2FsbCAoMjgpIiwiQldhbGwgKDIpIiwiQldhbGwgKDQwKSIsIkJXYWxsICgyNCkiLCJCV2FsbCAoNDQpIiwiQldhbGwgKDUpIiwiQldhbGwgKDM5KSIsIkJXYWxsICgzNikiLCJCV2FsbCAoNDEpIiwiQldhbGwgKDIwKSIsIkJXYWxsICg0KSIsIkJXYWxsICgzMSkiLCJCV2FsbCAoOCkiLCJCV2FsbCAoNTApIiwiQldhbGwgKDE3KSIsIkJXYWxsICgxKSIsIkJXYWxsICgzNykiLCJCV2FsbCAoNDcpIiwiQldhbGwgKDQ2KSIsIkJXYWxsICgzNCkiLCJCV2FsbCAoMTQpIiwiQldhbGwgKDI1KSIsIkJXYWxsICgyOSkiLCJCV2FsbCAoMjcpIiwiQldhbGwgKDMzKSIsIkJXYWxsICg5KSIsIkJXYWxsICgyMSkiLCJCV2FsbCAoNDUpIiwiQldhbGwgKDQzKSIsIkJXYWxsICgzMikiLCJCV2FsbCAoNDIpIiwiQldhbGwgKDcpIiwiQldhbGwgKDE5KSIsIkJXYWxsICgxNikiLCJCV2FsbCAoMTEpIiwiQldhbGwgKDEyKSIsIkJXYWxsICg2KSIsIkJXYWxsICgzNSkiLCJCV2FsbCAoMjIpIiwiQldhbGwgKDQ5KSIsIkJXYWxsICg0OCkiLCJCV2FsbCAoMzApIiwiQldhbGwgKDM4KSIsIkJXYWxsICgxMCkiLCJCV2FsbCAoMjYpIiwiQldhbGwgKDE4KSIsIkJXYWxsICgyMykiLCJCV2FsbCAoMTUpIiwiQldhbGwgKDMpIl0sImQiOjE0LCJzIjoiMXVnMmlhbW5qMXpjbWljMnJsOTFmaXA5cHIifQ",
+    "ts": 1787057345
   },
   {
     "battle_id": "1539238239548866581-1",
