@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "battle_id": "1539101241257238610-1",
+    "title": "Test options",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "BWall",
+    "started_ts": 1787024824
+  }
+]
