@@ -2,10 +2,11 @@
   {
     "battle_id": "1539391090082320447-1",
     "title": "Noob Test 2",
-    "status": "pending",
+    "status": "unofficial",
     "ducks": 1000,
     "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787161593
+    "started_ts": 1787161593,
+    "resolved_ts": 1787162827
   },
   {
     "battle_id": "1539396946106646589-1",
