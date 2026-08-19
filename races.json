@@ -2,10 +2,18 @@
   {
     "battle_id": "1539396946106646589-1",
     "title": "KC12CS",
-    "status": "pending",
+    "status": "official",
+    "winner": "Slad06 (6)",
+    "podium": [
+      "Slad06 (6)",
+      "BWall (8)",
+      "BWall (9)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787148625
+    "lock": "4cdeff937e470fe75177f7d6c5932491facccf478f350bc546a4760973bfa56d",
+    "seed": "18jf4doj413b8ne4wgm7ts8qo",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICgxMCkiLCJCV2FsbCAoOSkiLCJCV2FsbCAoOCkiLCJCV2FsbCAoMikiLCJha2lsYzg4KEhUWCkgKDMpIiwiU2xhZDA2ICg2KSIsIk15RHVja3NTdWNrICg1KSIsIk15RHVja3NTdWNrICg0KSIsIkJXYWxsICg3KSIsIkJXYWxsICgxKSJdLCJkIjoyMywicyI6IjE4amY0ZG9qNDEzYjhuZTR3Z203dHM4cW8ifQ",
+    "ts": 1787148693
   },
   {
     "battle_id": "1539630484181487788-1",
