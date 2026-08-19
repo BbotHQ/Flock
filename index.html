@@ -391,7 +391,7 @@ function planFight(names,seed){
   const SPEED=0.34*Math.max(0.22,speedScale),dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5*Math.max(0.10,jitScale);
   // Field size at which survivors start drifting toward centre, and how hard.
   // Matches the camera's focus threshold so the two work together.
-  const CONVERGE_AT = 14, CONVERGE_PULL = 0.30, CONVERGE_RING = 0.16;
+  const CONVERGE_AT = 14, CONVERGE_PULL = 0.30, CONVERGE_RING = 0.32;
   const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);
   const HCOOL = 10;
 
