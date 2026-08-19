@@ -2,10 +2,18 @@
   {
     "battle_id": "1539630484181487788-1",
     "title": "test bin button 2",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (6)",
+    "podium": [
+      "BWall (6)",
+      "BWall (5)",
+      "BWall (7)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787147029
+    "lock": "8d2ae3cf6ef19ded45452e1e4b8fbfa75953740c2d884670ce0dba445fe319de",
+    "seed": "1u4qgm4vpxhtms1rqrm14oe7v2",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICgxMCkiLCJCV2FsbCAoNCkiLCJCV2FsbCAoMykiLCJCV2FsbCAoMSkiLCJCV2FsbCAoNikiLCJCV2FsbCAoMikiLCJCV2FsbCAoNykiLCJCV2FsbCAoNSkiLCJCV2FsbCAoOSkiLCJCV2FsbCAoOCkiXSwiZCI6MjMsInMiOiIxdTRxZ200dnB4aHRtczFycXJtMTRvZTd2MiJ9",
+    "ts": 1787147096
   },
   {
     "battle_id": "1539382674005958697-1",
