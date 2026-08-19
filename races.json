@@ -2,9 +2,17 @@
   {
     "battle_id": "1539782257244512277-1",
     "title": "testing open races #3",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (1)",
+    "podium": [
+      "BWall (1)",
+      "BWall (4)",
+      "BWall (3)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787183245
+    "lock": "15ba37e4f24e4d857d07330d10803cb5b92c4628a4efaf20a38a5e2aee311fa6",
+    "seed": "6ne4u67so23i1oovone1lrbdfn",
+    "replay": "https://bbothq.github.io/Flock/#r=eyJuIjpbIkJXYWxsICg2KSIsIkJXYWxsICgyKSIsIkJXYWxsICg4KSIsIkJXYWxsICg0KSIsIkJXYWxsICgzKSIsIkJXYWxsICg5KSIsIkJXYWxsICg1KSIsIkJXYWxsICgxMCkiLCJCV2FsbCAoMSkiLCJCV2FsbCAoNykiXSwiZCI6MjMsInMiOiI2bmU0dTY3c28yM2kxb292b25lMWxyYmRmbiJ9",
+    "ts": 1787183324
   }
 ]
