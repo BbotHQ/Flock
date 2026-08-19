@@ -331,7 +331,7 @@ function nameAbove(x,y,r,name,win,isDead){
   const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle=isDead?'rgba(6,15,20,.55)':'rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
   ctx.fillStyle=win?'#ffd76b':(isDead?'rgba(255,255,255,.42)':'#ffffff');ctx.fillText(t,x,y);ctx.restore();}
 
-function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
+function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied,showHp){
   const idx=spriteFor(i), sh=SHEETS[idx];
   if(!sh||!sh.ready){
     if(isDead) drawDuckGhost(x,y,r,STATE.plan.meta[i].nm,STATE.plan.meta[i].col,simple);
@@ -349,15 +349,38 @@ function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied){
   if(facing<0)ctx.scale(-1,1);
   ctx.drawImage(atlas, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
   ctx.restore();
-  if(!isDead && hp<0.999) drawHpBar(x,y,r,hp);
+  // HP bars ONLY exist once the final duel has begun (showHp). Out in the
+  // melee there are no bars at all — kills there are a one-shot or a two-beat
+  // exchange, so there's no bar to drain, and it strips a lot of tiny UI
+  // clutter at high duck counts. Bars appearing IS the signal that the real
+  // duel has started.
+  if(showHp && !isDead && hp<0.999) drawHpBar(x,y,r,hp);
   if(!win) nameAbove(x, Math.max(16, y - r*1.9), r, STATE.plan.meta[i].nm, win, isDead);
 }
 
-function battleLength(n){if(n<=20)return 40;if(n<80)return 60;return 70;}
+// Dedicated final-duel window, in seconds. Declared here because
+// battleLength() below builds its total from it — a `const` further down
+// the file would sit in the temporal dead zone if anything ever called
+// battleLength during module load.
+const FINAL_SHOWDOWN_SEC = 10;
+function battleLength(n){
+  // Scale from how many eliminations actually have to happen, not flat tiers.
+  // Flat tiers gave a 3-duck fight the same 40s as a 20-duck fight — but with
+  // one elimination to fill it, that's ~30 seconds of ducks milling around
+  // doing nothing. Clamped so tiny fights still breathe and huge ones cap out.
+  const elims = Math.max(0, n - 2);
+  const pre = Math.min(60, Math.max(4, elims * 1.6));
+  return Math.round(pre + FINAL_SHOWDOWN_SEC);
+}
 
 function planFight(names,seed){
   SPRITE_SALT = cyrb128(seed)[0];
   const rng=rngFromSeed(seed), n=names.length;
+  // Separate seeded stream for purely-cosmetic combat flavour (one-shot vs
+  // back-and-forth). Kept OFF the main `rng` on purpose: that one's draw order
+  // determines the actual winner, so consuming from it here would change
+  // outcomes. Seeded (not Math.random) so replays stay bit-identical.
+  const exchangeRng = rngFromSeed(seed + "\u241Fexchange");
   const idx=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
   const winner=idx[n-1], elimOrder=idx.slice(0,n-1);
   const order=[winner,...elimOrder.slice().reverse()].map(i=>({i,nm:names[i]}));
@@ -366,6 +389,9 @@ function planFight(names,seed){
   const speedScale=Math.min(1,1/Math.sqrt(density));
   const jitScale=Math.min(1,1/density);
   const SPEED=0.34*Math.max(0.22,speedScale),dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5*Math.max(0.10,jitScale);
+  // Field size at which survivors start drifting toward centre, and how hard.
+  // Matches the camera's focus threshold so the two work together.
+  const CONVERGE_AT = 10, CONVERGE_PULL = 0.55;
   const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);
   const HCOOL = 10;
 
@@ -416,6 +442,22 @@ function planFight(names,seed){
       let vx=Math.cos(ang[i])*SPEED,vy=Math.sin(ang[i])*SPEED;const duelPair=(alive===2)&&(i===victim||i===target);
       if(i===victim&&target>=0){let dx=px[target]-px[i],dy=py[target]-py[i];if(duelPair&&step<retreatUntil){dx=-dx;dy=-dy;}const L=Math.hypot(dx,dy)||1;const k=duelPair?0.5:0.4;vx=vx*(1-k)+dx/L*SPEED*k;vy=vy*(1-k)+dy/L*SPEED*k;ang[i]=Math.atan2(vy,vx);}
       else if(i===target&&victim>=0){let dx=px[victim]-px[i],dy=py[victim]-py[i];if(duelPair&&step<retreatUntil){dx=-dx;dy=-dy;}const L=Math.hypot(dx,dy)||1;const k=duelPair?0.45:0.18;vx=vx*(1-k)+dx/L*SPEED*k;vy=vy*(1-k)+dy/L*SPEED*k;ang[i]=Math.atan2(vy,vx);}
+      // ── late-game convergence ────────────────────────────────────────────
+      // Once the field thins to CONVERGE_AT, survivors drift toward the middle
+      // of the pond. Without this the camera zooms in for the endgame while
+      // stragglers are still scattered at the edges — so ducks get killed
+      // completely off-screen, which looks broken. Pulling them in means the
+      // action the camera is framing is actually the action that's happening.
+      // Strength ramps in gradually so it reads as the fight closing in rather
+      // than everyone suddenly teleporting to the centre.
+      if(alive<=CONVERGE_AT && alive>2){
+        const pull=CONVERGE_PULL*(1-(alive-3)/Math.max(1,CONVERGE_AT-3));
+        const cdx=0.5-px[i], cdy=0.5-py[i];
+        const cl=Math.hypot(cdx,cdy)||1;
+        vx=vx*(1-pull)+(cdx/cl)*SPEED*pull;
+        vy=vy*(1-pull)+(cdy/cl)*SPEED*pull;
+        ang[i]=Math.atan2(vy,vx);
+      }
       const s=Math.hypot(vx,vy)||1;vx=vx/s*SPEED;vy=vy/s*SPEED;px[i]+=vx*dt;py[i]+=vy*dt;
       if(px[i]<MARGIN){px[i]=MARGIN;ang[i]=Math.PI-ang[i];}if(px[i]>1-MARGIN){px[i]=1-MARGIN;ang[i]=Math.PI-ang[i];}
       if(py[i]<MARGIN){py[i]=MARGIN;ang[i]=-ang[i];}if(py[i]>1-MARGIN){py[i]=1-MARGIN;ang[i]=-ang[i];}
@@ -423,11 +465,32 @@ function planFight(names,seed){
     }
     if(victim>=0&&target>=0&&step>MINK){const dx=px[victim]-px[target],dy=py[victim]-py[target];const touch=Math.hypot(dx,dy)<KILL;const L=Math.hypot(dx,dy)||1;
       if(alive>2){
+        // ── melee exchange ──────────────────────────────────────────────────
+        // No HP bars out here (they only appear for the final two), so kills
+        // don't need a multi-hit bar to drain — each elimination is either a
+        // clean one-shot or a short back-and-forth. Coin-flipped per victim:
+        //   ~50%: winner slashes, victim dies.
+        //   ~50%: VICTIM swings first and connects, then the winner answers
+        //         and kills. This is the only place the doomed duck ever gets
+        //         to swing back — previously the victim never struck at all.
         const overdue = step-victimStart > FORCE_AFTER;
-        if((touch&&step-lastHit>HCOOL) || overdue){lastHit=step;vHits++;hp[victim]=Math.max(0,overdue?0:1-vHits/MHITS);hpBreaks[victim].push({step,hp:hp[victim]});
+        if((touch&&step-lastHit>HCOOL) || overdue){lastHit=step;
           const ex=(px[victim]+px[target])/2,ey=(py[victim]+py[target])/2;
-          if(hp[victim]<=0){events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:target,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;vHits=0;ang[target]=Math.atan2(-dy/L,-dx/L);}
-          else{events.push({step,x:ex,y:ey,kill:false,word:'',k:target,v:victim});ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);}}
+          if(vHits===0 && !overdue && exchangeRng()<0.5){
+            // Beat 1 of a two-beat exchange: the victim lands one on the
+            // winner. Connects for real (impact + hit pose) so it doesn't
+            // read as a whiff — there's just no HP bar to show for it.
+            vHits=1;
+            events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[nv%SPARKWORDS.length],k:victim,v:target});
+            ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);
+          } else {
+            // Killing blow — either the clean one-shot, or beat 2 answering
+            // the victim's swing above.
+            vHits=0;
+            events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:target,v:victim});
+            dead[victim]=true;deathStep[victim]=step;nv++;alive--;
+            ang[target]=Math.atan2(-dy/L,-dx/L);
+          }}
       } else {
         if(touch&&step-lastClash>26){lastClash=step;
           const iL=Math.min(duelIdx,duelK-1);
@@ -448,7 +511,16 @@ function planFight(names,seed){
   }
   while(nv<elimOrder.length){const v=elimOrder[nv];if(!dead[v]){dead[v]=true;deathStep[v]=step;events.push({step,x:px[v],y:py[v],kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:v});}nv++;}
   let finalKillStep=-1;for(const e of events){if(e.kill&&e.step>finalKillStep)finalKillStep=e.step;}
-  return {frames,S:frames.length,events,deathStep,meta,order,winner,n,RR,hpBreaks,pickups,weaponBreaks,finalKillStep,
+  // Step at which only FOCUS_AT ducks remain — the camera starts easing in
+  // from here, so the late game reads clearly instead of staying wide.
+  const FOCUS_AT = 8;
+  let focusStep = -1;
+  if(n > FOCUS_AT){
+    const deaths = deathStep.filter(s=>isFinite(s)).sort((a,b)=>a-b);
+    const needed = n - FOCUS_AT;              // deaths required to reach 8 alive
+    if(deaths.length >= needed) focusStep = deaths[needed-1];
+  }
+  return {frames,S:frames.length,events,deathStep,meta,order,winner,n,RR,hpBreaks,pickups,weaponBreaks,finalKillStep,focusStep,
     duelStart:duelStart<0?frames.length:duelStart,duelDucks:[winner,(elimOrder.length?elimOrder[elimOrder.length-1]:winner)],durSec:battleLength(n)};
 }
 
@@ -639,6 +711,18 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
     zoom=1+1.6*ramp+0.9*nearEnd;
     const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);
   }
+  else if(P.focusStep>=0 && stepF>=P.focusStep){
+    // Late game: once the field is down to ~8, ease the camera in and centre
+    // it on whoever's still alive. Deliberately NOT done earlier — with 70
+    // ducks and a kill every second, chasing the action would just be
+    // disorienting. Ramps to a modest zoom so the handoff into the duel
+    // camera above (which starts at 1x and ramps up) doesn't jump.
+    const fr=clamp((stepF-P.focusStep)/(2.5*60),0,1);
+    zoom=1+0.55*fr;
+    let sx=0,sy=0,cnt=0;
+    for(let i=0;i<n;i++){if(stepF<P.deathStep[i]){sx+=fa[2*i];sy+=fa[2*i+1];cnt++;}}
+    if(cnt>0){const half=0.5/zoom;cx=clamp(sx/cnt,half,1-half);cy=clamp(sy/cnt,half,1-half);}
+  }
   const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
   const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
@@ -673,7 +757,7 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
     const isWin=(i===P.winner)&&(finale||soleSurvivor)&&!midSwing;
     const ps=isWin?'victory':pose[i];
     let hpShow=hpAtSmooth(P,i,curSec);
-    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpShow,false,simple,tileBloodied(x0,y0,curSec));}
+    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpShow,false,simple,tileBloodied(x0,y0,curSec),stepF>=P.duelStart);}
 
   if(!finale){
     for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
@@ -695,7 +779,6 @@ function updateFeed(curSec){const P=STATE.plan;const shown=[];for(const e of P.e
   el.innerHTML=html;}
 function finalOne(stepF){const P=STATE.plan;let c=0;for(let i=0;i<P.n;i++)if(stepF<P.deathStep[i])c++;return c<=1;}
 
-const FINAL_SHOWDOWN_SEC = 10;
 
 const SLOWMO_STEP_FRAC = 0.16, SLOWMO_SEC = 2.2;
 function _timeSplit(P){
