@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1539391090082320447-1",
+    "title": "Noob Test 2",
+    "status": "pending",
+    "ducks": 1000,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1787161593
+  },
+  {
     "battle_id": "1539396946106646589-1",
     "title": "KC12CS",
     "status": "official",
