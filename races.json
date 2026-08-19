@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1539396946106646589-1",
+    "title": "KC12CS",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "BWall",
+    "started_ts": 1787148625
+  },
+  {
     "battle_id": "1539630484181487788-1",
     "title": "test bin button 2",
     "status": "official",
