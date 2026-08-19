@@ -391,7 +391,7 @@ function planFight(names,seed){
   const SPEED=0.34*Math.max(0.22,speedScale),dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5*Math.max(0.10,jitScale);
   // Field size at which survivors start drifting toward centre, and how hard.
   // Matches the camera's focus threshold so the two work together.
-  const CONVERGE_AT = 10, CONVERGE_PULL = 0.55;
+  const CONVERGE_AT = 14, CONVERGE_PULL = 0.30, CONVERGE_RING = 0.16;
   const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);
   const HCOOL = 10;
 
@@ -451,12 +451,19 @@ function planFight(names,seed){
       // Strength ramps in gradually so it reads as the fight closing in rather
       // than everyone suddenly teleporting to the centre.
       if(alive<=CONVERGE_AT && alive>2){
-        const pull=CONVERGE_PULL*(1-(alive-3)/Math.max(1,CONVERGE_AT-3));
         const cdx=0.5-px[i], cdy=0.5-py[i];
         const cl=Math.hypot(cdx,cdy)||1;
-        vx=vx*(1-pull)+(cdx/cl)*SPEED*pull;
-        vy=vy*(1-pull)+(cdy/cl)*SPEED*pull;
-        ang[i]=Math.atan2(vy,vx);
+        // Only pull while OUTSIDE the gather ring. Once a duck is inside it,
+        // stop pulling entirely — a constant pull keeps squeezing until every
+        // survivor is piled on the same pixel, which is exactly what made the
+        // final eight unreadable. This gathers them near the middle and then
+        // lets them mill about normally inside that space.
+        if(cl > CONVERGE_RING){
+          const pull=CONVERGE_PULL*(1-(alive-3)/Math.max(1,CONVERGE_AT-3));
+          vx=vx*(1-pull)+(cdx/cl)*SPEED*pull;
+          vy=vy*(1-pull)+(cdy/cl)*SPEED*pull;
+          ang[i]=Math.atan2(vy,vx);
+        }
       }
       const s=Math.hypot(vx,vy)||1;vx=vx/s*SPEED;vy=vy/s*SPEED;px[i]+=vx*dt;py[i]+=vy*dt;
       if(px[i]<MARGIN){px[i]=MARGIN;ang[i]=Math.PI-ang[i];}if(px[i]>1-MARGIN){px[i]=1-MARGIN;ang[i]=Math.PI-ang[i];}
