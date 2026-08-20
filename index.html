@@ -175,8 +175,62 @@ function rngFromSeed(seed){const s=cyrb128(seed);return sfc32(s[0],s[1],s[2],s[3
 async function sha256hex(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
 function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
-function encodeState(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
-function decodeState(str){try{let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';return JSON.parse(decodeURIComponent(escape(atob(b))));}catch(e){return null;}}
+
+// ── STATE ENCODING (replay links) ──────────────────────────────────────────
+// The payload is {n: [...names], d: durationSeconds, s: seed}. For a big
+// battle `n` is extremely repetitive (e.g. 300x "BWall (###)") — gzip
+// crushes that kind of text by 80-90%+, which is the difference between a
+// replay link Discord will actually accept (<2000 chars) and one it won't.
+// Format: a plain-ASCII tag ('.' is NOT part of the base64url alphabet, so
+// it can never collide with an old un-tagged link) followed by the payload:
+//   "gz." + gzip-then-base64url   — new links, when CompressionStream exists
+//   "pl." + base64url of raw JSON — new links, fallback if it doesn't
+//   (no tag at all)               — OLD links posted before this change;
+//                                    decoded exactly as they always were.
+function _bytesToB64url(bytes){
+  let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function _b64urlToBytes(str){
+  let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+  const bin=atob(b),out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+async function _streamAll(stream,input){
+  const writer=stream.writable.getWriter();writer.write(input);writer.close();
+  const reader=stream.readable.getReader();const chunks=[];let total=0;
+  while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);total+=value.length;}
+  const out=new Uint8Array(total);let off=0;for(const c of chunks){out.set(c,off);off+=c.length;}
+  return out;
+}
+async function _gzip(bytes){return _streamAll(new CompressionStream('gzip'),bytes);}
+async function _gunzip(bytes){return _streamAll(new DecompressionStream('gzip'),bytes);}
+
+async function encodeState(o){
+  const json=JSON.stringify(o);
+  if(typeof CompressionStream!=='undefined'){
+    try{
+      const compressed=await _gzip(new TextEncoder().encode(json));
+      return 'gz.'+_bytesToB64url(compressed);
+    }catch(e){ /* fall through to plain */ }
+  }
+  return 'pl.'+_bytesToB64url(new TextEncoder().encode(json));
+}
+async function decodeState(str){
+  try{
+    if(str.startsWith('gz.')){
+      const bytes=await _gunzip(_b64urlToBytes(str.slice(3)));
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+    if(str.startsWith('pl.')){
+      return JSON.parse(new TextDecoder().decode(_b64urlToBytes(str.slice(3))));
+    }
+    // Legacy link — no tag, un-gzipped base64 of a UTF-8-escaped JSON string.
+    let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    return JSON.parse(decodeURIComponent(escape(atob(b))));
+  }catch(e){return null;}
+}
 function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]]\s*/,'').trim()).filter(l=>l.length>0).slice(0,1000);}
 function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
 function clamp(v,a,b){return v<a?a:v>b?b:v;}
@@ -916,7 +970,7 @@ async function replayFight(){const replayBtn=document.getElementById('replayBtn'
   document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';
   const myGen=++PLAY_GEN;
   VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
-function replayLink(){return location.origin+location.pathname+'#r='+encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
+async function replayLink(){return location.origin+location.pathname+'#r='+await encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
 async function refreshLock(){const el=document.getElementById('lockHash');if(STATE.names.length<2||!STATE.seed){el.textContent='—';return;}
@@ -946,13 +1000,13 @@ document.getElementById('closeResult').addEventListener('click',()=>{document.ge
 document.getElementById('reopenResult').addEventListener('click',()=>{document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';});
 document.getElementById('backBtn').addEventListener('click',()=>{PLAY_GEN++;setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
   document.getElementById('result').classList.remove('show');document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
-document.getElementById('copyLink').addEventListener('click',()=>copy(replayLink(),'Replay link copied'));
+document.getElementById('copyLink').addEventListener('click',async ()=>{copy(await replayLink(),'Replay link copied');});
 window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
 
 SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
 
 window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
-(async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
+(async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=await decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
   STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   setLedger(false);document.getElementById('backBtn').style.display='none';
   drawEmptyArena();
