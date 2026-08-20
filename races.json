@@ -2,10 +2,18 @@
   {
     "battle_id": "1540004434505900085-1",
     "title": "Test 2",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB (2)",
+    "podium": [
+      "JarrodB (2)",
+      "vCatBug(Jake) (10)",
+      "BWall (1)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787236627
+    "lock": "f3591c895d1c31d2fac2e3a38c2279fd54fc7b0813feb0afc8ca485badf68864",
+    "seed": "11msweozkdlnjf9n2id1uusij2",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE6tWylOyilYKyUhVCKpMVXAvrVTQcPPRVNAw0VTSUfJKLCrKT3FS0DAC8cqcE0ucStM1vBKzU4EqDA2wCJphETPHImYJEnMKT8zJARoEYmO6wBSLNgvsSo01lWJ1lFKUrIyMdZSKlayUDA1zi8tT86uyU3LystIs84wyUwxLS4szs4yUagHAFySB8wAAAA",
+    "ts": 1787236702
   },
   {
     "battle_id": "1539966038387724309-1",
