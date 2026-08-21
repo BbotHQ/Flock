@@ -2,10 +2,18 @@
   {
     "battle_id": "1540171266592473161-1",
     "title": "Test JDHAS",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bullhouse (3)",
+    "podium": [
+      "Bullhouse (3)",
+      "Funkytown_817 (2)",
+      "The Rye Guy (FL) (1)"
+    ],
     "ducks": 3,
-    "started_by": "BWall",
-    "started_ts": 1787282214
+    "lock": "2dcd7f7e33302091c30d7cac5cccb620dca1df685b9d9e0de6e00761e893a045",
+    "seed": "1pznr5210cs26v9nxkxze9xw82",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE6tWylOyilZyKs3JycgvLU5V0DDWVNJRcivNy64syS_Pi7cwNFfQMAKJhWSkKgRVpiq4l1YqaLj5aCpoGGoqxeoopShZGZroKBUrWSkZFlTlFZkaGRokFxuZlVnmVWRXVKVaVpRbGCnVAgDBJaRGagAAAA",
+    "ts": 1787282339
   },
   {
     "battle_id": "1540104424045805670-1",
