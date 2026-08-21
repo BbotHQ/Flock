@@ -2,10 +2,18 @@
   {
     "battle_id": "1540315380109811773-1",
     "title": "test 4",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (2)",
+    "podium": [
+      "BWall (2)",
+      "BWall (8)",
+      "BWall (1)"
+    ],
     "ducks": 20,
-    "started_by": "BWall",
-    "started_ts": 1787310380
+    "lock": "2c03f71878c508577b1758be4db8856379842a884aac1163c780256a09abb120",
+    "seed": "wdw8j11pw3ffd16f5516e4irhd",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE6tWylOyilZyCk_MyVHQMDTXVNKBcYyQ2IaWyBxktgESB1m3GRLbAoltgsQ2RTYIWYOhMTIHRRnYcufE3IJ8JEEUpyLbZohsHbKhQP_E6iilKFkZW-ooFStZKZWnlFtkGRoWlBunpaUYmqWZmhqapZpkFmWkKNUCAJIILyYlAQAA",
+    "ts": 1787310493
   },
   {
     "battle_id": "1540171266592473161-1",
