@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1540315380109811773-1",
+    "title": "test 4",
+    "status": "pending",
+    "ducks": 20,
+    "started_by": "BWall",
+    "started_ts": 1787310380
+  },
+  {
     "battle_id": "1540171266592473161-1",
     "title": "Test JDHAS",
     "status": "official",
