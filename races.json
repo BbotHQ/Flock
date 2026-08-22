@@ -2,10 +2,18 @@
   {
     "battle_id": "1540726190736678983-1",
     "title": "testing",
-    "status": "pending",
+    "status": "official",
+    "winner": "The Rye Guy (FL) (1)",
+    "podium": [
+      "The Rye Guy (FL) (1)",
+      "Campo (1)",
+      "Campo (2)"
+    ],
     "ducks": 12,
-    "started_by": "BWall",
-    "started_ts": 1787414536
+    "lock": "45e30dee7a919a63a88ccfe64af2af044a9ff9b5c9f43c8e992c15c19caeb8d4",
+    "seed": "d3opzs1yo3hfw19p89rs1f8syy6",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE6tWylOyilZyTswtyFfQMNFU0oGxjUDskIxUhaDKVAX30koFDTcfTagwVIkxEtsQxHbKz891SsxLhypDcMGyvpUupcnZxcFAAkOBMYYCiIHhiTk5WN0BlI7VUUpRsjIy01EqVrJSSjHOL6gqNqzMN85IKze0LLCwLCo2TLMorqw0U6oFAD9TG_PnAAAA",
+    "ts": 1787414633
   },
   {
     "battle_id": "1540578984981692468-1",
