@@ -210,104 +210,96 @@ function coverFit(iw, ih, aw, ah, over) {
   return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
 }
 
-// ── Race planning: same seeded shuffle idea as Battle Royale's planFight ──
-// idx[0] after the shuffle = 1st place, idx[n-1] = last place. On top of
-// that fixed finish order, each duck gets a MONOTONIC seeded pace curve —
-// built from a strictly-positive speed function, so cumulative position can
-// only ever hold or increase, never regress (ducks never swim backward).
-// The top 3 actually reach the finish line, staggered near the very end of
-// the race; everyone else approaches but is capped just short of it, spread
-// out by rank. The race naturally ends the instant 3rd place crosses, since
-// that's set to exactly the end of the fixed race duration.
-const CURVE_STEPS = 200;
-const PODIUM_FINISH_T = [0.88, 0.94, 1.0]; // when 1st/2nd/3rd actually cross, as a fraction of race duration
+// ── Race simulation ──────────────────────────────────────────────────────
+// This is a genuine deterministic step-simulation, not a pre-baked shuffle
+// dressed up with animation: the seed drives per-duck pace/noise parameters,
+// then a fixed-timestep simulation runs once (at plan time) producing a full
+// position table. The finish order EMERGES from the simulation itself — pack
+// rubber-banding, lily pads, and rocks can genuinely change who's ahead.
+// Same seed always reproduces the exact same race, since no further
+// randomness is drawn after setup.
+const SIM_STEPS = 900;          // simulation resolution over the fixed 40s race
+const RACE_DURATION_SEC = 40;   // fixed, regardless of duck count
+const MAX_SPREAD = 0.16;        // pack rubber-band: how far a duck can lead the rear before being throttled
+const LILY_PADS = [0.30, 0.58, 0.82];   // x-fraction positions — touch one, get slowed (not stopped)
+const ROCKS = [0.20, 0.44, 0.68];       // x-fraction positions — hit one, stop briefly and detour around
 
-function buildPaceCurve(rng){
-  const freq = 2 + rng()*4, phase = rng()*6.283, noiseAmt = 0.45 + rng()*0.55;
-  const acc = [0];
-  let sum = 0;
-  for(let s=1; s<=CURVE_STEPS; s++){
-    const tt = s/CURVE_STEPS;
-    // Pace is ALWAYS positive (floored at 0.08) — a duck can slow to a crawl
-    // but never actually reverse. Cumulative sum is therefore monotonic.
-    const pace = Math.max(0.08, 1 + noiseAmt*Math.sin(tt*6.283*freq*0.6 + phase));
-    sum += pace;
-    acc.push(sum);
-  }
-  const total = acc[CURVE_STEPS];
-  return acc.map(v => v/total); // normalized 0..1, monotonic
-}
-function sampleCurve(curve, tt){
-  tt = clamp(tt,0,1);
-  const pos = tt*CURVE_STEPS;
-  const i0 = Math.floor(pos), i1 = Math.min(CURVE_STEPS, i0+1);
-  const frac = pos - i0;
-  return curve[i0]*(1-frac) + curve[i1]*frac;
-}
-
-function planRace(names, seed){
+function simulateRace(names, seed){
   const rng = rngFromSeed(seed), n = names.length;
-  const idx = [...Array(n).keys()];
-  for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-  const rank = new Array(n);
-  idx.forEach((duckIdx, rankPos) => { rank[duckIdx] = rankPos; });
-
-  const curves=[], targetT=[], ceiling=[], laneY=[], bobPhase=[];
+  const baseSpeed=[], freq=[], phase=[], amp=[], laneY=[], bobPhase=[];
   for(let i=0;i<n;i++){
-    curves.push(buildPaceCurve(rng));
+    baseSpeed.push(1.3 + rng()*0.5);   // natural pace varies a little duck to duck
+    freq.push(1.4 + rng()*3.2);
+    phase.push(rng()*6.283);
+    amp.push(0.18 + rng()*0.22);       // organic speed-up/slow-down wobble, always positive-floored below
     laneY.push(0.08 + rng()*0.84);
     bobPhase.push(rng()*6.283);
-    const r = rank[i];
-    if (r <= 2 && r < n) {
-      // Podium: actually crosses the line, staggered near the very end.
-      targetT.push(PODIUM_FINISH_T[r]);
-      ceiling.push(1.0);
-    } else {
-      // Everyone else: keeps approaching for the FULL race, but is capped
-      // short of the line — further-back ranks get a progressively lower
-      // ceiling, so the field fans out behind the podium rather than
-      // bunching up at an identical near-finish spot.
-      targetT.push(1.0);
-      const beyond = r - 2, totalBeyond = Math.max(1, n - 3);
-      ceiling.push(clamp(0.92 - (beyond/totalBeyond)*0.58, 0.15, 0.92));
-    }
   }
-  const order = idx.map(i => ({i, nm: names[i]}));
-  return {n, rank, curves, targetT, ceiling, laneY, bobPhase, order,
+  const pos = new Array(n).fill(0);
+  const laneCur = laneY.slice();
+  const finished = new Array(n).fill(false);
+  const finishStep = new Array(n).fill(-1);
+  const rockPause = new Array(n).fill(0);
+  const rockDone = names.map(()=>new Set());
+  const dt = 1/SIM_STEPS;
+  const xTable = [], yTable = [];
+
+  for(let s=0; s<=SIM_STEPS; s++){
+    const tFrac = s*dt;
+    // Rubber-band anchor: rearmost position among ducks still racing.
+    let rear = 1;
+    for(let i=0;i<n;i++) if(!finished[i]) rear = Math.min(rear, pos[i]);
+    for(let i=0;i<n;i++){
+      if(!finished[i]){
+        // Organic pace — always positive (floored), so position is monotonic;
+        // a duck can slow to a crawl but never actually swims backward.
+        let speed = baseSpeed[i] * Math.max(0.3, 1 + amp[i]*Math.sin(tFrac*6.283*freq[i]+phase[i]));
+        // Pack cohesion: get throttled hard if too far ahead of the rear of
+        // the still-racing pack — this is what lets a straggler catch back
+        // up, and what keeps the whole field visually together.
+        const gap = pos[i] - rear;
+        if(gap > MAX_SPREAD){ const over=(gap-MAX_SPREAD)/MAX_SPREAD; speed *= Math.max(0.35, 1-over*0.9); }
+        // Lily pad — slows, doesn't stop.
+        for(const lp of LILY_PADS) if(Math.abs(pos[i]-lp) < 0.015) speed *= 0.55;
+        // Rock — stop briefly, then detour (lane shift) around it.
+        for(let ri=0; ri<ROCKS.length; ri++){
+          const rk = ROCKS[ri];
+          if(rockPause[i]<=0 && !rockDone[i].has(ri) && rk-pos[i]>0 && rk-pos[i]<0.010){
+            rockPause[i] = Math.round(0.010/dt);
+            rockDone[i].add(ri);
+          }
+        }
+        if(rockPause[i] > 0){
+          speed = 0;
+          const side = laneCur[i] < 0.5 ? -1 : 1;
+          laneCur[i] = clamp(laneCur[i] + side*0.012, 0.04, 0.96);
+          rockPause[i]--;
+        }
+        pos[i] += speed*dt;
+        if(pos[i] >= 1){ pos[i] = 1; finished[i] = true; finishStep[i] = s; }
+      }
+    }
+    xTable.push(pos.slice());
+    yTable.push(laneCur.slice());
+  }
+
+  const withFinish = names.map((nm,i)=>({i, nm, fs: finished[i]?finishStep[i]:Infinity, fp: pos[i]}));
+  withFinish.sort((a,b)=> (a.fs-b.fs) || (b.fp-a.fp));
+
+  return {n, xTable, yTable, bobPhase, order: withFinish.map(w=>({i:w.i, nm:w.nm})),
     meta: names.map((nm,i)=>({nm, col:DUCKPAL[i%DUCKPAL.length]}))};
 }
 
-// Position along the track (0..1) for duck i at overall race-time fraction
-// tFrac. Podium ducks reach 1.0 at their targetT and just hold there for the
-// rest of the race (they've finished). Everyone else keeps inching forward
-// right up to the end, capped at their own ceiling.
-function duckPos(plan, i, tFrac){
-  const localT = clamp(tFrac / plan.targetT[i], 0, 1);
-  return plan.ceiling[i] * sampleCurve(plan.curves[i], localT);
+// Interpolated lookup into the precomputed simulation table by race-time
+// fraction (0..1). Table has SIM_STEPS+1 rows spaced evenly over the race.
+function simSample(table, i, tFrac){
+  const pos = clamp(tFrac,0,1) * SIM_STEPS;
+  const i0 = Math.floor(pos), i1 = Math.min(SIM_STEPS, i0+1);
+  const frac = pos - i0;
+  return table[i0][i]*(1-frac) + table[i1][i]*frac;
 }
 
-// ── Rocks ───────────────────────────────────────────────────────────────
-// Fixed obstacles along the track. Purely a visual dodge (a lateral lane
-// nudge as a duck passes) — deliberately NOT tied into the timing/position
-// math above, so the carefully-verified monotonic/converges-correctly
-// guarantee for who-actually-wins stays untouched. A duck steers around
-// whichever side of the rock its lane already favors.
-const ROCKS = [0.26, 0.52, 0.78]; // x-fraction along the track
-const ROCK_RADIUS = 0.045; // x-fraction proximity band
-function rockDodgeY(plan, i, xFrac){
-  let nudge = 0;
-  for(const rx of ROCKS){
-    const d = xFrac - rx;
-    if(Math.abs(d) < ROCK_RADIUS){
-      const closeness = 1 - Math.abs(d)/ROCK_RADIUS; // 0..1, peaks at rock center
-      const side = (plan.laneY[i] < 0.5) ? -1 : 1; // steer toward the pond edge already nearer
-      nudge += side * closeness * 0.055;
-    }
-  }
-  return nudge;
-}
-
-const STATE={names:[],seed:'',plan:null,raf:null,durSec:40};
+const STATE={names:[],seed:'',plan:null,raf:null,durSec:RACE_DURATION_SEC};
 let PLAY_GEN=0;
 
 const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
@@ -317,7 +309,6 @@ function fitCanvas(){const shell=cv.parentElement;const w=shell.clientWidth||she
 let VIEW=fitCanvas();
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function shortLabel(s){return s.length>16?s.slice(0,15)+'…':s;}
-const RACE_DURATION_SEC = 40; // fixed, regardless of duck count
 
 function drawPond(ax,ay,aw,ah,clock){
   ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
