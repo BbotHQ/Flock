@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duck Race — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--deck:#080d12;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--red:#d64b34;}
+  *{box-sizing:border-box}html,body{margin:0;min-height:100%}
+  body{background:linear-gradient(rgba(6,11,16,.32),rgba(6,11,16,.46)), radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+  .wrap{width:100%;max-width:1720px;padding:16px 14px 40px;flex:1;display:flex;flex-direction:column;position:relative}
+  header{text-align:center;margin:34px 0 4px}
+  .brand{font-family:'Anton',sans-serif;font-size:clamp(34px,7.2vw,74px);letter-spacing:2px;line-height:.92;text-transform:uppercase;
+    -webkit-text-stroke:3px rgba(0,0,0,.85);paint-order:stroke fill;
+    background:linear-gradient(180deg,#fff 0%,var(--gold-hi) 55%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 18px rgba(242,193,78,.25))}
+  .brand .blade{color:var(--teal);-webkit-text-fill-color:var(--teal)}
+  .sub-tag{margin:6px 0 0;font-family:'Anton',sans-serif;letter-spacing:6px;text-transform:uppercase;font-size:clamp(11px,2vw,15px);color:var(--teal);text-align:center;
+    -webkit-text-stroke:1.5px rgba(0,0,0,.9);paint-order:stroke fill;
+    text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.7)}
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:16px;
+    box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04)}
+  .setup{padding:24px;max-width:560px;width:100%;margin:0 auto}
+  label.lbl{display:block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  textarea{width:100%;min-height:190px;resize:vertical;background:#0a0f14;border:1px solid #2b3a47;border-radius:11px;color:var(--cream);
+    font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;padding:13px 15px}
+  textarea:focus{outline:none;border-color:var(--teal)}
+  .count{font-size:13px;color:var(--muted);margin-top:10px}
+  .seal{margin-top:14px;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 13px;cursor:pointer}
+  .seal b{color:var(--teal);letter-spacing:.5px}.seal:hover{border-color:var(--teal)}
+  .row{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .grow{flex:1}
+  .btn{font-family:'Anton',sans-serif;letter-spacing:1.5px;text-transform:uppercase;background:var(--gold);color:#1a1305;border:0;border-radius:11px;
+    padding:14px 26px;font-size:18px;cursor:pointer;transition:transform .05s,background .15s;box-shadow:0 6px 18px rgba(242,193,78,.25)}
+  .btn:hover{background:var(--gold-hi)}.btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--cream);border:1px solid #33454f;box-shadow:none}
+  .btn.ghost:hover{border-color:var(--teal);color:var(--teal)}
+  .btn.replay{background:linear-gradient(180deg,var(--teal),#3a9089);color:#08201d;border:1px solid #2f7a73;box-shadow:0 4px 14px rgba(75,184,176,.35);font-weight:700}
+  .btn.shuffle{background:transparent;color:var(--gold-hi);border:1px solid #5a4a24;box-shadow:none}
+  .btn.shuffle:hover{background:rgba(242,193,78,.1)}
+  .stage{display:none;flex-direction:column;flex:1}.stage.show{display:flex}
+  .arena-row{display:flex;gap:10px;align-items:stretch}
+  .roster{width:220px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
+  .roster h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .ritem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:15px;font-weight:600;margin-bottom:3px}
+  .rdot{width:9px;height:9px;border-radius:50%;flex:none}
+  .ritem.win{background:rgba(242,193,78,.14)}.ritem.win .rname{color:var(--gold-hi)}
+  .rname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .canvas-shell{position:relative;flex:1;border-radius:14px;overflow:hidden;border:1px solid #2b3a47;background:#050b10;min-width:0}
+  canvas{display:block;width:100%;height:100%}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .count3{font-family:'Anton',sans-serif;font-size:clamp(52px,15vw,130px);color:var(--gold-hi);text-shadow:0 6px 30px rgba(0,0,0,.6);opacity:0}
+  .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .result{display:none;position:absolute;inset:0;background:rgba(6,15,20,.9);align-items:center;justify-content:center;padding:20px}
+  .result.show{display:flex}
+  .result-card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:cardup .38s ease-out}
+  @keyframes cardup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid #33454f;background:rgba(6,15,20,.55);
+    color:var(--cream);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .modal-x:hover{border-color:var(--teal);color:var(--teal)}
+  .winner-eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
+  .winner-name{font-family:'Anton',sans-serif;font-size:clamp(30px,8vw,46px);color:var(--gold-hi);margin:6px 0 2px;line-height:1;word-break:break-word}
+  .podium{list-style:none;padding:0;margin:16px 0 14px;text-align:left}
+  .podium li{display:flex;gap:12px;align-items:center;padding:9px 12px;border-radius:9px;background:#0a0f14;margin-bottom:8px}
+  .podium .pos{font-family:'Anton';color:var(--gold);width:26px;text-align:center;font-size:18px}.podium .nm{flex:1;font-weight:600;word-break:break-word}
+  .verify{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);background:#0a0f14;border:1px solid #24313c;border-radius:8px;padding:9px 10px;margin:0 0 16px;text-align:left;line-height:1.7;cursor:pointer}
+  .verify b{color:var(--teal)}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#1a1305;font-weight:600;padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;font-size:14px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{margin-top:24px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#41525e}
+  @media(max-width:900px){.arena-row{flex-direction:column}.roster{width:100%;max-height:150px;display:flex;flex-wrap:wrap;gap:4px}.roster h4{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="brand">Duck <span class="blade">Race</span></div></header>
+  <p class="sub-tag">Prototype — Left to Right</p>
+
+  <div class="card setup" id="setup">
+    <label class="lbl" for="names">Combatants</label>
+    <textarea id="names" placeholder="Enter at least two duck names here — one per line."></textarea>
+    <div class="count" id="count">0 ducks</div>
+    <div class="seal" id="seal" title="Tap to copy this race's seal"><span>🔒</span> Seal <b id="lockHash">—</b></div>
+    <div class="row">
+      <button class="btn shuffle" id="shuffle">🔀 Shuffle</button>
+      <div class="grow"></div>
+      <button class="btn" id="start">🏁 Start Race</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="arena-row">
+      <div class="canvas-shell">
+        <canvas id="cv"></canvas>
+        <div class="overlay"><div class="count3" id="count3"></div></div>
+        <div class="result" id="result">
+          <div class="result-card">
+            <button class="modal-x" id="closeResult" aria-label="Close">✕</button>
+            <div class="winner-eyebrow">First To The Line</div>
+            <div class="winner-name" id="winnerName">—</div>
+            <ul class="podium" id="podium"></ul>
+            <button class="btn ghost" id="standingsBtn" style="width:100%;margin-bottom:12px">📋 View Full Standings</button>
+            <div id="standingsBox" style="display:none;max-height:260px;overflow-y:auto;text-align:left;background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:13px;line-height:1.9"></div>
+            <div class="verify" id="verify" title="Tap to copy the seed">🔓 <b>Verify:</b> <span id="verifyBody">—</span></div>
+            <div class="controls">
+              <button class="btn ghost" id="copyLink">Copy Replay Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="roster" id="roster"></div>
+    </div>
+    <div class="controls">
+      <button class="btn replay" id="replayBtn" style="display:none">▶ Replay This Race</button>
+      <button class="btn ghost" id="backBtn">← New Race Setup</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Same seeded-RNG backbone as Battle Royale (cyrb128 + sfc32) ────────────
+// so this shares a deterministic core with the real system — same seed
+// always produces the same finish order, same as a battle's shuffle.
+function cyrb128(str){let h1=1779033703,h2=3144134277,h3=1013904242,h4=2773480762;
+  for(let i=0,k;i<str.length;i++){k=str.charCodeAt(i);h1=h2^Math.imul(h1^k,597399067);h2=h3^Math.imul(h2^k,2869860233);
+    h3=h4^Math.imul(h3^k,951274213);h4=h1^Math.imul(h4^k,2716044179);}
+  h1=Math.imul(h3^(h1>>>18),597399067);h2=Math.imul(h4^(h2>>>22),2869860233);
+  h3=Math.imul(h1^(h3>>>17),951274213);h4=Math.imul(h2^(h4>>>19),2716044179);
+  return [(h1^h2^h3^h4)>>>0,(h2^h1)>>>0,(h3^h1)>>>0,(h4^h1)>>>0];}
+function sfc32(a,b,c,d){return function(){a>>>=0;b>>>=0;c>>>=0;d>>>=0;let t=(a+b)|0;
+  a=b^b>>>9;b=c+(c<<3)|0;c=(c<<21|c>>>11);d=d+1|0;t=t+d|0;c=c+t|0;return (t>>>0)/4294967296;};}
+function rngFromSeed(seed){const s=cyrb128(seed);return sfc32(s[0],s[1],s[2],s[3]);}
+async function sha256hex(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
+function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]]\s*/,'').trim()).filter(l=>l.length>0).slice(0,1000);}
+function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+
+// ── Same tagged gzip replay-link format as index.html ──────────────────────
+function _bytesToB64url(bytes){let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function _b64urlToBytes(str){let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+  const bin=atob(b),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
+async function _streamAll(stream,input){const writer=stream.writable.getWriter();writer.write(input);writer.close();
+  const reader=stream.readable.getReader();const chunks=[];let total=0;
+  while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);total+=value.length;}
+  const out=new Uint8Array(total);let off=0;for(const c of chunks){out.set(c,off);off+=c.length;}return out;}
+async function _gzip(bytes){return _streamAll(new CompressionStream('gzip'),bytes);}
+async function _gunzip(bytes){return _streamAll(new DecompressionStream('gzip'),bytes);}
+async function encodeState(o){
+  const json=JSON.stringify(o);
+  if(typeof CompressionStream!=='undefined'){
+    try{const compressed=await _gzip(new TextEncoder().encode(json));return 'gz.'+_bytesToB64url(compressed);}catch(e){}
+  }
+  return 'pl.'+_bytesToB64url(new TextEncoder().encode(json));
+}
+async function decodeState(str){
+  try{
+    if(str.startsWith('gz.')){const bytes=await _gunzip(_b64urlToBytes(str.slice(3)));return JSON.parse(new TextDecoder().decode(bytes));}
+    if(str.startsWith('pl.')){return JSON.parse(new TextDecoder().decode(_b64urlToBytes(str.slice(3))));}
+    let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    return JSON.parse(decodeURIComponent(escape(atob(b))));
+  }catch(e){return null;}
+}
+
+const DUCK_NAMES = [
+  'army','astronaut','beach','chef','coach','cool','cop','cowboy','detective','dragon',
+  'fairy','firefighter','flash','gold','hawaiian','king','lifeguard','mallard','monocle','ninja',
+  'penguin','pirate','queen','rainbow','sailor','skeleton','sky','sunglasses','unicorn','vampire','yellow',
+];
+// Blue sheets only — no red/damage variant needed for a race, nobody gets hit.
+const DUCK_SHEETS = DUCK_NAMES.map(n => 'ducks/' + n + '.png');
+const POSE_CELL = {idle:[0,0], windup:[1,0]};
+const SHEETS = [];
+const SHEETS_READY_PROMISE = new Promise((resolve) => {
+  let settled = 0;
+  const done = () => { settled++; if (settled >= DUCK_SHEETS.length) resolve(); };
+  DUCK_SHEETS.forEach((url, k) => {
+    const rec = {img:new Image(), ready:false, cw:0, ch:0};
+    rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; done(); };
+    rec.img.onerror = () => { done(); };
+    rec.img.src = url;
+    SHEETS[k] = rec;
+  });
+  if (DUCK_SHEETS.length === 0) resolve();
+});
+let READY_INDICES = [];
+function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
+function spriteFor(i){ if(!READY_INDICES.length) return 0; return READY_INDICES[(((i+1)*2654435761)>>>0) % READY_INDICES.length]; }
+
+const DUCKPAL=['#f2c14e','#e9884a','#5cb8c4','#c98fca','#8fca8f','#efc94e','#e0625a','#9db4c9','#d98f5a','#7fc9b8'];
+
+// Pond background — race.png if present, otherwise a plain blank fill so
+// this works fine before a real background image exists.
+const POND_BG = new Image(); POND_BG.okay = false;
+POND_BG.onload = () => { POND_BG.okay = true; };
+POND_BG.onerror = () => { POND_BG.okay = false; };
+POND_BG.src = 'race.png';
+
+function coverFit(iw, ih, aw, ah, over) {
+  const s = Math.max(aw / iw, ah / ih) * (over || 1);
+  return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
+}
+
+// ── Race planning: same seeded shuffle idea as Battle Royale's planFight ──
+// idx[0] after the shuffle = 1st place, idx[n-1] = last place. On top of
+// that fixed finish order, each duck gets a seeded noise curve (frequency,
+// phase, amplitude) that makes the middle of the race genuinely look
+// uncertain — the "who's ahead at 10s won't necessarily win" jockeying —
+// while guaranteeing the real order locks in by the finish line, since the
+// wobble amplitude damps out as each duck nears ITS OWN finish time.
+function planRace(names, seed){
+  const rng = rngFromSeed(seed), n = names.length;
+  const idx = [...Array(n).keys()];
+  for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const rank = new Array(n);
+  idx.forEach((duckIdx, rankPos) => { rank[duckIdx] = rankPos; });
+
+  const freq=[], phase=[], amp=[], laneY=[], bobPhase=[];
+  for(let i=0;i<n;i++){
+    freq.push(0.6 + rng()*1.6);
+    phase.push(rng()*6.283);
+    amp.push(0.05 + rng()*0.11);
+    laneY.push(0.08 + rng()*0.84);   // vertical lane position, 0..1 of track height
+    bobPhase.push(rng()*6.283);
+  }
+  const order = idx.map(i => ({i, nm: names[i]}));
+  return {n, rank, freq, phase, amp, laneY, bobPhase, order, meta: names.map((nm,i)=>({nm, col:DUCKPAL[i%DUCKPAL.length]}))};
+}
+
+// Progress for duck i at race-time fraction tFrac (0..1). Two flavors:
+// - duckProgressRaw: UNCLAMPED — keeps climbing slowly past 1.0 for a duck
+//   that's already crossed the line, at a rate tied to how far past its own
+//   finish threshold the race has gotten. This is what determines rank/
+//   leader — without it, multiple early finishers all sit at a tied 1.0 and
+//   "who's ahead in the final frame" stops reliably matching the seeded
+//   winner (ties resolve by iteration order, not by the real seeded rank).
+// - duckProgress: clamped to [0,1] — this is what actually gets drawn, so a
+//   duck visually stops right at the finish line instead of sliding past it.
+function duckProgressRaw(plan, i, tFrac){
+  const n = plan.n;
+  const r = plan.rank[i];
+  // 1st place's own "finish window" ends earliest; last place's ends at 1.0.
+  // Keeps the field bunched for most of the race, sorting itself out late.
+  const finishAt = 0.78 + 0.22 * (n<=1 ? 0 : r/(n-1));
+  const x = tFrac / finishAt;
+  let base;
+  if (x <= 1) {
+    base = x*x*(3-2*x); // smoothstep, 0..1
+  } else {
+    base = 1 + (x-1)*0.05; // past the line — creep upward slowly, preserves order
+  }
+  const damp = Math.max(0, 1 - tFrac/(finishAt*0.92));
+  const wobble = plan.amp[i] * damp * Math.sin(tFrac*10*plan.freq[i] + plan.phase[i]);
+  return base + wobble;
+}
+function duckProgress(plan, i, tFrac){
+  return clamp(duckProgressRaw(plan, i, tFrac), 0, 1);
+}
+
+const STATE={names:[],seed:'',plan:null,raf:null,durSec:16};
+let PLAY_GEN=0;
+
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+function fitCanvas(){const shell=cv.parentElement;const w=shell.clientWidth||shell.getBoundingClientRect().width;
+  const h=Math.max(360,Math.min(780,Math.round(window.innerHeight*0.74)));
+  const dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);return {w,h};}
+let VIEW=fitCanvas();
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function shortLabel(s){return s.length>16?s.slice(0,15)+'…':s;}
+function raceLength(n){ return Math.round(clamp(10 + n*0.05, 12, 26)); }
+
+function drawPond(ax,ay,aw,ah,clock){
+  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+  if(POND_BG.okay){
+    const fit=coverFit(POND_BG.naturalWidth,POND_BG.naturalHeight,aw,ah,1.05);
+    ctx.drawImage(POND_BG,ax+fit.dx,ay+fit.dy,fit.dw,fit.dh);
+  } else {
+    // Blank fallback until race.png is dropped in.
+    ctx.fillStyle = '#0d2733';
+    ctx.fillRect(ax,ay,aw,ah);
+  }
+  ctx.restore();
+}
+
+function drawStartFinish(ax,ay,aw,ah){
+  const startX = ax + aw*0.06, finishX = ax + aw*0.94;
+  // Start line — solid teal.
+  ctx.save();
+  ctx.strokeStyle = 'rgba(75,184,176,.85)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(startX, ay); ctx.lineTo(startX, ay+ah); ctx.stroke();
+  ctx.font = `700 ${Math.max(11,aw*0.011)}px Anton, sans-serif`;
+  ctx.fillStyle = '#bfe9e4'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('START', startX, ay-4);
+  ctx.restore();
+  // Finish line — checkered.
+  ctx.save();
+  const cw = Math.max(6, ah*0.035), rows = Math.ceil(ah/cw);
+  for(let i=0;i<rows;i++){
+    ctx.fillStyle = (i%2===0) ? '#f4f6f8' : '#12181f';
+    ctx.fillRect(finishX-4, ay+i*cw, 8, cw);
+  }
+  ctx.font = `700 ${Math.max(11,aw*0.011)}px Anton, sans-serif`;
+  ctx.fillStyle = '#ffd76b'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('FINISH', finishX, ay-4);
+  ctx.restore();
+  return {startX, finishX};
+}
+
+function drawDuckSimple(x,y,r,i,facing,win,simple){
+  const idx=spriteFor(i), sh=SHEETS[idx];
+  if(!sh || !sh.ready){
+    ctx.save();
+    if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=18;}
+    ctx.fillStyle = STATE.plan.meta[i].col;
+    ctx.beginPath(); ctx.arc(x,y,r,0,6.283); ctx.fill();
+    ctx.fillStyle='#e8862a'; ctx.beginPath(); ctx.arc(x+r*0.7,y-r*0.1,r*0.28,0,6.283); ctx.fill();
+    ctx.restore();
+    return;
+  }
+  const cell = POSE_CELL.idle, cw=sh.cw, ch=sh.ch, box=r*2.6;
+  ctx.save();
+  ctx.globalAlpha=.16;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.85,r*1.15,r*0.36,0,0,6.283);ctx.fill();ctx.globalAlpha=1;
+  if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=22;}
+  ctx.translate(x,y);
+  if(facing<0)ctx.scale(-1,1);
+  ctx.drawImage(sh.img, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2, box, box);
+  ctx.restore();
+}
+
+function nameTag(x,y,name,win){
+  ctx.save();
+  const fs = win ? 15 : 12;
+  ctx.font = `700 ${fs}px Inter, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const t = shortLabel(name), tw = ctx.measureText(t).width;
+  ctx.fillStyle='rgba(6,15,20,.7)'; roundRect(x-tw/2-5, y-fs*0.9, tw+10, fs*1.7, 5); ctx.fill();
+  ctx.fillStyle = win ? '#ffd76b' : '#e9eef2';
+  ctx.fillText(t, x, y+1);
+  ctx.restore();
+}
+
+let lastRosterKey = -1;
+function updateRoster(tFrac){
+  const P = STATE.plan;
+  const withProg = [];
+  for(let i=0;i<P.n;i++) withProg.push({i, p: duckProgressRaw(P, i, tFrac)});
+  withProg.sort((a,b)=>b.p-a.p);
+  const key = withProg.map(w=>w.i).join(',');
+  if(key === lastRosterKey) return;
+  lastRosterKey = key;
+  const el = document.getElementById('roster');
+  const leaderIdx = withProg.length ? withProg[0].i : -1;
+  let html = `<h4>🏁 Standings</h4>`;
+  withProg.forEach((w, pos) => {
+    const isLead = (w.i === leaderIdx) && tFrac < 0.999;
+    html += `<div class="ritem ${isLead?'win':''}"><span class="rdot" style="background:${P.meta[w.i].col}"></span><span class="rname">${pos+1}. ${escapeHtml(P.meta[w.i].nm)}</span></div>`;
+  });
+  el.innerHTML = html;
+}
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderScene(tFrac, clock, finale){
+  const {w,h} = VIEW; const P = STATE.plan;
+  ctx.clearRect(0,0,w,h); ctx.fillStyle='#050b10'; ctx.fillRect(0,0,w,h);
+  const pad=16, ax=pad, ay=pad+8, aw=w-pad*2, ah=h-pad*2-8;
+  drawPond(ax,ay,aw,ah,clock);
+  const {startX, finishX} = drawStartFinish(ax,ay,aw,ah);
+  const trackW = finishX - startX;
+  const r = Math.max(9, Math.min(aw,ah)*0.028);
+
+  ctx.save(); roundRect(ax,ay,aw,ah,18); ctx.clip();
+  const bobT = clock*0.004;
+  const withProg = [];
+  for(let i=0;i<P.n;i++){
+    const pRaw = duckProgressRaw(P, i, tFrac);
+    const pDraw = clamp(pRaw, 0, 1);
+    const x = startX + pDraw*trackW;
+    const bob = Math.sin(bobT*2 + P.bobPhase[i]) * r*0.18;
+    const y = ay + P.laneY[i]*ah + bob;
+    withProg.push({i,pRaw,x,y});
+  }
+  const leader = withProg.reduce((a,b)=> b.pRaw>a.pRaw ? b : a, withProg[0] || {pRaw:-1,i:-1});
+  for(const {i,x,y} of withProg){
+    const isWin = finale && i===leader.i;
+    drawDuckSimple(x, y, r, i, 1, isWin, P.n>150);
+    nameTag(x, y - r*1.7, P.meta[i].nm, isWin);
+  }
+  ctx.restore();
+
+  if(finale){
+    ctx.save();
+    ctx.font = `700 ${Math.max(18,w*0.03)}px Anton, sans-serif`;
+    ctx.textAlign='center'; ctx.fillStyle='#ffd76b'; ctx.shadowColor='rgba(0,0,0,.6)'; ctx.shadowBlur=10;
+    ctx.fillText('🏁 ' + P.meta[leader.i].nm + ' WINS 🏁', w/2, ay+30);
+    ctx.restore();
+  }
+
+  updateRoster(tFrac);
+}
+
+function renderEmptyPond(clock){
+  const {w,h}=VIEW; ctx.clearRect(0,0,w,h); ctx.fillStyle='#050b10'; ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;
+  drawPond(ax,ay,aw,ah,clock);
+  drawStartFinish(ax,ay,aw,ah);
+}
+
+function countdownThen(cb, myGen){
+  const el = document.getElementById('count3'); const seq=['3','2','1','GO!']; let k=0;
+  lastRosterKey=-1;
+  let introRaf;
+  (function loop(){ if(myGen!==PLAY_GEN) return; renderEmptyPond(performance.now()); introRaf=requestAnimationFrame(loop); })();
+  let curAnim=null;
+  (function tick(){
+    if(myGen!==PLAY_GEN){ cancelAnimationFrame(introRaf); if(curAnim) curAnim.cancel(); return; }
+    if(k>=seq.length){ cancelAnimationFrame(introRaf); if(curAnim) curAnim.cancel(); el.style.opacity=0; cb(); return; }
+    if(curAnim) curAnim.cancel();
+    el.textContent = seq[k];
+    curAnim = el.animate([{opacity:0,offset:0},{opacity:1,offset:0.18},{opacity:1,offset:0.75},{opacity:0,offset:1}], {duration:850, easing:'linear'});
+    k++; setTimeout(tick, 900);
+  })();
+}
+
+function playRace(onDone, myGen){
+  const t0 = performance.now(); const durMs = STATE.durSec*1000;
+  cancelAnimationFrame(STATE.raf);
+  function frame(now){
+    if(myGen!==PLAY_GEN) return;
+    const el = now - t0;
+    const tFrac = clamp(el/durMs, 0, 1);
+    renderScene(tFrac, now, tFrac>=1);
+    if(tFrac>=1){ setTimeout(onDone, 900); return; }
+    STATE.raf = requestAnimationFrame(frame);
+  }
+  STATE.raf = requestAnimationFrame(frame);
+}
+
+async function showResults(){
+  const P = STATE.plan;
+  document.getElementById('winnerName').textContent = P.order[0].nm;
+  const pod = document.getElementById('podium'); pod.innerHTML='';
+  P.order.slice(0,3).forEach((o,idx)=>{
+    const medal=['🥇','🥈','🥉'][idx];
+    const li=document.createElement('li');
+    li.innerHTML = `<span class="pos">${medal}</span><span class="nm">${escapeHtml(o.nm)}</span>`;
+    pod.appendChild(li);
+  });
+  const lh = await sha256hex(lockInput(STATE.seed, STATE.names));
+  document.getElementById('verifyBody').innerHTML = `seed <b>${escapeHtml(STATE.seed.slice(0,10))}…</b> · seal <b>${lh.slice(0,10)}…</b>`;
+  document.getElementById('result').classList.add('show');
+  document.getElementById('replayBtn').style.display='inline-block';
+  document.getElementById('backBtn').style.display='';
+}
+
+document.getElementById('standingsBtn').addEventListener('click', () => {
+  const box = document.getElementById('standingsBox');
+  if(box.style.display==='none'){
+    const P = STATE.plan;
+    box.innerHTML = P.order.map((o,i)=>`<div>#${i+1} — ${escapeHtml(o.nm)}</div>`).join('');
+    box.style.display='block'; document.getElementById('standingsBtn').textContent='📋 Hide Full Standings';
+  } else {
+    box.style.display='none'; document.getElementById('standingsBtn').textContent='📋 View Full Standings';
+  }
+});
+
+async function ensureSpritesReady(btn){
+  if(READY_INDICES.length) return;
+  let orig; if(btn){ orig=btn.textContent; btn.disabled=true; btn.textContent='🦆 Loading fighters…'; }
+  await SHEETS_READY_PROMISE; _rebuildReadyIndices();
+  if(btn){ btn.disabled=false; btn.textContent=orig; }
+}
+
+function beginRace(){
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('setup').style.display='none';
+  document.getElementById('stage').classList.add('show');
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('replayBtn').style.display='none';
+  const myGen = ++PLAY_GEN;
+  VIEW = fitCanvas();
+  STATE.plan = planRace(STATE.names, STATE.seed);
+  STATE.durSec = raceLength(STATE.names.length);
+  countdownThen(() => playRace(showResults, myGen), myGen);
+}
+async function replayRace(){
+  const btn = document.getElementById('replayBtn'); await ensureSpritesReady(btn);
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('result').classList.remove('show');
+  const myGen = ++PLAY_GEN;
+  VIEW = fitCanvas();
+  STATE.plan = planRace(STATE.names, STATE.seed);
+  STATE.durSec = raceLength(STATE.names.length);
+  countdownThen(() => playRace(showResults, myGen), myGen);
+}
+
+function replayLinkObj(){ return {n: STATE.names, d: STATE.durSec, s: STATE.seed, mode:'race'}; }
+async function replayLink(){ return location.origin+location.pathname+'#r='+await encodeState(replayLinkObj()); }
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
+async function refreshLock(){const el=document.getElementById('lockHash');if(STATE.names.length<2||!STATE.seed){el.textContent='—';return;}
+  const h=await sha256hex(lockInput(STATE.seed,STATE.names));el.textContent=h.slice(0,16)+'…';el.dataset.full=h;}
+function syncFromTextarea(){STATE.names=parseNames(document.getElementById('names').value);const c=STATE.names.length;
+  document.getElementById('count').textContent=c+(c===1?' duck':' ducks');if(c>=2&&!STATE.seed)STATE.seed=newSeed();refreshLock();}
+function fisher(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let shuffling=false;
+function doShuffle(){const ta=document.getElementById('names');const names=parseNames(ta.value);if(names.length<2){toast('Add at least 2 ducks');return;}
+  if(shuffling)return;shuffling=true;const flips=8+Math.floor(Math.random()*5);let k=0;
+  (function flip(){ta.value=fisher(names).map((n,i)=>`${i+1}.  ${n}`).join('\n');k++;
+    if(k<flips)setTimeout(flip,70+k*6);
+    else{const fo=fisher(names);ta.value=fo.map((n,i)=>`${i+1}.  ${n}`).join('\n');STATE.names=fo;STATE.seed=newSeed();
+      document.getElementById('count').textContent=fo.length+' ducks';shuffling=false;refreshLock();toast('Shuffled 🔀');}})();}
+
+document.getElementById('names').addEventListener('input', syncFromTextarea);
+document.getElementById('shuffle').addEventListener('click', doShuffle);
+document.getElementById('seal').addEventListener('click', ()=>{const f=document.getElementById('lockHash').dataset.full;if(f)copy(f,'Seal copied');});
+document.getElementById('verify').addEventListener('click', ()=>copy(STATE.seed,'Seed copied'));
+document.getElementById('start').addEventListener('click', async ()=>{
+  const names = parseNames(document.getElementById('names').value);
+  if(names.length<2){toast('Add at least 2 ducks');return;}
+  await ensureSpritesReady(document.getElementById('start'));
+  STATE.names = names; if(!STATE.seed) STATE.seed = newSeed();
+  beginRace();
+});
+document.getElementById('replayBtn').addEventListener('click', replayRace);
+document.getElementById('closeResult').addEventListener('click', ()=>{document.getElementById('result').classList.remove('show');});
+document.getElementById('copyLink').addEventListener('click', async ()=>copy(await replayLink(),'Replay link copied'));
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  PLAY_GEN++; cancelAnimationFrame(STATE.raf);
+  document.getElementById('stage').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('setup').style.display='block';
+  history.replaceState(null,'',location.pathname);
+});
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('stage').classList.contains('show')){
+    VIEW=fitCanvas();
+  }
+});
+SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
+
+(async function initFromHash(){
+  const m = location.hash.match(/^#r=(.+)$/); if(!m) return;
+  const st = await decodeState(m[1]); if(!st || !Array.isArray(st.n) || st.n.length<2) return;
+  STATE.names = st.n; STATE.seed = st.s || 'seed';
+  document.getElementById('setup').style.display='none';
+  document.getElementById('stage').classList.add('show');
+  document.getElementById('backBtn').style.display='none';
+  await ensureSpritesReady(null);
+  VIEW = fitCanvas();
+  renderEmptyPond(performance.now());
+  document.getElementById('replayBtn').style.display='inline-block';
+  toast('Race loaded — press Replay');
+})();
+</script>
+</body>
+</html>
