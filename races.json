@@ -2,9 +2,17 @@
   {
     "battle_id": "1542184909433737348-1",
     "title": "Test #1",
-    "status": "pending",
+    "status": "official",
+    "winner": "supersonicduck (2)",
+    "podium": [
+      "supersonicduck (2)",
+      "supersonicduck (5)",
+      "supersonicduck (7)"
+    ],
     "ducks": 20,
-    "started_by": "BWall",
-    "started_ts": 1787760582
+    "lock": "d955f0a1d58da5086139dc68032e96b1690b93b4eb63bc18603742309501d610",
+    "seed": "4h248x1lpygw34e0wfkqy2uz7",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE23PsQ6CMBSF4VchdyoJA7SVQkfcfAEH49BARUODKFZE47sLiQMhZ2u-nuG_H2pJH6j3nb331_ZSVr5sAsZDiui5NY_C12xnGhsGTMy2HkqEcKkQpgiTGYu9ce7_XoUoYBtg6IgUmASWoLAc1saLXHh5thhwNJjijxFVpEU-fZImeeYyeyWuG-tBSBsPp-Y2cv9W9P0BzGmNY7EBAAA",
+    "ts": 1787760673
   }
 ]
