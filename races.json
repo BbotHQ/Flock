@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542592038082449459-1",
+    "title": "Yokai Kuko \u2018Steady Pour",
+    "status": "pending",
+    "ducks": 45,
+    "started_by": "BWall",
+    "started_ts": 1787853847
+  },
+  {
     "battle_id": "1542184909433737348-1",
     "title": "Test #1",
     "status": "official",
