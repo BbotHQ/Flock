@@ -2,10 +2,18 @@
   {
     "battle_id": "1542613373978681456-1",
     "title": "RC ALW 20L",
-    "status": "pending",
+    "status": "official",
+    "winner": "Candyman (2)",
+    "podium": [
+      "Candyman (2)",
+      "Ryan S. (2)",
+      "Bearded Bees (3)"
+    ],
     "ducks": 17,
-    "started_by": "Juggernaut",
-    "started_ts": 1787870766
+    "lock": "80d49c6bc84ada1b9c42ae69b415575817c3c58c2f98b417e73679b41e7ffacf",
+    "seed": "bf8c955513d52d74f5cba507d2a99c2e9aa58e2ee984e5d4f113a8a2805582b0",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22OsQ6CQBBEf-WylSbEcHu34Y4S_0BLY7GwSwcaqYjx34UEDSd28yYzk3lCD-UFTiP35nwwO9pDBpXyQ1RMpTqYnZ-tbyAlnOnIvYzd5Hywu9-W4KLtSv9UbLLnElrXKK257U-7tdxq4E9junLNQKB0PoMBSqjb0EQisk4IpfAtNTVTXghyjA1qZKagqBqDVxLfWus4MIacKGCdw-sNk3qUNFABAAA",
+    "ts": 1787870889
   },
   {
     "battle_id": "1542592038082449459-1",
