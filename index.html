@@ -176,6 +176,59 @@ async function sha256hex(str){const buf=await crypto.subtle.digest('SHA-256',new
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
 function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
 
+// ── PROVABLY-FAIR RANDOMNESS (drand quicknet beacon) ────────────────────────
+// Ducks used to get a client-side seed (crypto.getRandomValues) the instant
+// the setup screen had 2+ names, sitting in plain `STATE.seed` — so anyone
+// with devtools could reroll newSeed() in a loop, replan the fight locally,
+// and only click Start once they liked the winner. Fix: commit to the duck
+// list + a specific FUTURE public drand round before that round's signature
+// exists, then derive the seed from the published signature once it's out.
+// Nobody — including us — can know the seed before the beacon publishes it,
+// and anyone can redo the derivation later against drand's public output to
+// confirm a result wasn't tampered with. If drand can't be reached, we do
+// NOT fall back to a local seed — the battle simply refuses to start.
+const DRAND_API = 'https://api.drand.sh/v2/beacons/quicknet';
+const DRAND_GENESIS = 1692803367; // unix seconds, quicknet chain genesis
+const DRAND_PERIOD = 3;           // seconds per round
+const DRAND_ROUND_BUFFER = 2;     // commit to "now + N rounds" so it's not out yet
+
+function drandRoundAt(unixSec){return Math.floor((unixSec-DRAND_GENESIS)/DRAND_PERIOD)+1;}
+
+async function _fetchDrandRound(round,tries=8){
+  let lastErr;
+  for(let i=0;i<tries;i++){
+    try{
+      const res=await fetch(`${DRAND_API}/rounds/${round}`,{cache:'no-store'});
+      if(res.ok){const j=await res.json();if(j&&j.round===round&&j.signature)return j;}
+    }catch(e){lastErr=e;}
+    await new Promise(r=>setTimeout(r,800+i*400));
+  }
+  throw new Error('drand round '+round+' unreachable: '+(lastErr||'no valid response'));
+}
+async function waitForDrandRound(round){
+  const dueAt=DRAND_GENESIS+round*DRAND_PERIOD;
+  const waitMs=Math.max(0,dueAt*1000-Date.now())+300;
+  if(waitMs>0)await new Promise(r=>setTimeout(r,waitMs));
+  return _fetchDrandRound(round);
+}
+// Anyone can redo this: sha256(drand round signature || committed name hash).
+async function deriveDrandSeed(round,nameHash){
+  const beacon=await waitForDrandRound(round);
+  return sha256hex(beacon.signature+'\u241F'+nameHash);
+}
+// Logs the commitment (duck list hash + target round) BEFORE the round
+// publishes. Best-effort against the capture endpoint — the cryptographic
+// fairness guarantee comes from the round being genuinely in the future
+// when this runs, not from this log call succeeding.
+async function commitBattle(battleId,names,round){
+  const nameHash=await sha256hex(names.join('\u241F'));
+  try{
+    await fetch(FLOCK_API+'/commit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({battle_id:battleId,name_hash:nameHash,round,committed_at:Date.now()})});
+  }catch(e){console.warn('[Flock] commit log failed (non-fatal):',e);}
+  return nameHash;
+}
+
 // ── STATE ENCODING (replay links) ──────────────────────────────────────────
 // The payload is {n: [...names], d: durationSeconds, s: seed}. For a big
 // battle `n` is extremely repetitive (e.g. 300x "BWall (###)") — gzip
@@ -232,6 +285,10 @@ async function decodeState(str){
   }catch(e){return null;}
 }
 function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]]\s*/,'').trim()).filter(l=>l.length>0).slice(0,1000);}
+// Deprecated: this was the client-generated seed that could be rerolled
+// from devtools to pick a winner. No longer called anywhere — the seed now
+// comes from deriveDrandSeed(). Left here only in case anything else in
+// this file still references it; safe to delete once confirmed unused.
 function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
 function clamp(v,a,b){return v<a?a:v>b?b:v;}
 
@@ -973,17 +1030,21 @@ async function replayFight(){const replayBtn=document.getElementById('replayBtn'
 async function replayLink(){return location.origin+location.pathname+'#r='+await encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
-async function refreshLock(){const el=document.getElementById('lockHash');if(STATE.names.length<2||!STATE.seed){el.textContent='—';return;}
-  const h=await sha256hex(lockInput(STATE.seed,STATE.names));el.textContent=h.slice(0,16)+'…';el.dataset.full=h;}
+// Pre-battle "Seal" is now a commitment to the LOCKED DUCK LIST only — the
+// seed can't exist yet, since it's derived from a drand round that hasn't
+// published. That's the point: nobody (host included) can see an outcome
+// and then decide whether to proceed.
+async function refreshLock(){const el=document.getElementById('lockHash');if(STATE.names.length<2){el.textContent='—';return;}
+  const h=await sha256hex(STATE.names.join('\u241F'));el.textContent=h.slice(0,16)+'…';el.dataset.full=h;}
 function syncFromTextarea(){STATE.names=parseNames(document.getElementById('names').value);const c=STATE.names.length;
-  document.getElementById('count').textContent=c+(c===1?' duck':' ducks');if(c>=2&&!STATE.seed)STATE.seed=newSeed();refreshLock();}
+  document.getElementById('count').textContent=c+(c===1?' duck':' ducks');refreshLock();}
 function fisher(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 let shuffling=false;
 function doShuffle(){const ta=document.getElementById('names');const names=parseNames(ta.value);if(names.length<2){toast('Add at least 2 ducks');return;}
   if(shuffling)return;shuffling=true;ta.classList.add('shuffling');const flips=8+Math.floor(Math.random()*5);let k=0;
   (function flip(){ta.value=fisher(names).map((n,i)=>`${i+1}.  ${n}`).join('\n');k++;
     if(k<flips)setTimeout(flip,70+k*6);
-    else{const fo=fisher(names);ta.value=fo.map((n,i)=>`${i+1}.  ${n}`).join('\n');STATE.names=fo;STATE.seed=newSeed();
+    else{const fo=fisher(names);ta.value=fo.map((n,i)=>`${i+1}.  ${n}`).join('\n');STATE.names=fo;
       document.getElementById('count').textContent=fo.length+' ducks';ta.classList.remove('shuffling');shuffling=false;refreshLock();toast('Shuffled 🔀');}})();}
 
 document.getElementById('names').addEventListener('input',syncFromTextarea);
@@ -992,7 +1053,22 @@ document.getElementById('seal').addEventListener('click',()=>{const f=document.g
 document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'Seed copied'));
 document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
   await ensureSpritesReady(document.getElementById('start'));
-  STATE.names=names;if(!STATE.seed)STATE.seed=newSeed();
+  STATE.names=names;
+  const startBtn=document.getElementById('start'),origLabel=startBtn.textContent;
+  startBtn.disabled=true;
+  try{
+    const round=drandRoundAt(Math.floor(Date.now()/1000))+DRAND_ROUND_BUFFER;
+    startBtn.textContent='🔒 Locking round #'+round+'…';
+    const nameHash=await commitBattle(_urlBattleId,names,round);
+    startBtn.textContent='🎲 Waiting on drand…';
+    STATE.seed=await deriveDrandSeed(round,nameHash);
+  }catch(e){
+    console.error('[Flock] drand seed derivation failed, refusing to start:',e);
+    startBtn.disabled=false;startBtn.textContent=origLabel;
+    toast('Randomness beacon unreachable — battle not started');
+    return;
+  }
+  startBtn.disabled=false;startBtn.textContent=origLabel;
   captureSeed(_urlBattleId, STATE.seed, STATE.names);
   beginFight();});
 document.getElementById('replayBtn').addEventListener('click',replayFight);
