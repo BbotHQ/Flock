@@ -2,10 +2,18 @@
   {
     "battle_id": "1542592038082449459-1",
     "title": "Yokai Kuko \u2018Steady Pour",
-    "status": "pending",
+    "status": "official",
+    "winner": "ihatehangovers (1)",
+    "podium": [
+      "ihatehangovers (1)",
+      "BoomBang (11)",
+      "Neww_"
+    ],
     "ducks": 45,
-    "started_by": "BWall",
-    "started_ts": 1787853847
+    "lock": "ac7589520c3af871bdd62429076b4f47551f18b4bdb84f5b74fbefa0b4a61750",
+    "seed": "tlvqj4w5lhj8atffeerxrzwq",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22SwU6DQBCGX4XsCRIOS4G2cqSNBxI10aMxZlqmQKE76e4KRuPV1_Dm8_kIBkpMdt3jP5n99v9n5p0Jlj2yiHPekVKofr6-Pz0_CljIcqJTDqLy_GSUdk9i9qxNaREi7kIsXcVoenpLUtcbAqUnzm4PegvlP-5ilFuQrcoRxbVELOdiAVJSmXt-HJiEhUlIXR6uxuKdbtT9H89uiU2MM8o0k34DOn-p_AJaDOYAN0QdUaNx1oIEnDBdcwdk5YoYGRGdBp3Fyx4sS9ZEpvBNDRprEBX1KNXc89BByZej_6ZFryCByvFHani7bBOH4dlBtYcx_bKDfbsjkKV5QZEzj-U9toCxsUjreFYBewpZybIVD5liGdNdfz4mQ9rVxzXowwFRvsq34cw-fgHvpa3XKAMAAA",
+    "ts": 1787854032
   },
   {
     "battle_id": "1542184909433737348-1",
