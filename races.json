@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542654645456085155-1",
+    "title": "Stagg 24D",
+    "status": "pending",
+    "ducks": 12,
+    "started_by": "BWall",
+    "started_ts": 1787884732
+  },
+  {
     "battle_id": "1542702971983499336-1",
     "title": "Stagg 25D Round 2",
     "status": "official",
