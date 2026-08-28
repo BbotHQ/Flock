@@ -10,10 +10,18 @@
   {
     "battle_id": "1542732200561090628-1",
     "title": "Stagg Jr 15",
-    "status": "pending",
+    "status": "official",
+    "winner": "thatonedude421 (3)",
+    "podium": [
+      "thatonedude421 (3)",
+      "DarkOvermind (3)",
+      "DrNeuroLab"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787892991
+    "lock": "e06bb7246b827766cc632ec831bdbba0a7bd11ff84fee8ab0b11305b35083611",
+    "seed": "3c3b678c7d5cf7208ce9bc038ae1cd7e2942f4a320c5bec3945dc7eaeebc34d3",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE23MsQ6CMBSF4Vcxd5KkA_QWC8xMxOjkZIxpby-iRogtZTG-u9E4ieuX_5wH9FDtoYlhbEwMHQiojb9uJ_a3c-8WS0xAwC7cI1sTT92xHwYLAsbOjEPPLjpWMvtmv5i9sfYbjn5YGzv7zv6NZDLrPnSJYZzgIMBBJVFAgAqQ0K50Qdrl1GqZFsSlpRQLwxk5zbJUslUGZUq5ZcJS5Y40G2ZLqBzC8wUznoNbAAEAAA",
+    "ts": 1787893131
   },
   {
     "battle_id": "1542726444315312221-1",
