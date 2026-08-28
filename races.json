@@ -2,10 +2,18 @@
   {
     "battle_id": "1542974362355761195-1",
     "title": "JD10 B5",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (3)",
+    "podium": [
+      "Bearded Bees (3)",
+      "Scott S (1)",
+      "Lorcat02 (9)"
+    ],
     "ducks": 27,
-    "started_by": "Sundown",
-    "started_ts": 1787950533
+    "lock": "43b5414db6b3dde76c1a82581a911e53d50d69765a352156f79008436ce8d8ec",
+    "seed": "68dcd8e0bb73af5f9a0f88fbefead790d07edb575348119ef01b70de6a4344a9",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACmWQsWrEMAyGX8VoykEKcmzHdsbjhhu63Vg6yJEMpZBAErqUvvtxVwq1Pf7Sp0-yv2GB6Q3OQhsLq7PIrrrhBD1cafl8udDXB6tOPwqv6zbTgYPqYhldGf0jlsKKePo34T3TYkyjN63AloRuibEtmWoIyxzqVw4VX531u2FNMx0X-sP_5Sd-m9fjULe2a9v7dPUNQyGottvKZ07w3gPD5LCHHSYYA88cBFPyhrLLkTCHkJNkIfYRGb1wct4ZG7SOklEnjywjWWMtRfi5A6t_bngMAgAA",
+    "ts": 1787950667
   },
   {
     "battle_id": "1542732180420165663-1",
