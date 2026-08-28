@@ -2,10 +2,18 @@
   {
     "battle_id": "1542654645456085155-1",
     "title": "Stagg 24D",
-    "status": "pending",
+    "status": "official",
+    "winner": "Stagg King \ud83d\udc51 -Josh (3)",
+    "podium": [
+      "Stagg King \ud83d\udc51 -Josh (3)",
+      "Brad",
+      "Stagg King \ud83d\udc51 -Josh (2)"
+    ],
     "ducks": 12,
-    "started_by": "BWall",
-    "started_ts": 1787884732
+    "lock": "cea0407a86aa380152665330fa335c2df3305a9ed97055de811749a90ce6cd80",
+    "seed": "a0eb02ea945a4b9afce6ed545be5c32490873ecc8510563efcbe85a99590ff7a",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE32PwQqCQBRFf0XeqmCCcZynjstqVUGL2kWL58xTQ9SwaBN9hF_QL_YJUUnQIrf3XA73XqGGZAerprV0lsob-WMQsDlTnnvLQ517j3vXeZNFcyp6tmIqbcG2BAEzqo7N_74acAUDTL_YtqCcKkbpg4A5teX6wm11qF3v_Y0-074v3o1pSw72AhwkKhRwggRIcioVk9FIOjWUWQ7ZocaU0QZKGxlHAVsboy8xDDizKcdIxqCRWRYR3J43dez4MQEAAA",
+    "ts": 1787884861
   },
   {
     "battle_id": "1542702971983499336-1",
