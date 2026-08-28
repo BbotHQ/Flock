@@ -2,10 +2,18 @@
   {
     "battle_id": "1543040210114322547-1",
     "title": "RR SR CNF",
-    "status": "pending",
+    "status": "official",
+    "winner": "Thagame501 (1)",
+    "podium": [
+      "Thagame501 (1)",
+      "BoomBang (9)",
+      "yoke_jockey (8)"
+    ],
     "ducks": 45,
-    "started_by": "Sundown",
-    "started_ts": 1787960866
+    "lock": "762324bf8b1998dc84a480bab7cc0f4dc43573ed02eccf76a2ea8a37cd28e042",
+    "seed": "697977a28ff7e52359051c3b8051435697c0ef9a826342b4abd7179fc85bb4d6",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACm1Sy2rDMBD8FbMnB3zQ--Fjein02lspRZZkJzGxih0fQum_F5OW4pWOM8zM7kj7BRO0b3BPY_y4JD_Ge1XrAzRwTOl6dNNQ1VRu-PXkBneNktCq5khANvyc0rCjGVLRDd9O7pamGNYQBfuLmmNYejdxXtViw7tteMY85uEkgcblPqRQaDTNDDJjzMYs62eclzSdfVj9-Gv8z0WvY0vLqr1GlGJZXrwURVGN3MZKtlxmUdCjx8vTeXBzVpIKfBQUE_hDSltIpGE4hO2WQCeFDtXsoSwN1FltdYD3BgK0mjSwQAvKaqu1Y6bvdZSMS0sk9bwzRFLBpbLak9hbZ5jignXCdUFTbXtvZNeJoOD7BxrW3fZVAwAA",
+    "ts": 1787961056
   },
   {
     "battle_id": "1542929073309880461-1",
