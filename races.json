@@ -2,10 +2,18 @@
   {
     "battle_id": "1542679897846317058-1",
     "title": "WTGF",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (4)",
+    "podium": [
+      "Bearded Bees (4)",
+      "BoomBang (12)",
+      "Campo (8)"
+    ],
     "ducks": 70,
-    "started_by": "Sundown",
-    "started_ts": 1787878384
+    "lock": "889d784aa53d9c453c7278973b4a37a272a7be05ebb2b2b1283084e73131c674",
+    "seed": "994079b14fcfb369446b27426ce32c0fe9c0ba1d18a39fb31bef9c6164809083",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACm1TsU7DMBD9lchTK3Xw-Rw7zhgYUCUm2BCD4zhFqtqghgwI8S3s8HN8AiJSK_ulW-7O9-69d5cPcRT1k2iG4dD4465YkVmLTRKz-49v_OF1KFYk86LOwyoPFeUxzVBN9KcudkUT43hGyFI4RMEUlssetUyBDrLLJ5xIm7k9-mPx-_XznXeWwAeRQeaMtPWn09A1xQqKDB4ximOILQxPKFfJt4I23CJQTlvLpTGoeCZxNwxnAhd18JCBhoJV8uzGdhrftn4aXy6glN4YQJTZQLDLJo281IEHiTZAOTUXBuFREu6tTHpTVngsQEFd-SeupGiZspkvAGuyImxF4w8GNs1S7t9vp7AfH6awzwWotXjeiE7UVm7EKGrhnJbWtaT70LdsnNamVVYrEyKrIPvogmw9dVR5dn3L1MbeBUNGV9LJisXnH8GhqICFBAAA",
+    "ts": 1787878596
   },
   {
     "battle_id": "1542661292324560897-1",
