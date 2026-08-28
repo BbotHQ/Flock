@@ -2,10 +2,18 @@
   {
     "battle_id": "1542659095801372764-1",
     "title": "Nobunaga 15yr \ud83e\uddac\ud83e\udd83 \u201c99\u201d",
-    "status": "pending",
+    "status": "official",
+    "winner": "Hank-David (2)",
+    "podium": [
+      "Hank-David (2)",
+      "KAWJ (9)",
+      "KAWJ (4)"
+    ],
     "ducks": 60,
-    "started_by": "BWall",
-    "started_ts": 1787884376
+    "lock": "8f3919b29c21be580c7bd9e66176c2abf44e8398b5b8d0848b58f3e204b8ac7c",
+    "seed": "2c184aa4ba6eee322f613e530fb039fb264d3a50d82d6c8d4fc9da534fadfa15",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21SWU-DQBD-K2SfaIIJuwuU9q3YRFOtMaLxwRgzsANtWnZrKTXV-N8Nh9xvuzPzHXP8EEnmb-Ru8brS9NmEGMRTKtF0lj9XWRzjUUJ2IgZZhI8o5YWGms7zZAkp6vxMCvUlNZ3mP6kkJGi7Zs4Ax6MSXgXxEI4CheYhppo-zUNPDzcV7B5Pa_QhOezxeQOnQXnLHG303ZqkULgFubtawnkrqqqWazq0MBJy8tA1JAel6XajY42AzX9HHsi4srK-LLNwl_pZuBsARjhYo1AIv6SfGQaQxZsPqVTQaXVkhG7LLO-6aTEXbfh7OCNbb_eY1omygwpfKNX7Yl22clAqCOG0BDFIO_UWrEaW9hfSstTsvmT6zgJmtfVp565Yy2f34npd89Eh9tyO7MHu9Ue7iGnvlHqEdsveCDmfkHeDCDKfmgZJyZywkLoWgBWAg4icscihHG1uRoHJZ1HAHEtwsE3hMuGErrCicCbA5lYEIgJqk98_BXrsQ7cDAAA",
+    "ts": 1787884551
   },
   {
     "battle_id": "1542679897846317058-1",
