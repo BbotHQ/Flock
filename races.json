@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542619832736940246-1",
+    "title": "Weller Sib",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "BWall",
+    "started_ts": 1787884875
+  },
+  {
     "battle_id": "1542654645456085155-1",
     "title": "Stagg 24D",
     "status": "official",
