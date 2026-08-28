@@ -10,10 +10,18 @@
   {
     "battle_id": "1542726444315312221-1",
     "title": "HH22",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (1)",
+    "podium": [
+      "BoomBang (1)",
+      "Campo (3)",
+      "Campo (2)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787892895
+    "lock": "de6af06c1ce7288ba91e88ac943cb882ccba568b48481235c544d80a6e250c70",
+    "seed": "2385dba7c84f13bf94c9b162b8c381b0ca4c080ba529b29f8614ba07280ab777",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2XMsQ7CMAwE0F9BnqjUIbHTxslYPgMx2CmBgaZVy4b4d1SWFjG-u9O9oEA8QzeOQyfldjjaCuod8Ze08iTDNP4t3cr52i9ZCtE2--aqRZ-PdJdl3pr9GVZwqaGHiFTDAhGQuOlVfGKXLWkOLgW1LSonYqsmiUuGjUqDQTFkbq1TMR7ZiHrv4f0BFocykdsAAAA",
+    "ts": 1787893028
   },
   {
     "battle_id": "1542619832736940246-1",
