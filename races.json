@@ -2,10 +2,18 @@
   {
     "battle_id": "1542619832736940246-1",
     "title": "Weller Sib",
-    "status": "pending",
+    "status": "official",
+    "winner": "BobcatDad (3)",
+    "podium": [
+      "BobcatDad (3)",
+      "BobcatDad (2)",
+      "Brian K"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787884875
+    "lock": "4ac7e27bfb238848fe183dbefeefc4be9861ed749e6401eabf653266fb5eaf75",
+    "seed": "94fb772cf6d2660fb574b9448dc9a0e14434750aedecaff053d0a898ce8f6d3a",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE13NvQrCMBQF4Fcpd2qhQ5rc_I7FzVE3EbnJTbSgKaib-O6iTu12Pg6H84IK4QD7Sz7tKk3XwTft0EEP432i2my_aY6JnhviptXd0mplXFn-Pd9Gqudl9TtZ3MrV2HRw7IEhSNXDAwJ4LNFamYphaYwoUVuMHtFx8iTygKjQakGZc6JShFYsyHmXsiuGFcH7AwzS5FzuAAAA",
+    "ts": 1787884984
   },
   {
     "battle_id": "1542654645456085155-1",
