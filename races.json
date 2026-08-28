@@ -2,10 +2,18 @@
   {
     "battle_id": "1542732934572937267-1",
     "title": "ANA GF",
-    "status": "pending",
+    "status": "official",
+    "winner": "FatherFoug (2)",
+    "podium": [
+      "FatherFoug (2)",
+      "Campo (11)",
+      "DrNeuroLab (3)"
+    ],
     "ducks": 72,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787893088
+    "lock": "921b6d7e436a62ffc97a30bd11ddab9446ddeff5a3b68a4c81f2db8567442040",
+    "seed": "4bb7439ea2981a9437d60f7cd832186fd22d71c27de490401b45cdb4aa9400c3",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21STU_CQBD9K82eSoLJfrXbcgSCxhAOGk_GmCm7gAKttJSL8b-bbhCns73t7Hvz9d58s5JNXtm8Xrm2rpZQRLEesTG7zOA8bbfxI-zdKIpV9zd1UFtno6lzTRRn_quqjlMot1GcdOEMjl9VFKchW_XZQnbxsipdc4a6B5kOeYByfzeHy4eNYklSSegbP63uAyS7Ab4CXlGgYQWnDXuoCHfxXws471y9qNptOGHexYdTeyv2j2maS3DJcXP09j0-2-Z8uYrpN9OY7SnPB7A8veZ6ThJuIFGaQoUFFQqDOqyj0aLUYRL7lrWzzQZKpUJ6SuKM8KnGWJsMvZOB6xXU4YFzHrhZg_XEkpn-LIqMSi8Um6T7WI7983VemlPrCmi3u_eyqoo_E6lcZmDN4MzxzDkpwJGzRNsUuSpDWZIRexszyyaGj1nDJkwXhdEqdyDzTECulbEp35i1zZQUWbqxUloj1tJYp3OuuSh0sraFBsg152vFfn4Bp0j3_YYEAAA",
+    "ts": 1787893272
   },
   {
     "battle_id": "1542732200561090628-1",
