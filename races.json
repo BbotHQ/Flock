@@ -2,10 +2,18 @@
   {
     "battle_id": "1542702971983499336-1",
     "title": "Stagg 25D Round 2",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (1)",
+    "podium": [
+      "Bearded Bees (1)",
+      "Brandon.L5150 (2)",
+      "p3ac3mak3r247 (1)"
+    ],
     "ducks": 10,
-    "started_by": "BWall",
-    "started_ts": 1787884593
+    "lock": "32187c529f147dcafe8814317f1691db6515cc3512c4f189203762448d5cbd6b",
+    "seed": "4f20793de6d0be0fe125766840301af7f1cee74bd87b450eabfe6d6ec9161437",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22OPQvCQBBE_0rYKoEgu7f3kaRMndpGLC53eyBqIhc78b-LkkZNOW_ewDxggu4AvfgcJRa9yFKUVEENw5yDv6NaY5_9FOdpNxgyWJS8wX5m6h3380UPpyT_9qe-sQ989WfOSruVfX_Z0qiCYw0ROsU1LNCBTgpdy1FsxFEwCSnjrG00MpJPLlEQcXqMjRu1QfFjEhuthJYsaXbwfAGDZhb3CAEAAA",
+    "ts": 1787884706
   },
   {
     "battle_id": "1542659095801372764-1",
