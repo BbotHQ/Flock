@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542661292324560897-1",
+    "title": "Stagg 25D",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "Sundown",
+    "started_ts": 1787878115
+  },
+  {
     "battle_id": "1542613373978681456-1",
     "title": "RC ALW 20L",
     "status": "official",
