@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542679897846317058-1",
+    "title": "WTGF",
+    "status": "pending",
+    "ducks": 70,
+    "started_by": "Sundown",
+    "started_ts": 1787878384
+  },
+  {
     "battle_id": "1542661292324560897-1",
     "title": "Stagg 25D",
     "status": "official",
