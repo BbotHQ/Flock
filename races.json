@@ -2,10 +2,18 @@
   {
     "battle_id": "1542661292324560897-1",
     "title": "Stagg 25D",
-    "status": "pending",
+    "status": "official",
+    "winner": "DarkOvermind (2)",
+    "podium": [
+      "DarkOvermind (2)",
+      "Campo (3)",
+      "Campo (2)"
+    ],
     "ducks": 10,
-    "started_by": "Sundown",
-    "started_ts": 1787878115
+    "lock": "f6486f2b77f5026a9fb5c1d9da9cab1e049d9d427fbcce5a71d3f7abdc8df2d0",
+    "seed": "13abaeb478360763879ed16e2f0b1814b9b547045ab337f474aa049c3a1e4693",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACm2NTQvCMBBE_4rsyUIP2ew2aXLVoyB4FQ-bJoVS-kGrXsT_LgUFpd6GN_OYB_Tgz7CTbhw2W8og_2Rc8l6m9nhPU9f08V0fhqmSq9J_F7xGekGn29z07fCj668zvfYwg0sOEbymHGbwgCRBUmBbklHWUGldimiSrlXAEjm4ULBVXEggsjVbFlHsKhJMbBzB8wWE8I8j7QAAAA",
+    "ts": 1787878301
   },
   {
     "battle_id": "1542613373978681456-1",
