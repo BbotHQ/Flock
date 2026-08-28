@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543040210114322547-1",
+    "title": "RR SR CNF",
+    "status": "pending",
+    "ducks": 45,
+    "started_by": "Sundown",
+    "started_ts": 1787960866
+  },
+  {
     "battle_id": "1542929073309880461-1",
     "title": "2023 PVW 15",
     "status": "official",
