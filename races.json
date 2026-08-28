@@ -2,10 +2,18 @@
   {
     "battle_id": "1542929073309880461-1",
     "title": "2023 PVW 15",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang",
+    "podium": [
+      "BoomBang",
+      "BoomBang",
+      "Simba989"
+    ],
     "ducks": 150,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787953759
+    "lock": "f8a0a8501d66dd5748ae1bf055efa9be131f6b95d88a3208a16deda43aa48032",
+    "seed": "99772573a97380830991a6189bf2072515746df76f0522e4e7994a1239d17c35",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE61V0W6bMBT9FeSnVmJSAiHgPEJUbVm3PqApD9M0XbABy8GmNqSCaf8-VakWIJikUt8u1uXcwznXhz9IoM1PFBVArMi6-_L9HtkolLIMQeTDMgJB2hLE6ykFRSixQkr15WPMygRwgI1IV8sttLmMWVVRNdOj-NORqpIJgmy0A6UkCede_qGfG5pAkxe_hZQJspGiRGcgXHcWei8PWQUpf8pCpqWYo_pIgacFTfmESAZRq1qkRSO4sWUHWgrrgaq8OU3vGzH5BmsEFy-iQzb6DIJ_2sKREWP3sMVIeoSUpFBvgUzx27E8P7Qhq_Wblhw6at6l82ncCCJfzN9llD3mrOtk4Ay__SrIDeL0yoG3XyOWw-to3VRUaSlYSpop2yNQdfsA5bvHnRe6d59MW_4oBdU1qDmRbriAZ1NHHXO4-4JpTltrzzpQxLqLZQSHcYyMEuLsV5KIpD6kBWj1bokMwvXXbzR4yHyYet_abZNyHZ9sHDBhBdS0AJHLI1X6g3j2ysNzc0JS8kJs074azTVy-7-z_WYp86EhN8XWRCROUR9CDQW-mNNbvnkZrpaXQT-F2Eum_n-gr-svGxG08Rc20miDMPZ9x_NdwL4bLAJ3gfES1ssAJ5mz8B1v6fmrNcn8dbbwHIeuqI_xCpaOi8nST10P_f0Hdb0okm4HAAA",
+    "ts": 1787954219
   },
   {
     "battle_id": "1542974362355761195-1",
