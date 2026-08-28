@@ -2,10 +2,18 @@
   {
     "battle_id": "1542746035669958748-1",
     "title": "Stagg 26B + 25D WTA",
-    "status": "pending",
+    "status": "official",
+    "winner": "Lorcat02 (5)",
+    "podium": [
+      "Lorcat02 (5)",
+      "Thagame501 (3)",
+      "Thagame501 (1)"
+    ],
     "ducks": 26,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787931114
+    "lock": "c0756959b64a07df6a9ecc1b8aabfbbcca00d869afdfe621766afe58012c09f5",
+    "seed": "8bdb50f3e5d99ab792a3df2445f0cf7ee4d0d61c5cc479583dfd52d1c0b40ee3",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22Ou07EMBBFf8WaKpFc-JlXuVCChLR0iMLxjAkEnFW8KSLEv6N02Et5fHxH5xsiDC_wPLk390VWSFapGjjcucs1-mmLM3A4kVuRkJ2IEqvk4R-W1burUKxqD_y7L3x34NO6XCZKO6ts-V0fD-f3z3n_WKaYligb4PC4329-TufNz9k1Wc5NfROo8oAmD1A53uTb3Ov8mMmtzPGfmGJvcyximtzqGl45IAym45BggG7E0YqgyWLfu7HtldMYlDE2CB9aIoMCG-mt96btbacxoFUovRiNINLw8wuTXNwM8AEAAA",
+    "ts": 1787931231
   },
   {
     "battle_id": "1542728709553782885-1",
