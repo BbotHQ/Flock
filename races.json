@@ -2,10 +2,18 @@
   {
     "battle_id": "1542728709553782885-1",
     "title": "RETRY (since Noob was a noob): Buffalo Trace Experimental 15yo Low Entry Proof",
-    "status": "pending",
+    "status": "official",
+    "winner": "thatonedude421 (4)",
+    "podium": [
+      "thatonedude421 (4)",
+      "BoomBang (2)",
+      "bbnbtlchasr (7)"
+    ],
     "ducks": 40,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787930790
+    "lock": "3827dc9eef06ee802316568fbfcea55f48fd84775a542b7016726e585ecd876b",
+    "seed": "3b872601df2a07f4f4c29df02721bef3779ccacd701da2ecf8deaf997aeae6a8",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22QS0vDQBSF_0q4qxQiZB7NJF3GLkQEFy5ciMjNPNqYdkYmsRDF_y4pQUlmtodzznfP_QYLuxcYXaff3p3s9AgZNI1thpM8Yu-TlOQbyGA44uCsVp9Kc0qSlEziHn33eNH-3Fo1S4sojSVpYLsGH5zV_YAeMng-tn2nx-S5_UKvkvTJ3eIpVsUm0WvVG7SMzdW1c-ca7SFJeXhjCBeT8sFQsjN2zFMu5t6Fa7siXR337eFwGut26AN0dDmPoMKnlcumbWAoJuUObXezx0urpkPQe6fq-az_bLG-MqSFU_my4xr5A9DIhNV0FpserqhitmIBI6unk1hEbOA1AwU7kWfQww5YUwpa5EQZirkw3HBJK2VyKihptGFCVFKiVCInCqmWplQaTVUJ1KgLLOHnF2jhkTwUAwAA",
+    "ts": 1787931106
   },
   {
     "battle_id": "1542732934572937267-1",
