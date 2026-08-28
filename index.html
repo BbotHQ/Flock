@@ -1058,9 +1058,8 @@ document.getElementById('start').addEventListener('click',async ()=>{const names
   startBtn.disabled=true;
   try{
     const round=drandRoundAt(Math.floor(Date.now()/1000))+DRAND_ROUND_BUFFER;
-    startBtn.textContent='🔒 Locking round #'+round+'…';
+    startBtn.textContent='Starting…';
     const nameHash=await commitBattle(_urlBattleId,names,round);
-    startBtn.textContent='🎲 Waiting on drand…';
     STATE.seed=await deriveDrandSeed(round,nameHash);
   }catch(e){
     console.error('[Flock] drand seed derivation failed, refusing to start:',e);
