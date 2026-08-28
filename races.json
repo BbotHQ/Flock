@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542726444315312221-1",
+    "title": "HH22",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1787892895
+  },
+  {
     "battle_id": "1542619832736940246-1",
     "title": "Weller Sib",
     "status": "official",
