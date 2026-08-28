@@ -2,10 +2,18 @@
   {
     "battle_id": "1542732180420165663-1",
     "title": "Four Roses 135th",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (5)",
+    "podium": [
+      "Bearded Bees (5)",
+      "Juggernaut",
+      "doc_55 (5)"
+    ],
     "ducks": 32,
-    "started_by": "Sundown",
-    "started_ts": 1787950317
+    "lock": "95160570fa8394938d4ef6cebec9902e0a409c3acd52cafc552e344fe993ae6e",
+    "seed": "15a1cdab9fca961e106ec49b194c9c185858ef2c43932e3c2404723d74e2baaa",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACm2QT2vDMAzFv0rQKYEMYsdu4hzbHkZhMNh2GqMotpqGFWeL7V7Gvvto6Er-9Pgkvd-T9AMWqnfYhaah3mLwkMKLpzPZ1yjeoPMn8p1NopgnkMJzF_poS7p1bWfdtXh3nF06ptN7KaOYDXNrwt6QidZELorzZeluxBQ0Ueoi3Bf2Hm1N6DzPuJw5yrGQY8HHQgyHnPBM_Kk93Za55WbLbZeWIfjNfQeqMTTHve26egQZLn5E-_mwxXNrroT_7mqZMFl3gO-C8zsM7jgj8Tk6H1uLJZrNDez-L3kCHykYqGSZgoMKmESmDdbqoFGtGLFsRVqomimhlWalLGVJB65FrnJOueYiEwXPTSGI14gIv38tMEyQcgIAAA",
+    "ts": 1787950510
   },
   {
     "battle_id": "1542717520027324427-1",
