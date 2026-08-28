@@ -2,10 +2,18 @@
   {
     "battle_id": "1542717520027324427-1",
     "title": "\ud83c\udf7c 1/4 - WLW \u201825",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (13)",
+    "podium": [
+      "BoomBang (13)",
+      "p3ac3mak3r247 (2)",
+      "BoomBang (17)"
+    ],
     "ducks": 50,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787931234
+    "lock": "a6c0ff7f3e58e58f42715de523b5c23637652feaad46aaa1953478e8aadf5645",
+    "seed": "14a761ef494dbb175a9a4835b0c7e6c046eabb9926d1c0f90aa8bff38498071e",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22Ry2rDMBBFf8Vo5YILevmVpZNFCaEUssiidDG25ETYsVLZKdil_15svIiGLI9m5s69ml_Skc0nKay9FtCdgzB-IdEDcjbzHpyzqghC5lcZnfkNuuZ1Bz9GBSFHDSmSw3U58xauN_u4BnVxZIotPFxgsJ1Wd6UlZ6u3D2dvF92PKzqt-ho6Ibz5HMknSF48k8eepM8oKMsQ449aduzcu747e4DS16b-8NJ7gE7ZYAutM9M0kojcBFTiCo1wXKarv705n9uxMEOP1qHDYXfsWWKBEvuI8i9_iCwtqgfrKhgoXwUeTcX4QfoD6KLL_Oli-kaPwclM4FQQHu0W2rnQft-N8lPhu-K7o4BsWXBszDTZjJOviCiySWlEerIhTEKaMF3LXKqyZGkMOchMxCWtUp1UVCYayjLPeaJYReucAmRlXYtM5hlNmSZ__x6jKO5rAwAA",
+    "ts": 1787931382
   },
   {
     "battle_id": "1542746035669958748-1",
