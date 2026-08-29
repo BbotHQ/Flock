@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543384995337478318-1",
+    "title": "Bowman CS B5",
+    "status": "pending",
+    "ducks": 33,
+    "started_by": "Sundown",
+    "started_ts": 1788047890
+  },
+  {
     "battle_id": "1543303253528289402-1",
     "title": "stagg jr 15 rd. 2",
     "status": "official",
