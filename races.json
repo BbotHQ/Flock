@@ -2,10 +2,18 @@
   {
     "battle_id": "1543042190958268478-1",
     "title": "SJR b12",
-    "status": "pending",
+    "status": "official",
+    "winner": "Stagg King \ud83d\udc51 -Josh (1)",
+    "podium": [
+      "Stagg King \ud83d\udc51 -Josh (1)",
+      "Steven Dungan (4)",
+      "Steven Dungan (3)"
+    ],
     "ducks": 41,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1787966276
+    "lock": "9aa7b40a284efd4383ed7da84258422d886eccd09f63742afe70eea1c22df93c",
+    "seed": "2090ef41ab62e0708f920c5cc991deb98b441805a16413c053889409fb3a2efa",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE32STU7DMBCFr2J5lUgF-S-p3WXVRQULEGWBhFhM4kkaldpS0hQB4hA9AVfkCKimRUF12dlvZr6ZefY7dXTySKet935NEpHSEZ1Bu7rZYrtunCVJtpcWG9yiI7Pe1eBIIoPWO-tfHEn4_nbr-5bMsGy6xrvuIG6WsPEObW9RCU4SFWFFq0UkUcWI-enAvzus4A0DBuqaXDeuJl-fux25uPLd8syA4714NCNkLGBN5ofz3z4_4ThcDTlZrFMQYdU8l1on8_uH9Ag8uho8btF2FTgph5Gw4N0rOLK4jJAjb5jHPJb_zC-G88vhRZ3SZWw_HYoQWouWTBG7882i9XJgfmQjdWqfiGF45COJlD6NqKWTMRvRjk6oYIZhpTgUuUA2ZroygpVZWRrDLRZGF0pxzTLgueKyZJnU2ihmqkKCwAroxzdhClnfRwMAAA",
+    "ts": 1787966445
   },
   {
     "battle_id": "1543040210114322547-1",
