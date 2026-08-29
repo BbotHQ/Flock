@@ -2,10 +2,18 @@
   {
     "battle_id": "1542895119949107263-1",
     "title": "yokai oni",
-    "status": "pending",
+    "status": "official",
+    "winner": "Thagame501 (1)",
+    "podium": [
+      "Thagame501 (1)",
+      "Prophesy (3)",
+      "blwilleyct (1)"
+    ],
     "ducks": 16,
-    "started_by": "Sundown",
-    "started_ts": 1788021619
+    "lock": "b54b86c47c1ab377f6950f7f152646eaf47b03b0eb0dfd2dac118a6de277fc66",
+    "seed": "132028eb8244ad381e27c8a1bd471e0f34204b08bc3adcc1302809be7c783182",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACmWOQWvCQBBG_0qYU4Q97MysZM3Re0GwpQeRMrsZTWRr2m61iPjfS0LBNj3O472PucIR6g08trKXV51bLEqcgYGQvrqU9BI_i5IGcO5szGBg9dG_tZovRemmHg_g99IY3oNxeJ3krPTQJc0_5C7wP2GyMB_Og7Rg4Cm_nzTIad--HPs-_NHGavksKU0-xBlsDTRQMxnIUAMyWfIaPDknDXtUqqIXDI2rUO2OHVkXrA-RpYkR2ZK3i6BVrDyjJ7h9A2DHdsFBAQAA",
+    "ts": 1788021740
   },
   {
     "battle_id": "1543078117793337436-1",
