@@ -2,10 +2,11 @@
   {
     "battle_id": "1542735380850409503-1",
     "title": "Joseph Magnus 10yr Rye  batch 1",
-    "status": "pending",
+    "status": "unofficial",
     "ducks": 180,
     "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788007407
+    "started_ts": 1788007407,
+    "resolved_ts": 1788008622
   },
   {
     "battle_id": "1543065654452555797-1",
