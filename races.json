@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543078117793337436-1",
+    "title": "Weller OWA",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "Sundown",
+    "started_ts": 1788020881
+  },
+  {
     "battle_id": "1543032231881216052-1",
     "title": "Rock Hill Farms",
     "status": "unofficial",
