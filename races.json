@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1542895119949107263-1",
+    "title": "yokai oni",
+    "status": "pending",
+    "ducks": 16,
+    "started_by": "Sundown",
+    "started_ts": 1788021619
+  },
+  {
     "battle_id": "1543078117793337436-1",
     "title": "Weller OWA",
     "status": "official",
