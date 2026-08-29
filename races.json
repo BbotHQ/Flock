@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543041980676972628-1",
+    "title": "Pappy Lot B",
+    "status": "pending",
+    "ducks": 66,
+    "started_by": "Sundown",
+    "started_ts": 1787968083
+  },
+  {
     "battle_id": "1543042190958268478-1",
     "title": "SJR b12",
     "status": "official",
