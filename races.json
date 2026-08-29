@@ -2,10 +2,18 @@
   {
     "battle_id": "1543303253528289402-1",
     "title": "stagg jr 15 rd. 2",
-    "status": "pending",
+    "status": "official",
+    "winner": "Lorcat02 (4)",
+    "podium": [
+      "Lorcat02 (4)",
+      "Hank-David (3)",
+      "Stagg King \ud83d\udc51 -Josh (1)"
+    ],
     "ducks": 24,
-    "started_by": "Sundown",
-    "started_ts": 1788047570
+    "lock": "da4c012b545949f4def9bee5e5d2100df9b790014fe35fe8dff27a441efbe66c",
+    "seed": "18843d7cadf2ca46557bd5f5c1822319b6f8deef39ae661127c4af6d7b2d0807",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACn2PTWrDMBCFr2JmlYBTrH_Hy5JFSQNdlK5KKWNJVoyJnMh2NqWHyAl6xR6hOBja2ibLNzPfm_c-wEP2Crs6aGwTGi3IEuI_UvbypTl1NsfO7d99XefRgvbT5xadix5L76Lvr8slWm3rZj_sfg3Yf3ndHhlqdsCKBcrV8HKDoXo623AovRmoB_TVaoPn0gw3I45OOTrmRu9FL7edczZ47Nq5bmRswW-UnYk-4a-Z7gN6U_u7nSAimZ-NovKpNZ-hyBLeYjCQcRFDAxmQNOXMKI2moBq5FELlRhRCk5RSRta5LFJjbcHWaKUkhCrNsZBG5dQkaaLg8wdWFwQgFAIAAA",
+    "ts": 1788047874
   },
   {
     "battle_id": "1542895119949107263-1",
