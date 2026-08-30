@@ -10,10 +10,18 @@
   {
     "battle_id": "1543320532093501543-1",
     "title": "HH22 \"For The People\"",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (3)",
+    "podium": [
+      "BoomBang (3)",
+      "Lorcat02 (1)",
+      "Steven Dungan (5)"
+    ],
     "ducks": 120,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788050131
+    "lock": "42bdf2b3a27b2326c73ec4b1f53e85973af0c04fec4192023512d35ac7dcdae8",
+    "seed": "952ee2367435be574f15a91d599d96411056d98ae6db345c67126ae6046d6276",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE31VTY_aMBD9K1ZOQeKAx3H4OAKHVbVSK8GhalVVQ-INbMBGjsMKqv73akMSMnHoLfaMZ968eTP5E-hg8TP4gtaadMlCMQrGwe4NE2csC_nnqTijdah3CgsHE5D1detUPVneyh1EtWmTGOfYpjZt8MReGotTF6XZutQZahZG1dND5lBNeH1soVSn7R4zPCnZmtdo868XZU8HnTa5FdpUpWypVMFC-Xl1KHWuP_SNhXB_pPWV_WgybDcOs2wwYHX1XhbuUj99NTZBN4GmmFKn5qOB_s2a814V17q6NjAlKCKc0CJ5l7zKhPnhmMxm4cv2-6i-elQjSTWcIJIUUUQw9GqRBG51uppc_X43Sa6utfsjLU0Ew6qAbin3gyntzmi2tMbtlWVrvKg6GGUdCFZJVfFEhHcvY05L1A3lXbUIwjN0-so73z3SxEOkWxausHBH5Ywe1Y48b_ISyUUUCvShPKmA6oL7cYGCA5qmg7UdKPkUv_C1BU-doSlWEL3dKS2zTFmNpfNUBX370MyLJjb3VCcJIUBEV3m_ok4NW-HRHm63q8cXRdtbBBHF6mfvLiuaW_iKHeiWHzEaKJ8_JZ2sgirlCs9OJ_tS5305y76ZU6l4dm-Zeh5tz_8zuuATQXsmByoGjxdOW9EbH-kr9flYdvc1Xe6Ctl_QpdLdB4K8gz4xcnh6Wx171IJfAKfZe7ur9xukMoZR8GscpMFiOhkHRbAI5hKUAhFPIyF3Sk6jNy5xzlM5n6fzOOJ8IuN0PkMVpzsRySSecohRxZMoTmOYxsHffw9xlo_1BwAA",
+    "ts": 1788050315
   },
   {
     "battle_id": "1543301027829129338-1",
