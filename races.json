@@ -2,10 +2,18 @@
   {
     "battle_id": "1543384995337478318-1",
     "title": "Bowman CS B5",
-    "status": "pending",
+    "status": "official",
+    "winner": "T8RLORD (5)",
+    "podium": [
+      "T8RLORD (5)",
+      "Candyman (3)",
+      "Usquebaugh_noob"
+    ],
     "ducks": 33,
-    "started_by": "Sundown",
-    "started_ts": 1788047890
+    "lock": "e96448a8aa9a42603e1aad61bcb0bc9aedda62c79f8dd66479e451db9ea3b0e0",
+    "seed": "8da53e26ab034fe1a6cffa7b2a3522cf80034c3db70bcdf7a18d4bebc6714402",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACmVQTUvDQBD9K2FOKUTYzyTNsfbQgyJUPYnIbHa2Fs2mNkYQ8b9LQtVMetu3b9578-YLIlQPcFdur2626yRdLiD7R2ZAl9gc2iTVw3tFePTkkxVR90dH_9lgTFI5wOtD_9qREsJCBhuMLxdr_Nj7E8v1muv1JE2N0_vdO5KQJ_EtNsnml2JGakJL1kAxVDAkebw597VsfrbuaH0k3wWMWp9pR_f77q0nh_3u-Sm2rZudZEycfmjeWs15O7kQ75nPR3nxkiG7gMcMPFS5yKCDCkqPVpPK0QltAknM6xCwcAq1VaoOpRDa1Nq7QrjahwJl6Y0jV-eFNEYo-P4Bf5stTUgCAAA",
+    "ts": 1788048024
   },
   {
     "battle_id": "1543303253528289402-1",
