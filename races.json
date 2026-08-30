@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543429131956650045-1",
+    "title": "Weller 107",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "Sundown",
+    "started_ts": 1788116737
+  },
+  {
     "battle_id": "1543317668457881794-1",
     "title": "DEVR '25 2oz sample (mod approved) - value breakdown (3000 / 12.5) + 12 ship = 252 total",
     "status": "official",
