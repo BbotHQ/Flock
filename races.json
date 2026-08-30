@@ -2,10 +2,18 @@
   {
     "battle_id": "1543429131956650045-1",
     "title": "Weller 107",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (8)",
+    "podium": [
+      "BoomBang (8)",
+      "BoomBang (6)",
+      "BoomBang (7)"
+    ],
     "ducks": 10,
-    "started_by": "Sundown",
-    "started_ts": 1788116737
+    "lock": "cd2859e7671b746d7f331825eada4a9656cdb525313f8a1b4b434ba485b45b27",
+    "seed": "59df325e038f9389b98218f0357a853c45cbd1fc3a1b4d15cbf590933da486d5",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAClXKuw4CIRBA0V8xU2lCAQyzO1CuP2BvLHiIj2QhkVgZ_91s55Qn936gQTjD0vu6xHbb7ekA6o8s6SStpNl4evVej72N_OjvITrKfZacNj7jHS4KCgSLCgYEIF8qWrpq5OqRffJsDVeNNEcmzI5yKqZmjCa5YiinSl57xBIdT4Xg-wMuJfe45AAAAA",
+    "ts": 1788116914
   },
   {
     "battle_id": "1543317668457881794-1",
