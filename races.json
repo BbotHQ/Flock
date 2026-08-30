@@ -2,10 +2,18 @@
   {
     "battle_id": "1543315074935038094-1",
     "title": "THH 25",
-    "status": "pending",
+    "status": "official",
+    "winner": "Lando Calrizzy (18)",
+    "podium": [
+      "Lando Calrizzy (18)",
+      "Lando Calrizzy (31)",
+      "Lando Calrizzy (33)"
+    ],
     "ducks": 70,
-    "started_by": "Sundown",
-    "started_ts": 1788048034
+    "lock": "1653c8fc09dc147940654aaa3af4885e3b5757ddf59d8d8dd1530141e5b2645d",
+    "seed": "17230a46e4438d5c361de1dc8fdd4b83e56c1a415d0f3919bf249230bc7be3a9",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACnWUy07CQBSGX6WZVUkwmZkz02m7VBfGuHVljJl2ChSwVRATML67gYUL-Nj-Ofkv5_ajBlW_qKc4pDG7i-tNfzjss9wWEzW9QJ0_oh8SW3mPK9lYF7LcUqV3hFpDqGG0Ai2PrtCBDUf0IQ6rm_v43acsP1l67Ofz9f62_9pmOer6E9vz9nPXNXE3X7wN49hcqRUDHgmTcy9IhzmEQJyOaERxEthIU2IpesVSCUiAERwyWH0-JGyKqxDV0HqM7xAVDnWyv4yLK14MhraoEP6psKmO1wLDen2-U3wcuCoG3aGOMAFqXZwcTt7wnrM6t5w9XVwZPwZePBbinmIsy2uOpUgrfJQa_5GdqNepSqoOeqq2qlYmWNHRFZ1zUibfSmFSZ1JbzlJyTSmdL1oTnfFJz6QyVTOzrrKimzY0ncRK_f4B2HZpWAsGAAA",
+    "ts": 1788048188
   },
   {
     "battle_id": "1543384995337478318-1",
