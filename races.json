@@ -2,10 +2,18 @@
   {
     "battle_id": "1543301027829129338-1",
     "title": "WHH19",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (53)",
+    "podium": [
+      "BoomBang (53)",
+      "Sundown (11)",
+      "akilc88(HTX) (9)"
+    ],
     "ducks": 190,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788049800
+    "lock": "290fb666762677f99026ebe568f6cd0e77287e872a27eca9b85fa9146ea421c4",
+    "seed": "12e71c2c94d479c4c05536c266f1e52341ec372a8a0e5fa761ea288e3537fbe6",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21WXW_bIBT9K5afHCmaDAbs5G1ppVZd11ZrpU6apok4TkrjwGYnrdJp_30KThs48GbM5X6ce86Fv6lOpz_SmTGbmdSrJGNilI7T9s9OLdJxei679e1L022UXiTZ5LB1v9ML86qTjJSH5Xyu59u2fpJ9l2Sk8C1EYEF9A3JYnoIT7q9Z6a-p9f-1-_RFte1Mte3RoVyrtq6q7PLh-yjJCPOCTMCHjXGlVqt2P1PbHnOqRkHdkAUXYUzr9KJTy6XSSSYgJA3ShsJphUkBEogULwJoh6CP8uDenv5c3zVa70l9DOcXNTjsjDGb6H4FCQCMLIJTgGyYJHgpiM8HC9S3m4vjUcdQ-Ib5YflyJrez3Sq7kutmdOyjk3EOLgZayE1yeUx1Luv13MhukWQM-gFrXrpoUQdp-_1o2uVvWa9vlzPVGx20l-chY4KOE8drKJxBbR8AADx0Eh6ABnLu-K8iqoGcGUg17OUAsP8LcZuEgYrwFwiM5VFQaRgOhMZ85fPgAAQSJIID0AZLqlwmFBEaFg7OxKGc-z8yOiFqaGChJOvjnhUJMJ4CqWPV4Vw5Kc7HjloYrqVemORMtp16e9ufarG210Y3_VZ2QRDMg4ajItLL2CQHBWO9uQOpfzmJyMCz1jfN6-svUJ6t5lk-HQParzBBivMEoQRNEmQ1zD67fWd2XXLe1KpXRvexsCGJB6V-XDZFWKrwDIDALHTIg_upeCcbTAGfJCcmknf7iLoJtI1jWyPTaBj3tdluk3vf2J-D_iqYeSGceK3B2mcRc_iFKIYKxSvLawL1ViTWe_8upO7sQEVFej48vVS73j-bJ90bTUR0ArDIyCJD_5MHtTnFxDvMBWPQkp8A8yoEcfDKL85vGw_TxIdC5CIh7kRF8EGsFF-SAhDFlyf4g-0CthmPoY8PErithM3ReaUBKvhwDRkHnBSj9Oc4XaTTMh-nfTpNCW1KUtN6whasnNSszjkvRE2FWJKG04KRpi5KKiuZN3wpS0EaSauqKXhRLueNSP_9B5wOr2UgDAAA",
+    "ts": 1788050085
   },
   {
     "battle_id": "1543315074935038094-1",
