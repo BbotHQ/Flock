@@ -2,10 +2,18 @@
   {
     "battle_id": "1543317668457881794-1",
     "title": "DEVR '25 2oz sample (mod approved) - value breakdown (3000 / 12.5) + 12 ship = 252 total",
-    "status": "pending",
+    "status": "official",
+    "winner": "Sundown (4)",
+    "podium": [
+      "Sundown (4)",
+      "Captnchunk (1)",
+      "BoomBang (6)"
+    ],
     "ducks": 63,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788050460
+    "lock": "0eb401419ec283df8b5674beb9697814763391b1c478888a51a2eda93d1c59f0",
+    "seed": "d5ac41943cc3a107076aac36beb483e2b6777d19ca61abb9108bba0266318694",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22TwW6DMAyGXyXKiUo9EBIS6JH2VG279Djt4EBEu5akSqHTNO3dJ1omJYYbtpPf32-HH2rp5p1eOdS8gzP3mVAkYSu6xjk55rZHaMiWJMUYVM51FdiWJCyP4xKV1RgfLnA32evpYm4kyR5q0F0dSfj4vfNvZvDuBfRUPAy2cV-WJDku5yFJtoAqxtz-1LaX7-rU3yY_AU8642G4SWRXREAiVivCk0_pyRgLKyrSwEQiPDpzPKPjMwPzzEPlc7j1d1xBBtQzHLx2llTe9UfjyQ7uZmq8H9rWeAtDHzPHa3oAVN451_2vd7LDnyO59rY-DvY8VZcbZjHa0nZzLMciDqQg0aBliMkX5NF9xkMrEi9CBOteguVIjYXt0SNAa8nxK46GGr0t_L_FIV_RjzVt6Eala3qjG9rkUAtWCl7XHFiqUiUBai610aLgJtNSKdWwsgbJQOuSpYXWkGZSclbIUtDfP3772Es3BAAA",
+    "ts": 1788050615
   },
   {
     "battle_id": "1543397450457288895-1",
