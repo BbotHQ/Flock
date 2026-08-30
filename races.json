@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543301027829129338-1",
+    "title": "WHH19",
+    "status": "pending",
+    "ducks": 190,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788049800
+  },
+  {
     "battle_id": "1543315074935038094-1",
     "title": "THH 25",
     "status": "official",
