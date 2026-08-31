@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543413020917760092-2",
+    "title": "A. Smith Bowman B5",
+    "status": "pending",
+    "ducks": 33,
+    "started_by": "BWall",
+    "started_ts": 1788147050
+  },
+  {
     "battle_id": "1542929350079422577-1",
     "title": "Star Hill 25",
     "status": "official",
