@@ -2,10 +2,18 @@
   {
     "battle_id": "1543103771565883476-1",
     "title": "Four \ud83c\udf39 130th",
-    "status": "pending",
+    "status": "official",
+    "winner": "bourbon1976 (14)",
+    "podium": [
+      "bourbon1976 (14)",
+      "bourbon1976 (13)",
+      "bourbon1976 (15)"
+    ],
     "ducks": 35,
-    "started_by": "BWall",
-    "started_ts": 1788147090
+    "lock": "9da546718d77ff8cd98d1b5a54034168cdadb471e1b4c33294aa8ba509c7b8d5",
+    "seed": "1ef7f853fcb840845f85b945f55cbe188cbc3dc01c1926d6615f5281cce005cd",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22QMU_DMBCF_4p1Uypl8MU-x87YiaFMiAkhFJ_tgioStVEGhPjvKDA15_Xpe0933zdMMLzA48clq9PKly_VmAO0d0G_BXFeb3GeMPSugqAWjNuS5-W65jiu5_e3aZ6janDftFtwzOMt5aSOOS-q6cTW__w9Rfulbh84uYNyxwrqL3kaP9WD6JvqU5WDpTO0QppgSLb2JYkEWaocJHR5wQiBQdqSN3sJGQFVdLgDvLaQYHCmhQUGwFz64skUjt5qb6l4isFSIeKY0XuObBJrZAydS84hFeo8MmetiRP8_AKeujlazQIAAA",
+    "ts": 1788147221
   },
   {
     "battle_id": "1543413020917760092-2",
