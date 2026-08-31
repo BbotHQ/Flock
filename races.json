@@ -2,10 +2,18 @@
   {
     "battle_id": "1543507055648968746-1",
     "title": "stagg 25 \ud83c\udf50",
-    "status": "pending",
+    "status": "official",
+    "winner": "Stagg King \ud83d\udc51 -Josh (5)",
+    "podium": [
+      "Stagg King \ud83d\udc51 -Josh (5)",
+      "Thagame501 (3)",
+      "Lorcat02 (4)"
+    ],
     "ducks": 24,
-    "started_by": "BWall",
-    "started_ts": 1788147789
+    "lock": "00b9d2bdf9c0fa1182250fd9693c644c3ef43fec3dc477c1da582527f9c9eeb2",
+    "seed": "10a5b6d5ad03e7a91544b53a9f812e9d656726b6f63870e02fd796ff2ddb965e",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE32Q3UrDQBCFX2WZqwoR9ie7aXJZb0r1Qqxeichs9ycVsoNNcyU-RJ_AV_QRJKFaEjB3c_gOM3POBySonuGODjs8cskW8goyeMP6PF1APpa6lyuiZoUpsoXo5faIMbLbfYrs--t0Ytcbausze6wxYuM1F_Pm4eoWG7b-3zO5LWfWqZ49te-dt9jF-jUR2d-AQ6IHbLikNMpm_jqY-zSfxrpUp6ZIjcsTYznQ-wNRuKHU7vbUtfCSgYMq1xm0UIHgqK1xGh1XvsBS6Dy3WmEZlkL60hltCmmsCUYtC-65DK4oTQjSOVsa7eHzB7dZufzpAQAA",
+    "ts": 1788147894
   },
   {
     "battle_id": "1543507300642201631-1",
