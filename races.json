@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543590323471786126-1",
+    "title": "WHH19",
+    "status": "pending",
+    "ducks": 190,
+    "started_by": "BWall",
+    "started_ts": 1788147411
+  },
+  {
     "battle_id": "1543422625764737199-1",
     "title": "EW23",
     "status": "official",
