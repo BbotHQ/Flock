@@ -2,10 +2,18 @@
   {
     "battle_id": "1542929350079422577-1",
     "title": "Star Hill 25",
-    "status": "pending",
+    "status": "official",
+    "winner": "jah",
+    "podium": [
+      "jah",
+      "OtisRed (2)",
+      "Usquebaugh_noob"
+    ],
     "ducks": 18,
-    "started_by": "BWall",
-    "started_ts": 1788146899
+    "lock": "d044dbc2e315c1eb0b1eb66c48e0142641f58a286bf5bc55198295ce24573a5a",
+    "seed": "683eb9e9a522aa85e3e874a2e560f815c20af9105e59431b6f134d65e4c052ae",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12OQWuDQBCF_4rMyYIHd3Znq17Ta2lp6KmEMLpjtw1ok3UPEvrfi5KA2-PHN_Peu8IAzQfsPLtsl-X0AAW8TF_hTdyN7sos8Dw_xe4U9rE7ZTkmx3qh18v44yXMWa4SianUiVyT38M5Ssvx0x-HcWw3xWmS2m5ac77Z_1-m0jrc_qwweZ7GQVx0YlDBoQAHjbYFBGjAVlraWmomROaKREv1aBiFbNlXijosua9VSUK10aq1vdLGWRLTlYQs8PsHMgXz3VYBAAA",
+    "ts": 1788147025
   },
   {
     "battle_id": "1543413020917760092-1",
