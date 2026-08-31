@@ -2,10 +2,11 @@
   {
     "battle_id": "1543413020917760092-1",
     "title": "A. Smith Bowman B5",
-    "status": "pending",
+    "status": "unofficial",
     "ducks": 33,
     "started_by": "Neww_",
-    "started_ts": 1788145098
+    "started_ts": 1788145098,
+    "resolved_ts": 1788146308
   },
   {
     "battle_id": "1543429131956650045-1",
