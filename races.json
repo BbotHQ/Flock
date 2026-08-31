@@ -2,10 +2,18 @@
   {
     "battle_id": "1543745933014081607-1",
     "title": "JD RYE BH2 + JD HAS TASTER 138.4 - WTA",
-    "status": "pending",
+    "status": "official",
+    "winner": "Thagame501 (1)",
+    "podium": [
+      "Thagame501 (1)",
+      "BoomBang (2)",
+      "JigglyBits (2)"
+    ],
     "ducks": 28,
-    "started_by": "BWall",
-    "started_ts": 1788148080
+    "lock": "a4bb05aa4d2e7360a490072025391d0ac3a6a816dbd492e6772c428f3104d2b3",
+    "seed": "af6a5c62014812e231c1acf7a7776e3ec0713169d05a7163b2dd4288228540bf",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21Ry07DMBD8lWhPrRQkP-OQY5oDQoA4cEMcNraTRm3syGkqCuLfUatIELfHnZ2dndn9BgfFO2zQmVOPLlnRNaTw2LXt_lR2h3EGXoP3zca7UXd-GiGFty222FtJaLJiZ8bAUfMedzwwoeap0vu-RNfOlAd0u7sKj52ZgSq82Cn4J6zngedh2o-WESIhhR6_DI6DtSbYz4vaFGrvkjL4w9aGpMKjXSyRsSaPAXHD6cXJ_ziR9auDXGUR8ZorBl9KqrgvYyDykJ3Lvx-xZTdSF2v4SMFAIVkKIxSATYZSZ4xQkVNmGaeaom4UKqUyy60minKa3RsiUdGM18wYwfKcsVwKUjfw8wt0zosRJgIAAA",
+    "ts": 1788148220
   },
   {
     "battle_id": "1543669589769068586-1",
