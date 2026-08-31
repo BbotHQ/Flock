@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543413020917760092-1",
+    "title": "A. Smith Bowman B5",
+    "status": "pending",
+    "ducks": 33,
+    "started_by": "Neww_",
+    "started_ts": 1788145098
+  },
+  {
     "battle_id": "1543429131956650045-1",
     "title": "Weller 107",
     "status": "official",
