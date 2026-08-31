@@ -2,10 +2,18 @@
   {
     "battle_id": "1543669589769068586-1",
     "title": "Bowman CS",
-    "status": "pending",
+    "status": "official",
+    "winner": "Lando Calrizzy (2)",
+    "podium": [
+      "Lando Calrizzy (2)",
+      "Lando Calrizzy (1)",
+      "Bearded Bees (1)"
+    ],
     "ducks": 33,
-    "started_by": "BWall",
-    "started_ts": 1788147910
+    "lock": "21c80a9d87b5404c18c1e9f6bb56d03780c87aded4660b27eb0af1c709de4288",
+    "seed": "cf38323ad1f0443123dfbdd43c35b6565abf67606abd8ea3bbcf3c5c3fd31ab2",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22RQW-DMAyF_wryiUpMIjFhFUfYoarWy7bbtIODk4IGSQVrpXbaf5_G2FQot_jZ-fT8_AkOslcoyPG5JQcR5IY6NhzkxvRBKFcQQeE7Z5r6-FdvyL3fPdCp5iAUP8IztcFmbL5UtKfWqFiMzae6rKjjra9c710Q4oCk9uAXcHiF-0U3dDJyVzf_bqYGk0Hyvs3J7ceJR3Lsg4Karr5cziNo-k3dSjglibk1ubTMMNUZ7i05xLG-jmAe4IKXOUNOjcx8JTepiKtAh_fucGx6I-NYLYQx0Lfe0Uc13HsMG5e2kyt4i4AhS-MIesigtLhGicTCxkmCQiJbzZxgiUqnKlWkbXqfxilpXhtCrUuLpSrRMgrSEr6-AXmuho5xAgAA",
+    "ts": 1788148045
   },
   {
     "battle_id": "1543507055648968746-1",
