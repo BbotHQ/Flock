@@ -2,10 +2,18 @@
   {
     "battle_id": "1543422625764737199-1",
     "title": "EW23",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB (1)",
+    "podium": [
+      "JarrodB (1)",
+      "VanBourbon Boy (3)",
+      "p3ac3mak3r247"
+    ],
     "ducks": 70,
-    "started_by": "BWall",
-    "started_ts": 1788147250
+    "lock": "44daca235ec339b159a0b1586021998280bfd2e33e0b9fed2604a41da4d325e9",
+    "seed": "4b8cd41bd7d5ca3f12626cab774ff14b7388a3ddb2f0503aa01fc088d748656f",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21Ty2rDMBD8FaOTAyHoZUvJ0bmlFEoLvZQe1pbthsRSkBuoW_rvJU4o2bWPo9nHaHb3h3m2eWNb8G7owCepyBZseY8lxiNdhNAV4NsklQLTa0wrTjDJthf8FMPpo-6HJBWYFqSasEQbjR-1PsZV4iAekpRIH7N3EGNwxbQXhoYIpcIJvybCMMwJS4pNLNcXfFJQqQ4OKkptcPyY_wq-COdYBp8UYZhaS7yTGjeR2Pmrc6fzsa8l59nMAzFIESyvk37Y7luIt_Q7NpuTTEdg5oI0DqL7N8La98FP63E08FnXJApB1cgXrlP5_yDpNY54t2_b41DsP_vJCtB9Iisx1u7g20F_qmsX6y-0yGJO-ujE8wA-eVndQu4FEPnkdOgK5hhrVJvckSBHLalTYsHel8yxjeFL1rMN06WtnBalMy6rQDVC5jKvoDRGN43QpVHWgnKulA3PuALgoqm4tc5om2d5w37_ALG3J8eoBAAA",
+    "ts": 1788147391
   },
   {
     "battle_id": "1543103771565883476-1",
