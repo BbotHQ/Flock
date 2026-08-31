@@ -2,10 +2,18 @@
   {
     "battle_id": "1543590323471786126-1",
     "title": "WHH19",
-    "status": "pending",
+    "status": "official",
+    "winner": "bbnbtlchasr (8)",
+    "podium": [
+      "bbnbtlchasr (8)",
+      "bbnbtlchasr (9)",
+      "Candyman (7)"
+    ],
     "ducks": 190,
-    "started_by": "BWall",
-    "started_ts": 1788147411
+    "lock": "3167740303c47747bdae852769868c4932e12c1f37e0be205e6564cea11dec44",
+    "seed": "bfbf2792f9a3fc21e282881510e108d1e91398d57219dfca532570e039f3d011",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21WbY-bOBD-KxafWGl1wjYOsB-TVbuNti_arq6VTqfKwSbQEDsHoVVyuv9-iiEbz-Bv2Ngz8zzzzIz_jUz08Fe0HvrjWg59TWJxF91HP8vfum37hJM4vayf5Hkvj-S9VSRml40_pVnaodtYQ5b2RGJ62dxszObYlrXsOxJTd-7rrjmfbc6mEx9K3dqexDS5rPrhoLvemqZUQ7mbLHuhuPVrrcnLSZP3w4nE757vJksHLku-lzvesTSbjn4djLK_DYkLZCifRyfmWy6mlTTqtJdmcvNay63ca5FQEnPnQ-7JE4kXl-8vnbXVypq-bOzQQ9qc_aW1-6U0WxLT0Vr-8vz55XEK92P3B1GyuwK_8vkkh_YaDdwrcCqck7U18li_RXyleAEDcC6-1E3bNofH_pO1x_N0YWU7o9tm6INZhB4YQOGk8SyNsmQl2645n08oQIpY4CPF3fH0Tu4nRm_LxRxyFsg1h0bFaGR_sNdfWnZKK7LUun8T0S2NDIFmARcjEbLcbazsFKCA-yQ733LXtGWex0-v3--wErM5JCfGZ9uV8piw6YTPGUfiBVmdK5l5qgzoCJGVQsaLUBlS1AFwWRYQwKjUN8TOYfvP0CjgycFcy66zagmDpuD6AgYo5ogYROT8KVv-ECIk4NxnL4OR555yYNow5BHj7Saf-RHwQCDuFNVCGu5uY4ZqqchqdmdU03nYsBTaSgIaTj2OXbwfD0Pba5YkV6JuvU4gvC4Lv1byuBy28Vru9LXt-jZQInKED_0uoMc81I-Yj53NOM5Ckwe1UhflN9tWB1nuPlfLprcG6i1FWNPgDQrzieomUGgC4nNwf8ra75ciwCrzNBhovxm0OnZxO3TkUZdN31gT6nDC13zq1wdDIy7BzQcJzungpSlr2am1rc2NmjdQ1AMgQsdZqMeALlqA2puzsAjlfV6C43TxiUhRJ-O-vrgXeOp9g44xD4aDYFPskvouKFRNCnEm4QaAcrSYRZDCA0iaeeAtEXbEoR0OFb9AXR56gRrwqVyARh-QdDrbKuYhozEwcgXtgLmIHpt-vQvAemBiwwGExjODy-llud3qzsjhOAsKvboobqyonjP0m4fqe3xEgUcNHtGACzTy_QLN7qK_7yMVPWTJfdRHD9Gm2lQsK1hVSF6VjGqWszyngiaaJrmiuqC8yJXIGC1UVUrBmcgSnfCi4iqhNPrvfzPF_oJCDAAA",
+    "ts": 1788147559
   },
   {
     "battle_id": "1543422625764737199-1",
