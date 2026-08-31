@@ -2,10 +2,18 @@
   {
     "battle_id": "1543757842496888835-1",
     "title": "2024 Fortaleza WB",
-    "status": "pending",
+    "status": "official",
+    "winner": "Leakcheck (8)",
+    "podium": [
+      "Leakcheck (8)",
+      "Hank-David (2)",
+      "Bearded Bees (5)"
+    ],
     "ducks": 40,
-    "started_by": "BWall",
-    "started_ts": 1788148239
+    "lock": "12dd7d8912ed751f2353ca512648d5eefc50cef559de4b00b17facdc7a8c5760",
+    "seed": "46c51a603b820bb29b083af80d9ee661d13c311c0ca93eaebc2c3f3d3e8e3057",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3WST2-DMAzFv0rkE0hsyh8IgSPtoZq6U4_TDiZxW4RKEYxKVbXvPlH10CbsmGfr9-zn3KCD8gu2hK09km1ZJGNIoCIcHDlWEY0sUrP01JLN7w127dsaL41jkZiFNV4P513T9zQ8KCvs3PWE3SJUetDUh_quOjAxrybhFPms7PDENkvVYlbGqadhPHeNddM_66feICYg3dmXFf5U0yH6wJbiB8jTRAjPAphvVwQdmdchuCfco_sc3pnDoQ2jzl_Lwk8-DRfkgaSX0ltYMKDLp6PIJYgKvPyvIGL4TsBBmfMERigh1TYTqLmqjeR1LYuaG4V7w11BpLVwQlklhOUWC0VItZVW7ZVTZEjxLIffP_Aiq5oJAwAA",
+    "ts": 1788148395
   },
   {
     "battle_id": "1543745933014081607-1",
