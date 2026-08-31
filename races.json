@@ -2,10 +2,18 @@
   {
     "battle_id": "1543507300642201631-1",
     "title": "WTA OF11 + EC15",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (3)",
+    "podium": [
+      "Bearded Bees (3)",
+      "BoomBang (2)",
+      "Bearded Bees (1)"
+    ],
     "ducks": 48,
-    "started_by": "BWall",
-    "started_ts": 1788147601
+    "lock": "fe2a42bb7a518026ac46ea97cb215f4a81aea9f4a7f356959a1225d604df3d99",
+    "seed": "e6580aeaee05dcefde359462b0bf62990a0be7321cf76a9bfe0ac1465a8a7f1b",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22SX0vDMBTFv0rIUwdDkrZJ2705QUGniCg-iMhNc7v6p81sKDjF7y7tdFlS33ru_fXm5Nx80ZYuHuiV6uuugZZEfEbndJNAmTTwmnRxmpEoHmpLY5oltGsSiVEidBo1WSLav9KeiNkUSX0knRKJT_Bs0BfH9-e_rg5aeaCZQwOzxSBvayQ3WyRn_ZZEp6uh9AK1P0JODY2jXDQ7yx202rRHK8EF8ycIZyLIg_PpcO7o3D8nuAEvHFkELV_Kf3YXIJkvwxyDFYQbSZ2Tg89d-tedMdWJaW35bHrr_xcEOY69s-89KujX9VNrjPLfzwBcbvo3izFjYn_S6L6BTw12g6g7_Ni3EudHzujjnGq6yNicWrqgKEXOAAGRCV1ipTERRSpjxVQl46JgwBRmSczLKpNQqAoZlDyVAnLIKq7o9w8fG7gdJwMAAA",
+    "ts": 1788147775
   },
   {
     "battle_id": "1543590323471786126-1",
