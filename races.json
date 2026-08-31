@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543507300642201631-1",
+    "title": "WTA OF11 + EC15",
+    "status": "pending",
+    "ducks": 48,
+    "started_by": "BWall",
+    "started_ts": 1788147601
+  },
+  {
     "battle_id": "1543590323471786126-1",
     "title": "WHH19",
     "status": "official",
