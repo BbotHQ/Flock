@@ -2,10 +2,18 @@
   {
     "battle_id": "1544173210168205343-1",
     "title": "JD Boiler HIll 1 & 2 Combo WTA",
-    "status": "pending",
+    "status": "official",
+    "winner": "Happy2peeHereOnAcid (1)",
+    "podium": [
+      "Happy2peeHereOnAcid (1)",
+      "jah",
+      "Stagg King \ud83d\udc51 -Josh (4)"
+    ],
     "ducks": 29,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299108
+    "lock": "f2384e98eaf9a8f6fe84350c1955012b5ecdd8887d6f0285dd1fcaa4863f8567",
+    "seed": "49a824e8b9cae4a2c126038bc7fd8c8cd6969a2cb7697d81af1bf74e3a667cbc",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE31Ry07DMBD8FWtPqRSkZO3aTm70VBUkJDgiDhvHeVDFidIgBIiP6Bfwi3wCSgRCTtscR7OzMzv7AQ7SR9hS171hZ-3W9vbOXZs6ZwGuIIRN2zYbciUL4hHeUxNh6-ZoGn0YqCzZTe1K9v11PLKrXXuoWMBHruNkeEN73qNQv-oL80ucHLld62io6C_Ef8LJ6bbtDQ0RskD7UPha9Nm1D9UIn6m6HEX4ginZ2RqX7plc6xe3d6_u_eSepVZn8eMzJaP3olk53HeercMVPIWQQ7rmIRwgBZGQRmF1lhiygtDEKCOuM6OKXBttcpnIhNBkSiYq1zEVcVYoYTlJqUxm4PMHZJu5ymoCAAA",
+    "ts": 1788299269
   },
   {
     "battle_id": "1544039271382650921-1",
