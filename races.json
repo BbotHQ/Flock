@@ -2,10 +2,18 @@
   {
     "battle_id": "1544039271382650921-1",
     "title": "HH22",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (3)",
+    "podium": [
+      "BoomBang (3)",
+      "BoomBang (4)",
+      "Steven Dungan (8)"
+    ],
     "ducks": 60,
-    "started_by": "Neww_",
-    "started_ts": 1788227301
+    "lock": "5b67934a364ef44e50bc771981ce588f895702eeeaf8dc2053d87f2a3729f5f4",
+    "seed": "3915fc3fc34a97d49a10d500a8dc9b771ffe7dbea902d63c1abfda2f8b1b1cc9",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACo1TvWrDMBB-FaHJgQySJdlWxrQ0S6e0WylFls5OKLFLnARCKXTpA3RrpzxI36ZP0EcoNg6cY4G9-Y7T93fnV1rQ2QO9MpuXkgRyQqfUlfZJKRLwupiD2TpwZA5QkSCuW3c7OEBBrvdFbgoScOZpRhgorIuWgePvplivzA5WpsjLA2yrdnqxXW-Mhd_372pZA-dA_k5fP-Tv9PnRymhBfJJ0o7wsN3NT5K2rrhHRb2FlwieMDwtrRvjzhWXWJ9O-IPEbOUwmuy7DbqnwBuRZl-gONZT3KyDLI5DF_kiCm9th4ggLVSNS8QQQegJIMK5AhW8Y30DSx1f91ohIw3NOHKcnPPQK0WvPMTHsxacfX0g0rMx3MBfLFMMoI5bl-TMSD7dE8kegejYUTejjlDo6i9mUVnRGheYqsyKzQhodO6kNZ04xZhJndRrHPMsgdikYzUIXCctNmjkTZknKU26tpm__mA2UIM0EAAA",
+    "ts": 1788227435
   },
   {
     "battle_id": "1543974386393026581-1",
