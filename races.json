@@ -2,10 +2,18 @@
   {
     "battle_id": "1543974386393026581-1",
     "title": "Beam 10 pin",
-    "status": "pending",
+    "status": "official",
+    "winner": "Brandon.L5150 (5)",
+    "podium": [
+      "Brandon.L5150 (5)",
+      "JarrodB (2)",
+      "Bigstick13 (4)"
+    ],
     "ducks": 37,
-    "started_by": "Neww_",
-    "started_ts": 1788227162
+    "lock": "1bab7f230598776ee12459963d201343a28cb6643ca558d103634b2148fa40e3",
+    "seed": "c976dfdf5c295504feb429c45ff82c0e89f69609459e03bebea08606ba701a16",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACm2RTWuDQBCG_4rMSUHK7uqubo4GWgjpJfRWSlndcWNN3OBHqSn970WhJdE9zvPOxzsz39DA5hWeL8OpQ0YIhxAO6kyYbTyfBhBCVpmur4qaRn-gVY22zcOeU048n09sPyFvq05tdb2OEMJOta3VmbtETmxXGXMas6rv1gmUzFXWnjPVmLUeB7c2ZwdnddWquyDqFr9uVTGpL0f0DiN6T8Po-Y_7wPPZXYs5-tyqPhuMv1M1LjcXS5Aswezpf222lLnjDomDzYWjrfH9wxY1jo5W0TxpMAbbRg39cpeVTN0XoKtJq38zh8HUwVxPju5MxY4MEcBbCBo2QoTQwQYKmQhd6pIXTHJO4hLzmMki5mWZsoJgKkshBZExl0iiHHNUJBVE5CohVFEBP7_IX3bdzwIAAA",
+    "ts": 1788227289
   },
   {
     "battle_id": "1543766856341520576-1",
