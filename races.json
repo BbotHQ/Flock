@@ -10,10 +10,18 @@
   {
     "battle_id": "1544098837822447747-1",
     "title": "Peerless Vintage Candy Shop Bourb",
-    "status": "pending",
+    "status": "official",
+    "winner": "Lorcat02 (2)",
+    "podium": [
+      "Lorcat02 (2)",
+      "redsfan33 (1)",
+      "p3ac3mak3r247"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788223791
+    "lock": "817f8bf5c7d77275f3d5fcc6ec76b9e1c95fbda8150afe7ba6589c7439283b39",
+    "seed": "c5784f9d893d773b19e73709fc9e2e20f397f3b20afc01794accfae42e40f48a",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE13MvQrCMBAH8FeRmxQqJHeR63UUBxHfQByuSQ6k2EoqLuK7i8XBOv74fzyhh-YEe-279U4flwQVHIcS9e5wscTVjDSn_7DkNJr2RN_4x9P6Rhrpqh0VDDybh7_6dHfQUoa0hXMFCRqkCkZoIG64DiapFkrM1HrJTOzEomTM6IyEjVp0atF5lqAxmuaAOTgLtcLrDcnNG6joAAAA",
+    "ts": 1788223931
   },
   {
     "battle_id": "1543807304409944217-1",
