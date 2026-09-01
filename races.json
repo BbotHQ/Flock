@@ -10,10 +10,18 @@
   {
     "battle_id": "1543807304409944217-1",
     "title": "JD High Angels Share",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees",
+    "podium": [
+      "Bearded Bees",
+      "Leakcheck (1)",
+      "jah (2)"
+    ],
     "ducks": 14,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788223714
+    "lock": "a2ec6a0d263fc00322e1ac15435039de28624156a9f617b05a764dbd1b81c585",
+    "seed": "65116f2d67b9fc8463806a7a07171f87661136de50491d2ed788bf9aaaf851ce",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12OP2_CMBTEv4r1JpA8-DnEfzJGDAztQocOqMNL_KxAiC2FAGqrfneUQqW2493pd3efkKDawRNT33bc9mKhlyDhOedjzvuJxQJnXefz2OQk6jFPHY9iTRcGCS80iA1IOFD3ALc8vBfK_3j4r6yY9f6c-nRNH3-jO06D0jnNi0xj4CBq5hPI3we_O187mrY0wJuEAJX2Ek5QgSkRTdTB2MbH1q1M4ZQhS8qixeisMYiFCVyqlcegOVjnmuiJKLoSW4avG9htZ4UQAQAA",
+    "ts": 1788223835
   },
   {
     "battle_id": "1543766980107046943-1",
