@@ -268,7 +268,7 @@ function playKillOrFirstBlood(){
   if(!_firstBloodPlayed){ _firstBloodPlayed = true; _playSound(SOUND_FILES.blood, 0.9); }
   else { _playSound(_pick(SOUND_FILES.kill), 0.85); }
 }
-function playQuack(){ _playSound(_pick(SOUND_FILES.quack), 0.5); }
+function playQuack(){ _playSound(_pick(SOUND_FILES.quack), 0.9); }
 
 // ── PROVABLY-FAIR RANDOMNESS (drand quicknet beacon) ────────────────────────
 // Ducks used to get a client-side seed (crypto.getRandomValues) the instant
@@ -1047,9 +1047,9 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
 let _lastQuackAt=0;
-const QUACK_MIN_GAP_MS = 1500;   // never fires more often than this
-const QUACK_CHANCE_PER_FRAME = 0.02; // rolled once the min gap has passed — "often but not nonstop"
-const FINISH_LEAD_SEC = 1.3; // how far ahead of the final blow "finish.mp3" cues in — enough lead to clearly read as "before," not simultaneous with, the last swing
+const QUACK_MIN_GAP_MS = 150;    // floor is just to stop literal same-frame double-fires — low enough that quacks freely overlap
+const QUACK_CHANCE_PER_FRAME = 0.12; // rolled every frame once the (short) min gap has passed — "damn near non stop"
+const FINISH_LEAD_SEC = 1.8; // how far ahead of the final blow "finish.mp3" cues in — enough lead to clearly read as "before," not simultaneous with, the last swing
 function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   let finalKillSounded=false, finishCued=false;
