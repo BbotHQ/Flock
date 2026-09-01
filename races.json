@@ -2,10 +2,18 @@
   {
     "battle_id": "1543892220736704564-1",
     "title": "Blood Oath Pact 10 + 1oz Infinity Sample",
-    "status": "pending",
+    "status": "official",
+    "winner": "vCatBug(Jake) (2)",
+    "podium": [
+      "vCatBug(Jake) (2)",
+      "vCatBug(Jake) (4)",
+      "Bearded Bees (11)"
+    ],
     "ducks": 34,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299638
+    "lock": "bc9ced7390bf87b21c79f3b21b7d01977585cc9879bebd6c8785f0b6f8fc6117",
+    "seed": "2610056cbdb26115616ed95a9144743ae19b8cabaf6560eb6a71d89d9390ad8c",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22SwU7DMAyGX6XyqZV6iNPEbXrsDkh7BYQmp_EQFAjqAGlCe_ep0w6U-pZ8cf7_t5Nf-ID-EX52_DV8P5d7nqQqSldBDYPwnCQVg8ipKNEubM_znNNQlLjsdvz-me_rdfVN4J-oV0Q7hbk_0nZ7bjVmFvaQ8_HlTfRbt5DnPMnhNY-TnLe-rZIlbBmtrJTe0SvNK3WNUmYV1myvKrG0SSqmWpNGYYqp9n60-hTK3JUItoKnGhL0hDWcoAdLaIynMaZoCdETkqTgOaBzrWtYMMRu5MhH8mQkEreYupBCEwynboTLFReLA2jGAgAA",
+    "ts": 1788299770
   },
   {
     "battle_id": "1543865431318597744-1",
