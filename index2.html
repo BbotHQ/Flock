@@ -183,92 +183,70 @@ async function sha256hex(str){const buf=await crypto.subtle.digest('SHA-256',new
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
 function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
 
-// ── SOUND (test build only) ─────────────────────────────────────────────────
-// Everything below is synthesized via the Web Audio API — no external sound
-// files to host or load. The AudioContext is created lazily on first user
-// gesture; the Start/Replay button click already satisfies browsers'
-// autoplay-gesture requirement, so nothing extra is needed for that. A mute
-// toggle is included in the top-left for testing — remove/keep as desired
-// once this merges into the real file.
+// ── SOUND (test build only) — real audio clips ──────────────────────────────
+// Plays actual audio files instead of synthesizing tones. Drop your clips
+// into a "sounds/" folder next to this file (same folder as arena.jpg etc.)
+// using the filenames below — or just change the paths in SOUND_FILES to
+// whatever you actually name them. Any entry can be a single filename or an
+// array of filenames; arrays get a random pick each time for variety (e.g.
+// a few different clash/kill/quack takes so it doesn't feel too repetitive).
+// Only files you actually provide need to exist — leave an entry's array
+// empty ([]) or point it at nothing and that sound simply won't play.
+const SOUND_FILES = {
+  count3: 'sounds/count3.mp3',
+  count2: 'sounds/count2.mp3',
+  count1: 'sounds/count1.mp3',
+  fight:  'sounds/fight.mp3',
+  clash:  ['sounds/clash1.mp3', 'sounds/clash2.mp3'],
+  kill:   ['sounds/kill1.mp3', 'sounds/kill2.mp3'],
+  quack:  ['sounds/quack1.mp3', 'sounds/quack2.mp3', 'sounds/quack3.mp3'],
+};
+
 let SOUND_ON = true;
-let actx = null;
-function ensureAudio(){
-  if(!SOUND_ON) return null;
-  if(!actx){
-    try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx = null; }
+const _audioCache = {};
+function _loadSound(url){
+  if(!url) return null;
+  if(!_audioCache[url]){
+    const a = new Audio(url);
+    a.preload = 'auto';
+    _audioCache[url] = a;
   }
-  if(actx && actx.state === 'suspended') actx.resume().catch(()=>{});
-  return actx;
+  return _audioCache[url];
 }
-function _tone(freq,dur,opts={}){
-  const ac=ensureAudio(); if(!ac) return;
-  const t0=ac.currentTime;
-  const osc=ac.createOscillator(), gain=ac.createGain();
-  osc.type=opts.type||'sine';
-  osc.frequency.setValueAtTime(freq,t0);
-  if(opts.sweepTo) osc.frequency.exponentialRampToValueAtTime(Math.max(1,opts.sweepTo),t0+dur);
-  const vol=opts.vol!=null?opts.vol:0.25;
-  gain.gain.setValueAtTime(0.0001,t0);
-  gain.gain.exponentialRampToValueAtTime(vol,t0+0.015);
-  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  osc.connect(gain).connect(ac.destination);
-  osc.start(t0); osc.stop(t0+dur+0.02);
+// Clips are cloned on every play so overlapping triggers (e.g. two clashes
+// a beat apart) don't cut each other off — each play gets its own instance.
+function _playSound(url, vol){
+  if(!SOUND_ON || !url) return;
+  const base = _loadSound(url);
+  if(!base) return;
+  const node = base.cloneNode(true);
+  node.volume = vol!=null?vol:1;
+  node.play().catch(()=>{ /* blocked or missing file — fail silently */ });
 }
-function _noiseBurst(dur,opts={}){
-  const ac=ensureAudio(); if(!ac) return;
-  const t0=ac.currentTime;
-  const bufSize=Math.max(1,Math.floor(ac.sampleRate*dur));
-  const buf=ac.createBuffer(1,bufSize,ac.sampleRate);
-  const data=buf.getChannelData(0);
-  for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufSize,2);
-  const src=ac.createBufferSource(); src.buffer=buf;
-  const filt=ac.createBiquadFilter(); filt.type=opts.filterType||'bandpass';
-  filt.frequency.value=opts.freq||1200; filt.Q.value=opts.q||1;
-  const gain=ac.createGain();
-  const vol=opts.vol!=null?opts.vol:0.3;
-  gain.gain.setValueAtTime(vol,t0);
-  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  src.connect(filt).connect(gain).connect(ac.destination);
-  src.start(t0);
+function _pick(entry){
+  if(Array.isArray(entry)){
+    if(!entry.length) return null;
+    return entry[Math.floor(Math.random()*entry.length)];
+  }
+  return entry;
 }
-// 3-2-1 rising beeps, then a bigger low horn-blast + noise thump for FIGHT.
+// Preload everything up front so the FIRST play of each sound isn't delayed
+// waiting on a network fetch.
+(function preloadSounds(){
+  Object.values(SOUND_FILES).forEach(entry=>{
+    (Array.isArray(entry)?entry:[entry]).forEach(u=>{ if(u) _loadSound(u); });
+  });
+})();
+
 function playCountBeep(word){
-  if(word==='FIGHT'){
-    _tone(220,0.5,{type:'sawtooth',vol:0.3,sweepTo:110});
-    _noiseBurst(0.35,{filterType:'lowpass',freq:2000,vol:0.35});
-  } else {
-    const f=word==='3'?440:word==='2'?550:660;
-    _tone(f,0.18,{type:'square',vol:0.22});
-  }
+  if(word==='FIGHT') _playSound(SOUND_FILES.fight, 0.9);
+  else if(word==='3') _playSound(SOUND_FILES.count3, 0.8);
+  else if(word==='2') _playSound(SOUND_FILES.count2, 0.8);
+  else if(word==='1') _playSound(SOUND_FILES.count1, 0.8);
 }
-// Non-lethal clash — light metallic clang (SPARKWORDS moments).
-function playClash(){
-  _noiseBurst(0.12,{filterType:'highpass',freq:2500,q:6,vol:0.18});
-  _tone(1400,0.08,{type:'triangle',vol:0.12,sweepTo:900});
-}
-// Kill — heavier impact thud with a touch of clang underneath.
-function playKillHit(){
-  _noiseBurst(0.22,{filterType:'lowpass',freq:900,vol:0.32});
-  _tone(180,0.18,{type:'square',vol:0.2,sweepTo:60});
-}
-// Synthesized "quack" — pitch-bent tone through a bandpass filter. Reads as
-// a stylized duck honk rather than a real recording; swap in an actual
-// audio clip later if you'd rather have a real quack sample.
-function playQuack(){
-  const ac=ensureAudio(); if(!ac) return;
-  const t0=ac.currentTime;
-  const osc=ac.createOscillator(), filt=ac.createBiquadFilter(), gain=ac.createGain();
-  osc.type='sawtooth';
-  const base=320+Math.random()*80;
-  osc.frequency.setValueAtTime(base,t0);
-  osc.frequency.exponentialRampToValueAtTime(base*0.55,t0+0.12);
-  filt.type='bandpass'; filt.frequency.value=900; filt.Q.value=3;
-  gain.gain.setValueAtTime(0.0001,t0);
-  gain.gain.exponentialRampToValueAtTime(0.22,t0+0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001,t0+0.16);
-  osc.connect(filt).connect(gain).connect(ac.destination);
-  osc.start(t0); osc.stop(t0+0.2);
-}
+function playClash(){ _playSound(_pick(SOUND_FILES.clash), 0.6); }
+function playKillHit(){ _playSound(_pick(SOUND_FILES.kill), 0.85); }
+function playQuack(){ _playSound(_pick(SOUND_FILES.quack), 0.5); }
 
 // ── PROVABLY-FAIR RANDOMNESS (drand quicknet beacon) ────────────────────────
 // Ducks used to get a client-side seed (crypto.getRandomValues) the instant
@@ -1163,7 +1141,6 @@ document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'
 document.getElementById('soundToggle').addEventListener('click',()=>{
   SOUND_ON=!SOUND_ON;
   document.getElementById('soundToggle').textContent=SOUND_ON?'🔊 Sound: On':'🔇 Sound: Off';
-  if(SOUND_ON) ensureAudio();
 });
 document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
   await ensureSpritesReady(document.getElementById('start'));
@@ -1203,4 +1180,3 @@ window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
 </script>
 </body>
 </html>
-
