@@ -2,10 +2,18 @@
   {
     "battle_id": "1544053435828273233-1",
     "title": "GB 24 Cowboy",
-    "status": "pending",
+    "status": "official",
+    "winner": "Ryan S. (1)",
+    "podium": [
+      "Ryan S. (1)",
+      "Ryan S. (3)",
+      "KAWJ (5)"
+    ],
     "ducks": 25,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788300073
+    "lock": "aee73101a61e8d83b0228149367d4c4d3501f7bd03c200bed56acfb1a08d23f4",
+    "seed": "94792c9a9d5eb42363695549abf31e09a065a20d0570c4eadbdea87140378aa5",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22OPQvCQAyG_4pkslDkPnK9XjfrVjcVHMQh7Z1n8WNpFUT876IWak-3J8mbJ7nDGbINzKfrYjSWEcQdJj3yHsULV3vydHKK8cGMsxcXtffHW163Tadb3Og8Wk7C6mvRhFIRin4aX9vpQPtO5rVv2ro6cNk1Pkkdzt6W64za_OLHBR1cNMirHnFwBMN3MDTLP2YewTYGCxnqGBrIwKA2ojJkrHIlCpnIxCiFhsqd5I4ZYokiwSxTmlXoyJbWUao5MqlTIgWPJ-QTdTm9AQAA",
+    "ts": 1788300261
   },
   {
     "battle_id": "1544357618037039196-1",
