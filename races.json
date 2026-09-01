@@ -10,10 +10,18 @@
   {
     "battle_id": "1544060772546646121-1",
     "title": "Four \ud83c\udf39 135th 750mL + 1oz Infinity Sample",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (2)",
+    "podium": [
+      "Bearded Bees (2)",
+      "HazmatNeat",
+      "Bearded Bees (4)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788224000
+    "lock": "c5ce99878a38739e0b963cb2dd13daf647aefe522c6a8f0e2c39243a757cd171",
+    "seed": "174f52fa3a25de13b9505d048dc184e702fdfddc19e8a06c129a62506cfd2efe",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2WMsQ6CQBBEf-WyFSQUd3t3CJTYWNlYUBiLld2LRIWEoxHjvxutUMp5M_Oe0EN1hFpoZGFVi0SV2BQy2NF8p2kvNEH215v0i_o49CrBZbDpauw-qLl08SoP1XQzjaySw7Cl2_L4o3RrC6ZwyoChQptBhArMxgWPgSyhZzH2XHrtWbuCW1M42WgMHJhbU0pBOm8NlpSj13kbGCUIvN5vJ1xY-wAAAA",
+    "ts": 1788224122
   },
   {
     "battle_id": "1544032918823764039-1",
