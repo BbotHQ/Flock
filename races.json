@@ -10,10 +10,18 @@
   {
     "battle_id": "1544357618037039196-1",
     "title": "GTS 2025",
-    "status": "pending",
+    "status": "official",
+    "winner": "JigglyBits",
+    "podium": [
+      "JigglyBits",
+      "Ram02on (1)",
+      "Ram02on (2)"
+    ],
     "ducks": 40,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299990
+    "lock": "4e4f007d8d1b0ad977e9d9950847406d39093f43023d0c66af1009c6e1017126",
+    "seed": "8a1d07911b792574c62bd0263be5ac74c488ec1b000752cd9d17a49f9b27ed7d",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21Ry26DMBD8FbQnIlHJNgbjHCmHKIeqanurelhsStyAHQXSqKn67xV5KBhx29F457H-BQvLd8ida3O0dRCKBUTw7A77oKiU6YyzHUTwiO3OBSElA_uCLWHOBiEd0NpZ7Dd4g7krFfYF6it-xTZYBSG7cDeXbHEXlWfHjWkasyu6J-f603X3Sx2rpulIPNiYum5-ctOP4nAvzcTiknWN-73T-X0n9l9Jv8JZ422DNbZVQuh9LZsLyUctEl93ArkP2ZwaG6md66_Qbh8K_DbaLzZw5mC39mhPHpOODk7nLOKRRTqaxWienDGe00kmP80W8BGBhqUgEXSwhAypJkJSWgrJEsFVykpNWBqXVYJKcMWzrFK0JISIhCktNRXI5acsmai00PD3D1ztAD6ZAgAA",
+    "ts": 1788300156
   },
   {
     "battle_id": "1544463201100374128-1",
