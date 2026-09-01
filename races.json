@@ -10,10 +10,18 @@
   {
     "battle_id": "1544128268922396777-1",
     "title": "Beam 10 pin rd2",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (1)",
+    "podium": [
+      "Bearded Bees (1)",
+      "JarrodB",
+      "Ram02on (1)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299290
+    "lock": "61da7080bd6d7407daea641c96838f03db0c05687fcaefe753c42dd9e0a7b855",
+    "seed": "ccbc3ff117c08788f3182c02d9edfc96f043041276ee306cc63983f43d76dd63",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12MMQuDMBBG_4rcpOCQ3EkSHTN27Fo6pHcXkaIB7Vb630uFQu34eN_7nrDAcIGoaRWVKqpuVW0baCFO4_aY-G7pAwePuy9ljmkZq5qOuNfnNBssy_frkP_t97dTWtci8bfEBq4tCAxILWwwAPONKWdrPZvgQ8hkA7JB6VUy9y6bjkxn0TtVMo7ZUR8odyTeiTiC1xvrfdQY7gAAAA",
+    "ts": 1788299385
   },
   {
     "battle_id": "1544173210168205343-1",
