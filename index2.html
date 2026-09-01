@@ -196,16 +196,18 @@ const SOUND_FILES = {
   countdown: 'sounds/fight.mp3',   // one clip: the whole "3, 2, 1, FIGHT" — played ONCE at the start of the countdown, not per-number
   blood: 'sounds/blood.mp3',       // "FIRST BLOOD" — plays on the battle's first kill only, whichever kill that is
   finish: 'sounds/finish.mp3',     // pre-cue right before the final swing that ends the fight
+  finalKill: 'sounds/kill4.mp3',   // reserved exclusively for the FINAL kill — never picked for a regular melee kill
   // Up to 10 slots each — only upload as many as you actually have; anything
   // missing just gets silently skipped (404s fail quietly, same as before).
   // Slots 6-10 default to .mp3 — rename your files to match, or tell me the
-  // real extensions if any of them are .wav instead.
+  // real extensions if any of them are .wav instead. kill4 is deliberately
+  // NOT in this pool — see finalKill above.
   clash: [
     'sounds/clash1.mp3', 'sounds/clash2.mp3', 'sounds/clash3.wav', 'sounds/clash4.mp3', 'sounds/clash5.mp3',
     'sounds/clash6.mp3', 'sounds/clash7.mp3', 'sounds/clash8.mp3', 'sounds/clash9.mp3', 'sounds/clash10.mp3',
   ],
   kill: [
-    'sounds/kill1.wav', 'sounds/kill2.mp3', 'sounds/kill3.wav', 'sounds/kill4.mp3', 'sounds/kill5.mp3',
+    'sounds/kill1.wav', 'sounds/kill2.mp3', 'sounds/kill3.wav', 'sounds/kill5.mp3',
     'sounds/kill6.mp3', 'sounds/kill7.mp3', 'sounds/kill8.mp3', 'sounds/kill9.mp3', 'sounds/kill10.mp3',
   ],
   quack: [
@@ -264,9 +266,18 @@ function playClash(){
 // "First Blood" instead — see _firstBloodPlayed above) — used both by the
 // melee kill-loop and the final-blow handler, so "first kill" is correct
 // even in a 2-duck fight where the only kill IS the final blow.
+// Melee kills — anything except the final blow. Regular kill pool (kill4
+// excluded), or "First Blood" if this is the battle's very first kill.
 function playKillOrFirstBlood(){
   if(!_firstBloodPlayed){ _firstBloodPlayed = true; _playSound(SOUND_FILES.blood, 0.9); }
   else { _playSound(_pick(SOUND_FILES.kill), 0.85); }
+}
+// The FINAL blow specifically — always kill4.mp3, unless this also happens
+// to be the battle's very first kill (e.g. a 2-duck fight), in which case
+// "First Blood" still takes priority over the dedicated final-kill sound.
+function playFinalKillOrFirstBlood(){
+  if(!_firstBloodPlayed){ _firstBloodPlayed = true; _playSound(SOUND_FILES.blood, 0.9); }
+  else { _playSound(SOUND_FILES.finalKill, 0.9); }
 }
 function playQuack(){ _playSound(_pick(SOUND_FILES.quack), 0.9); }
 
@@ -1049,7 +1060,7 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
 let _lastQuackAt=0;
 const QUACK_MIN_GAP_MS = 150;    // floor is just to stop literal same-frame double-fires — low enough that quacks freely overlap
 const QUACK_CHANCE_PER_FRAME = 0.12; // rolled every frame once the (short) min gap has passed — "damn near non stop"
-const FINISH_LEAD_SEC = 1.8; // how far ahead of the final blow "finish.mp3" cues in — enough lead to clearly read as "before," not simultaneous with, the last swing
+const FINISH_LEAD_SEC = 2.0; // how far ahead of the final blow "finish.mp3" cues in — enough lead to clearly read as "before," not simultaneous with, the last swing
 function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   let finalKillSounded=false, finishCued=false;
@@ -1067,7 +1078,7 @@ function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,
     // final-blow impact below, not simultaneous with it.
     if(!finishCued && el>=liveLoopCutoff-FINISH_LEAD_SEC){finishCued=true;_playSound(SOUND_FILES.finish,0.9);}
     if(el>=liveLoopCutoff){
-      if(!finalKillSounded){finalKillSounded=true;playKillOrFirstBlood();}
+      if(!finalKillSounded){finalKillSounded=true;playFinalKillOrFirstBlood();}
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
         if(myGen!==PLAY_GEN)return;
