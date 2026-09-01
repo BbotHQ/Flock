@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1543766980107046943-1",
+    "title": "Jack 12-4",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788223570
+  },
+  {
     "battle_id": "1543757842496888835-1",
     "title": "2024 Fortaleza WB",
     "status": "official",
