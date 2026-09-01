@@ -2,10 +2,18 @@
   {
     "battle_id": "1543865431318597744-1",
     "title": "Rare Perfection SP",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB (2)",
+    "podium": [
+      "JarrodB (2)",
+      "Bearded Bees",
+      "MikeV"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299531
+    "lock": "c002296db638e61f89df995ab2d770e1e3a093842bde4914c6e074f92ae1e55d",
+    "seed": "16b96e367cadf4d90a6a41f911661fa93ee0d648725ecb44d42620710a87f252",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE1WNsQ7CMBBDf6W6qUgZkkuaNB3DhmBhYEEM1-aCEGqDUjbEv6N2KqPtZ_sDE3RXCDmPgaZ7VeMOBByolBxDVatF7Wl8ZRAbSC92YCqRYxWY5790LZ0eT76AgGMuA70lblfXjzONEvMENwEROtQCZuhA2d5b1tYNFJOJXpIlo5JXylqVyGtmGa1pHTY89MZEgxalU5Jal7BB-P4A19py_tIAAAA",
+    "ts": 1788299626
   },
   {
     "battle_id": "1544166063980417184-1",
