@@ -10,10 +10,18 @@
   {
     "battle_id": "1544463201100374128-1",
     "title": "weller sib",
-    "status": "pending",
+    "status": "official",
+    "winner": "The_Snail19 (2)",
+    "podium": [
+      "The_Snail19 (2)",
+      "Benson (2)",
+      "Benson (1)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299870
+    "lock": "80c26ffa339fd1534cdafe97843e2eea030f896839e4a45f11ac0d8e9c3cf855",
+    "seed": "8ed73659cdabe0559f16708cf97ede77bb2c1700144cf4a12b2e879075dfa661",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE1WNTQvCMBBE_0rZk4Uckm2SbXpUEM_Wm4hsvlCwFaweVPzvQpFSbzNveMwbemj2sDulY9vz-aJcsVAlCFi-Hh41CNhyJ_HaFwscceqHqaz4dn-uuZvx0W25Kza_POnzZbT_PrGEg4AIDVYCBmigTpEqa1yI7JM0xmVlSdYhO0oxEXmPQZGUSuuQNSv0mGpykkzMbK2Czxf9EknQ2wAAAA",
+    "ts": 1788300025
   },
   {
     "battle_id": "1544438998297092218-1",
