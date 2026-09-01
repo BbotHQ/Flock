@@ -2,10 +2,18 @@
   {
     "battle_id": "1544166063980417184-1",
     "title": "Thomas Handy 2025",
-    "status": "pending",
+    "status": "official",
+    "winner": "Ram02on (5)",
+    "podium": [
+      "Ram02on (5)",
+      "Slad06 (10)",
+      "Ram02on (4)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299355
+    "lock": "f065fb4bca5f9146c5378812b096de9e322d200127b2839962a656cb939db9c7",
+    "seed": "b2dee8af47a603ee3e555f2fb61881343a70fe88753b22369f968fac9c0a6a02",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22Qy07DMBBFf6WaVSsFyZ6JH8my6qJrWCIWk9imJcSpWvFQEf-OEkGViVgeH98ZX39BhvoRHl45KLtaVxsobuDnoPVI22Hot5yfV2sSshyp52vgyynGcI6fM4uj3HPu7nb8fgy_B3_WjXDPvcIhL0lc1HZOYr8VqUm98GGRN2IYiogYrZWsqoU0IjgVP77lLn_k61yI0HTrRNxSzx2dsXTLbiRX4q2CFuvMP4Pk8wS45c_rDTwVEKC2VMAFamgwxOg5lY6tohgpGmMSpsZq7zWVxE6l6L0z1CCSrVJlfeK2ahVbVgjfPz4xoxtCAgAA",
+    "ts": 1788299516
   },
   {
     "battle_id": "1544128268922396777-1",
