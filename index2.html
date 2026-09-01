@@ -193,16 +193,34 @@ function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
 // Only files you actually provide need to exist — leave an entry's array
 // empty ([]) or point it at nothing and that sound simply won't play.
 const SOUND_FILES = {
-  count3: 'sounds/count3.mp3',
-  count2: 'sounds/count2.mp3',
-  count1: 'sounds/count1.mp3',
-  fight:  'sounds/fight.mp3',
-  clash:  ['sounds/clash1.mp3', 'sounds/clash2.mp3'],
-  kill:   ['sounds/kill1.mp3', 'sounds/kill2.mp3'],
-  quack:  ['sounds/quack1.mp3', 'sounds/quack2.mp3', 'sounds/quack3.mp3'],
+  countdown: 'sounds/fight.mp3',   // one clip: the whole "3, 2, 1, FIGHT" — played ONCE at the start of the countdown, not per-number
+  blood: 'sounds/blood.mp3',       // "FIRST BLOOD" — plays on the battle's first kill only, whichever kill that is
+  finish: 'sounds/finish.mp3',     // pre-cue right before the final swing that ends the fight
+  // Up to 10 slots each — only upload as many as you actually have; anything
+  // missing just gets silently skipped (404s fail quietly, same as before).
+  // Slots 6-10 default to .mp3 — rename your files to match, or tell me the
+  // real extensions if any of them are .wav instead.
+  clash: [
+    'sounds/clash1.mp3', 'sounds/clash2.mp3', 'sounds/clash3.wav', 'sounds/clash4.mp3', 'sounds/clash5.mp3',
+    'sounds/clash6.mp3', 'sounds/clash7.mp3', 'sounds/clash8.mp3', 'sounds/clash9.mp3', 'sounds/clash10.mp3',
+  ],
+  kill: [
+    'sounds/kill1.wav', 'sounds/kill2.mp3', 'sounds/kill3.wav', 'sounds/kill4.mp3', 'sounds/kill5.mp3',
+    'sounds/kill6.mp3', 'sounds/kill7.mp3', 'sounds/kill8.mp3', 'sounds/kill9.mp3', 'sounds/kill10.mp3',
+  ],
+  quack: [
+    'sounds/quack1.mp3', 'sounds/quack2.mp3', 'sounds/quack3.mp3', 'sounds/quack4.mp3', 'sounds/quack5.mp3',
+    'sounds/quack6.mp3', 'sounds/quack7.mp3', 'sounds/quack8.mp3', 'sounds/quack9.mp3', 'sounds/quack10.mp3',
+  ],
 };
 
 let SOUND_ON = true;
+// Whether "First Blood" has fired yet THIS battle — reset in beginFight()/
+// replayFight() alongside resetBlood(), since that's the same "starting a
+// fresh fight" moment. Module-level (not local to any one function) because
+// both the melee kill-loop in renderScene() and the final-blow handling in
+// playFight() need to check and set it.
+let _firstBloodPlayed = false;
 const _audioCache = {};
 function _loadSound(url){
   if(!url) return null;
@@ -238,14 +256,18 @@ function _pick(entry){
   });
 })();
 
-function playCountBeep(word){
-  if(word==='FIGHT') _playSound(SOUND_FILES.fight, 0.9);
-  else if(word==='3') _playSound(SOUND_FILES.count3, 0.8);
-  else if(word==='2') _playSound(SOUND_FILES.count2, 0.8);
-  else if(word==='1') _playSound(SOUND_FILES.count1, 0.8);
+const CLASH_CHANCE = 0.7; // not every swing gets a clash sound — most do, some don't
+function playClash(){
+  if(Math.random() < CLASH_CHANCE) _playSound(_pick(SOUND_FILES.clash), 0.6);
 }
-function playClash(){ _playSound(_pick(SOUND_FILES.clash), 0.6); }
-function playKillHit(){ _playSound(_pick(SOUND_FILES.kill), 0.85); }
+// Shared by every kill EXCEPT the very first of the battle (that one plays
+// "First Blood" instead — see _firstBloodPlayed above) — used both by the
+// melee kill-loop and the final-blow handler, so "first kill" is correct
+// even in a 2-duck fight where the only kill IS the final blow.
+function playKillOrFirstBlood(){
+  if(!_firstBloodPlayed){ _firstBloodPlayed = true; _playSound(SOUND_FILES.blood, 0.9); }
+  else { _playSound(_pick(SOUND_FILES.kill), 0.85); }
+}
 function playQuack(){ _playSound(_pick(SOUND_FILES.quack), 0.5); }
 
 // ── PROVABLY-FAIR RANDOMNESS (drand quicknet beacon) ────────────────────────
@@ -954,7 +976,7 @@ function renderScene(stepF,curSec,clock,finale,finalePhase){
       const isFinalBlow=(e.kill && e.step===P.finalKillStep);
       if(e.kill){
         if(dt<0.55&&!isFinalBlow){
-          if(!e._sounded){e._sounded=true;playKillHit();}
+          if(!e._sounded){e._sounded=true;playKillOrFirstBlood();}
           drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);
         }
       } else {
@@ -1025,9 +1047,12 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
   ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
   const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
 let _lastQuackAt=0;
+const QUACK_MIN_GAP_MS = 1500;   // never fires more often than this
+const QUACK_CHANCE_PER_FRAME = 0.02; // rolled once the min gap has passed — "often but not nonstop"
+const FINISH_LEAD_SEC = 0.7; // how far ahead of the final blow "finish.mp3" cues in
 function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
-  let finalKillSounded=false;
+  let finalKillSounded=false, finishCued=false;
 
   const liveLoopCutoff=mapEnd+0.3;
   const hitFreezeSec=mapEnd+0.15;
@@ -1038,8 +1063,11 @@ function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,
     const t=Math.min(1,(el-timerEnd)/Math.max(0.001,(mapEnd-timerEnd)));return slowStep+t*(S-1-slowStep);
   }
   function frame(now){if(myGen!==PLAY_GEN)return;const el=(now-t0)/1000;
+    // "Right before the last swing" — cued a beat ahead of the actual
+    // final-blow impact below, not simultaneous with it.
+    if(!finishCued && el>=liveLoopCutoff-FINISH_LEAD_SEC){finishCued=true;_playSound(SOUND_FILES.finish,0.9);}
     if(el>=liveLoopCutoff){
-      if(!finalKillSounded){finalKillSounded=true;playKillHit();}
+      if(!finalKillSounded){finalKillSounded=true;playKillOrFirstBlood();}
       renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
       setTimeout(()=>{
         if(myGen!==PLAY_GEN)return;
@@ -1050,7 +1078,7 @@ function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,
     }
     // Ambient quacking — throttled so it doesn't fire every frame; roughly
     // once every 1.5-3s on average while the melee is live.
-    if(now-_lastQuackAt>1500 && Math.random()<0.02){_lastQuackAt=now;playQuack();}
+    if(now-_lastQuackAt>QUACK_MIN_GAP_MS && Math.random()<QUACK_CHANCE_PER_FRAME){_lastQuackAt=now;playQuack();}
     STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
   STATE.raf=requestAnimationFrame(frame);}
 const HIT_HOLD_MS=1250;
@@ -1068,7 +1096,7 @@ function countdownThen(cb,myGen){const el=document.getElementById('count3');cons
 
     if(curAnim)curAnim.cancel();
     el.textContent=seq[k];
-    playCountBeep(seq[k]);
+    if(k===0) _playSound(SOUND_FILES.countdown, 0.9); // one clip covers "3, 2, 1, FIGHT" — play it once, right as "3" appears
     curAnim=el.animate([
       {opacity:0,offset:0},
       {opacity:1,offset:0.18},
@@ -1109,11 +1137,11 @@ async function ensureSpritesReady(btn){
 function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
   document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='none';
   const myGen=++PLAY_GEN;
-  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);_firstBloodPlayed=false;STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
 async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
   document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';
   const myGen=++PLAY_GEN;
-  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);_firstBloodPlayed=false;STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
 async function replayLink(){return location.origin+location.pathname+'#r='+await encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
