@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Duck Battle Royale (Sound Test)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--deck:#080d12;--panel:#131c25;--panel2:#1a2733;--gold:#f2c14e;--gold-hi:#ffd76b;--teal:#4bb8b0;--cream:#e9eef2;--muted:#7d94a3;--red:#d64b34;}
+  *{box-sizing:border-box}html,body{margin:0;min-height:100%}
+  body{background:linear-gradient(rgba(6,11,16,.32),rgba(6,11,16,.46)), url('arena.jpg') center/cover fixed no-repeat, radial-gradient(1200px 600px at 50% -10%, #16252f 0%, var(--deck) 60%);color:var(--cream);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+  .wrap{width:100%;max-width:1720px;padding:16px 14px 40px;flex:1;display:flex;flex-direction:column;position:relative}
+  /* ---- title ---- */
+  header{text-align:center;margin:34px 0 4px}
+  .brand{font-family:'Anton',sans-serif;font-size:clamp(34px,7.2vw,74px);letter-spacing:2px;line-height:.92;text-transform:uppercase;
+    -webkit-text-stroke:3px rgba(0,0,0,.85);paint-order:stroke fill;
+    background:linear-gradient(180deg,#fff 0%,var(--gold-hi) 55%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 18px rgba(242,193,78,.25))}
+  .brand .blade{color:var(--red);-webkit-text-fill-color:var(--red)}
+  .sub-tag{margin:6px 0 0;font-family:'Anton',sans-serif;letter-spacing:6px;text-transform:uppercase;font-size:clamp(11px,2vw,15px);color:var(--teal);text-align:center;
+    -webkit-text-stroke:1.5px rgba(0,0,0,.9);paint-order:stroke fill;
+    text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.7)}
+  .synopsis{max-width:560px;margin:14px auto 22px;text-align:center;color:#aebccb;font-size:14px;line-height:1.55}
+  .synopsis b{color:var(--cream)}
+  /* ---- setup card ---- */
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:16px;
+    box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04)}
+  .setup{padding:24px;max-width:560px;width:100%;margin:0 auto;position:relative;overflow:hidden}
+  .setup::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;pointer-events:none;
+    background:linear-gradient(120deg,rgba(242,193,78,.35),rgba(75,184,176,.15),transparent 60%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+  label.lbl{display:block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  textarea{width:100%;min-height:190px;resize:vertical;background:#0a0f14;border:1px solid #2b3a47;border-radius:11px;color:var(--cream);
+    font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;padding:13px 15px}
+  textarea:focus{outline:none;border-color:var(--teal)}textarea.shuffling{color:var(--gold-hi)}
+  .count{font-size:13px;color:var(--muted);margin-top:10px}
+  .seal{margin-top:14px;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 13px;cursor:pointer}
+  .seal b{color:var(--teal);letter-spacing:.5px}.seal:hover{border-color:var(--teal)}
+  .sealnote{font-size:11.5px;color:#5f7382;margin-top:7px;line-height:1.5}
+  .row{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .grow{flex:1}
+  .btn{font-family:'Anton',sans-serif;letter-spacing:1.5px;text-transform:uppercase;background:var(--gold);color:#1a1305;border:0;border-radius:11px;
+    padding:14px 26px;font-size:18px;cursor:pointer;transition:transform .05s,background .15s,box-shadow .15s;box-shadow:0 6px 18px rgba(242,193,78,.25)}
+  .btn:hover{background:var(--gold-hi)}.btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--cream);border:1px solid #33454f;box-shadow:none}
+  .btn.ghost:hover{border-color:var(--teal);color:var(--teal)}
+  .btn.replay{background:linear-gradient(180deg,var(--teal),#3a9089);color:#08201d;border:1px solid #2f7a73;box-shadow:0 4px 14px rgba(75,184,176,.35);font-weight:700}
+  .btn.replay:hover{background:linear-gradient(180deg,#5cd0c7,var(--teal))}
+  .btn.shuffle{background:transparent;color:var(--gold-hi);border:1px solid #5a4a24;box-shadow:none}
+  .btn.shuffle:hover{background:rgba(242,193,78,.1)}
+  .ledger-link{position:absolute;top:16px;right:16px;display:inline-flex;align-items:center;gap:6px;font-family:'Anton',sans-serif;
+    letter-spacing:1px;text-transform:uppercase;font-size:13px;color:var(--gold-hi);text-decoration:none;background:rgba(242,193,78,.08);
+    border:1px solid #5a4a24;border-radius:10px;padding:9px 14px;z-index:5}
+  .ledger-link:hover{background:rgba(242,193,78,.16)}
+  @media(max-width:560px){.ledger-link{position:static;margin:0 auto 12px;width:max-content}}
+  /* ---- sound toggle (test build only) ---- */
+  .sound-toggle{position:absolute;top:16px;left:16px;display:inline-flex;align-items:center;gap:6px;font-family:'Anton',sans-serif;
+    letter-spacing:1px;text-transform:uppercase;font-size:13px;color:var(--gold-hi);background:rgba(242,193,78,.08);
+    border:1px solid #5a4a24;border-radius:10px;padding:9px 14px;z-index:5;cursor:pointer}
+  .sound-toggle:hover{background:rgba(242,193,78,.16)}
+  @media(max-width:560px){.sound-toggle{position:static;margin:0 auto 12px;width:max-content}}
+  /* ---- arena ---- */
+  .stage{display:none;flex-direction:column;flex:1}.stage.show{display:flex}
+  .arena-row{display:flex;gap:10px;align-items:stretch}
+  .killfeed{width:250px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
+  .killfeed h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .kfitem{font-size:15px;padding:5px 7px;border-radius:6px;line-height:1.45;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .kfitem .kk{color:#ffd76b;font-weight:700}
+  .kfitem .kx{color:var(--red)}
+  .kfitem .kv{color:var(--muted);text-decoration:line-through}
+  .kfitem.big .kk{color:#fff}
+  .canvas-shell{position:relative;flex:1;border-radius:14px;overflow:hidden;border:1px solid #2b3a47;background:#050b10;min-width:0}
+  canvas{display:block;width:100%;height:100%}
+  .roster{width:220px;flex:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #2b3a47;border-radius:14px;padding:10px;overflow-y:auto;max-height:780px}
+  .roster h4{margin:2px 4px 8px;font-family:'Anton';letter-spacing:1px;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .ritem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:15px;font-weight:600;margin-bottom:3px}
+  .rdot{width:9px;height:9px;border-radius:50%;flex:none}
+  .ritem.dead{opacity:.4}.ritem.dead .rname{text-decoration:line-through;color:var(--muted)}
+  .ritem.win{background:rgba(242,193,78,.14)}.ritem.win .rname{color:var(--gold-hi)}
+  .rname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rsep{height:1px;background:#26333f;margin:7px 4px}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .count3{font-family:'Anton',sans-serif;font-size:clamp(52px,15vw,130px);color:var(--gold-hi);text-shadow:0 6px 30px rgba(0,0,0,.6);opacity:0}
+  .stage .controls{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .result{display:none;position:absolute;inset:0;background:rgba(6,15,20,.9);align-items:center;justify-content:center;padding:20px}
+  .result.show{display:flex}
+  .result-card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #33454f;border-radius:16px;padding:22px 26px;max-width:430px;width:100%;text-align:center;
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:cardup .38s ease-out}
+  @keyframes cardup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid #33454f;background:rgba(6,15,20,.55);
+    color:var(--cream);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .modal-x:hover{border-color:var(--teal);color:var(--teal)}
+  .reopen-modal{position:absolute;bottom:14px;right:14px;z-index:6;width:46px;height:46px;border-radius:50%;border:1px solid #5a4a24;
+    background:rgba(20,28,20,.72);color:var(--gold-hi);font-size:19px;cursor:pointer;align-items:center;justify-content:center;display:none;
+    box-shadow:0 6px 16px rgba(0,0,0,.4)}
+  .reopen-modal:hover{background:rgba(242,193,78,.2)}
+  .winner-eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
+  .winner-name{font-family:'Anton',sans-serif;font-size:clamp(30px,8vw,46px);color:var(--gold-hi);margin:6px 0 2px;line-height:1;word-break:break-word}
+  .podium{list-style:none;padding:0;margin:16px 0 14px;text-align:left}
+  .podium li{display:flex;gap:12px;align-items:center;padding:9px 12px;border-radius:9px;background:#0a0f14;margin-bottom:8px}
+  .podium .pos{font-family:'Anton';color:var(--gold);width:26px;text-align:center;font-size:18px}.podium .nm{flex:1;font-weight:600;word-break:break-word}
+  .verify{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);background:#0a0f14;border:1px solid #24313c;border-radius:8px;padding:9px 10px;margin:0 0 16px;text-align:left;line-height:1.7;cursor:pointer}
+  .verify b{color:var(--teal)}
+  .result .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#1a1305;font-weight:600;padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;font-size:14px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{margin-top:24px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#41525e}
+  @media(max-width:900px){.arena-row{flex-direction:column}.roster,.killfeed{width:100%;max-height:150px}}
+  @media(max-width:900px){.roster{display:flex;flex-wrap:wrap;gap:4px}.roster h4{width:100%}.rsep{display:none}.ritem{margin:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="ledger-link" href="ledger.html">📜 Ledger</a>
+  <button class="sound-toggle" id="soundToggle">🔊 Sound: On</button>
+  <header><div class="brand">Duck <span class="blade">Battle</span> Royale</div></header>
+  <p class="sub-tag">Last Duck Standing — 🔊 SOUND TEST BUILD</p>
+
+  <div class="card setup" id="setup">
+    <p class="synopsis">The flock enters juiced, jealous, and thirsty for the last pour. <b>Only blood settles this tab.</b> One by one they go down swinging — until a single duck is left standing over the bottle. <b>Last duck drinks alone.</b></p>
+    <label class="lbl" for="names">Combatants</label>
+    <textarea id="names" placeholder="Enter at least two duck names here — one per line."></textarea>
+    <div class="count" id="count">0 ducks</div>
+    <div class="seal" id="seal" title="Tap to copy this battle's seal"><span>🔒</span> Seal <b id="lockHash">—</b></div>
+    <div class="sealnote">Every battle is sealed and logged to the ledger the moment it runs — provably fair and fully replayable.</div>
+    <div class="row">
+      <button class="btn shuffle" id="shuffle">🔀 Shuffle</button>
+      <div class="grow"></div>
+      <button class="btn" id="start">⚔️ Start Battle</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="arena-row">
+      <div class="killfeed" id="killfeed"><h4>💀 Kill Feed</h4></div>
+      <div class="canvas-shell">
+        <canvas id="cv"></canvas>
+        <div class="overlay"><div class="count3" id="count3"></div></div>
+        <div class="result" id="result">
+          <div class="result-card">
+            <button class="modal-x" id="closeResult" aria-label="Close">✕</button>
+            <div class="winner-eyebrow">Last Duck Standing</div>
+            <div class="winner-name" id="winnerName">—</div>
+            <ul class="podium" id="podium"></ul>
+            <button class="btn ghost" id="standingsBtn" style="width:100%;margin-bottom:12px">📋 View Full Standings</button>
+            <div id="standingsBox" style="display:none;max-height:260px;overflow-y:auto;text-align:left;background:#0a0f14;border:1px solid #24313c;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:13px;line-height:1.9"></div>
+            <div class="verify" id="verify" title="Tap to copy the seed">🔓 <b>Verify:</b> <span id="verifyBody">—</span></div>
+            <div class="controls">
+              <button class="btn ghost" id="copyLink">Copy Replay Link</button>
+            </div>
+          </div>
+        </div>
+        <button class="reopen-modal" id="reopenResult" aria-label="Show results" title="Show results">📋</button>
+      </div>
+      <div class="roster" id="roster"></div>
+    </div>
+    <div class="controls">
+      <button class="btn replay" id="replayBtn" style="display:none">▶ Replay This Battle</button>
+      <button class="btn ghost" id="backBtn">← New Fight Setup</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+function cyrb128(str){let h1=1779033703,h2=3144134277,h3=1013904242,h4=2773480762;
+  for(let i=0,k;i<str.length;i++){k=str.charCodeAt(i);h1=h2^Math.imul(h1^k,597399067);h2=h3^Math.imul(h2^k,2869860233);
+    h3=h4^Math.imul(h3^k,951274213);h4=h1^Math.imul(h4^k,2716044179);}
+  h1=Math.imul(h3^(h1>>>18),597399067);h2=Math.imul(h4^(h2>>>22),2869860233);
+  h3=Math.imul(h1^(h3>>>17),951274213);h4=Math.imul(h2^(h4>>>19),2716044179);
+  return [(h1^h2^h3^h4)>>>0,(h2^h1)>>>0,(h3^h1)>>>0,(h4^h1)>>>0];}
+function sfc32(a,b,c,d){return function(){a>>>=0;b>>>=0;c>>>=0;d>>>=0;let t=(a+b)|0;
+  a=b^b>>>9;b=c+(c<<3)|0;c=(c<<21|c>>>11);d=d+1|0;t=t+d|0;c=c+t|0;return (t>>>0)/4294967296;};}
+function rngFromSeed(seed){const s=cyrb128(seed);return sfc32(s[0],s[1],s[2],s[3]);}
+async function sha256hex(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+function lockInput(seed,names){return seed+'\u241F'+names.join('\u241F');}
+
+// ── SOUND (test build only) ─────────────────────────────────────────────────
+// Everything below is synthesized via the Web Audio API — no external sound
+// files to host or load. The AudioContext is created lazily on first user
+// gesture; the Start/Replay button click already satisfies browsers'
+// autoplay-gesture requirement, so nothing extra is needed for that. A mute
+// toggle is included in the top-left for testing — remove/keep as desired
+// once this merges into the real file.
+let SOUND_ON = true;
+let actx = null;
+function ensureAudio(){
+  if(!SOUND_ON) return null;
+  if(!actx){
+    try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx = null; }
+  }
+  if(actx && actx.state === 'suspended') actx.resume().catch(()=>{});
+  return actx;
+}
+function _tone(freq,dur,opts={}){
+  const ac=ensureAudio(); if(!ac) return;
+  const t0=ac.currentTime;
+  const osc=ac.createOscillator(), gain=ac.createGain();
+  osc.type=opts.type||'sine';
+  osc.frequency.setValueAtTime(freq,t0);
+  if(opts.sweepTo) osc.frequency.exponentialRampToValueAtTime(Math.max(1,opts.sweepTo),t0+dur);
+  const vol=opts.vol!=null?opts.vol:0.25;
+  gain.gain.setValueAtTime(0.0001,t0);
+  gain.gain.exponentialRampToValueAtTime(vol,t0+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  osc.connect(gain).connect(ac.destination);
+  osc.start(t0); osc.stop(t0+dur+0.02);
+}
+function _noiseBurst(dur,opts={}){
+  const ac=ensureAudio(); if(!ac) return;
+  const t0=ac.currentTime;
+  const bufSize=Math.max(1,Math.floor(ac.sampleRate*dur));
+  const buf=ac.createBuffer(1,bufSize,ac.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufSize,2);
+  const src=ac.createBufferSource(); src.buffer=buf;
+  const filt=ac.createBiquadFilter(); filt.type=opts.filterType||'bandpass';
+  filt.frequency.value=opts.freq||1200; filt.Q.value=opts.q||1;
+  const gain=ac.createGain();
+  const vol=opts.vol!=null?opts.vol:0.3;
+  gain.gain.setValueAtTime(vol,t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  src.connect(filt).connect(gain).connect(ac.destination);
+  src.start(t0);
+}
+// 3-2-1 rising beeps, then a bigger low horn-blast + noise thump for FIGHT.
+function playCountBeep(word){
+  if(word==='FIGHT'){
+    _tone(220,0.5,{type:'sawtooth',vol:0.3,sweepTo:110});
+    _noiseBurst(0.35,{filterType:'lowpass',freq:2000,vol:0.35});
+  } else {
+    const f=word==='3'?440:word==='2'?550:660;
+    _tone(f,0.18,{type:'square',vol:0.22});
+  }
+}
+// Non-lethal clash — light metallic clang (SPARKWORDS moments).
+function playClash(){
+  _noiseBurst(0.12,{filterType:'highpass',freq:2500,q:6,vol:0.18});
+  _tone(1400,0.08,{type:'triangle',vol:0.12,sweepTo:900});
+}
+// Kill — heavier impact thud with a touch of clang underneath.
+function playKillHit(){
+  _noiseBurst(0.22,{filterType:'lowpass',freq:900,vol:0.32});
+  _tone(180,0.18,{type:'square',vol:0.2,sweepTo:60});
+}
+// Synthesized "quack" — pitch-bent tone through a bandpass filter. Reads as
+// a stylized duck honk rather than a real recording; swap in an actual
+// audio clip later if you'd rather have a real quack sample.
+function playQuack(){
+  const ac=ensureAudio(); if(!ac) return;
+  const t0=ac.currentTime;
+  const osc=ac.createOscillator(), filt=ac.createBiquadFilter(), gain=ac.createGain();
+  osc.type='sawtooth';
+  const base=320+Math.random()*80;
+  osc.frequency.setValueAtTime(base,t0);
+  osc.frequency.exponentialRampToValueAtTime(base*0.55,t0+0.12);
+  filt.type='bandpass'; filt.frequency.value=900; filt.Q.value=3;
+  gain.gain.setValueAtTime(0.0001,t0);
+  gain.gain.exponentialRampToValueAtTime(0.22,t0+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+0.16);
+  osc.connect(filt).connect(gain).connect(ac.destination);
+  osc.start(t0); osc.stop(t0+0.2);
+}
+
+// ── PROVABLY-FAIR RANDOMNESS (drand quicknet beacon) ────────────────────────
+// Ducks used to get a client-side seed (crypto.getRandomValues) the instant
+// the setup screen had 2+ names, sitting in plain `STATE.seed` — so anyone
+// with devtools could reroll newSeed() in a loop, replan the fight locally,
+// and only click Start once they liked the winner. Fix: commit to the duck
+// list + a specific FUTURE public drand round before that round's signature
+// exists, then derive the seed from the published signature once it's out.
+// Nobody — including us — can know the seed before the beacon publishes it,
+// and anyone can redo the derivation later against drand's public output to
+// confirm a result wasn't tampered with. If drand can't be reached, we do
+// NOT fall back to a local seed — the battle simply refuses to start.
+const DRAND_API = 'https://api.drand.sh/v2/beacons/quicknet';
+const DRAND_GENESIS = 1692803367; // unix seconds, quicknet chain genesis
+const DRAND_PERIOD = 3;           // seconds per round
+const DRAND_ROUND_BUFFER = 2;     // commit to "now + N rounds" so it's not out yet
+
+function drandRoundAt(unixSec){return Math.floor((unixSec-DRAND_GENESIS)/DRAND_PERIOD)+1;}
+
+async function _fetchDrandRound(round,tries=8){
+  let lastErr;
+  for(let i=0;i<tries;i++){
+    try{
+      const res=await fetch(`${DRAND_API}/rounds/${round}`,{cache:'no-store'});
+      if(res.ok){const j=await res.json();if(j&&j.round===round&&j.signature)return j;}
+    }catch(e){lastErr=e;}
+    await new Promise(r=>setTimeout(r,800+i*400));
+  }
+  throw new Error('drand round '+round+' unreachable: '+(lastErr||'no valid response'));
+}
+async function waitForDrandRound(round){
+  const dueAt=DRAND_GENESIS+round*DRAND_PERIOD;
+  const waitMs=Math.max(0,dueAt*1000-Date.now())+300;
+  if(waitMs>0)await new Promise(r=>setTimeout(r,waitMs));
+  return _fetchDrandRound(round);
+}
+// Anyone can redo this: sha256(drand round signature || committed name hash).
+async function deriveDrandSeed(round,nameHash){
+  const beacon=await waitForDrandRound(round);
+  return sha256hex(beacon.signature+'\u241F'+nameHash);
+}
+// Logs the commitment (duck list hash + target round) BEFORE the round
+// publishes. Best-effort against the capture endpoint — the cryptographic
+// fairness guarantee comes from the round being genuinely in the future
+// when this runs, not from this log call succeeding.
+async function commitBattle(battleId,names,round){
+  const nameHash=await sha256hex(names.join('\u241F'));
+  try{
+    await fetch(FLOCK_API+'/commit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({battle_id:battleId,name_hash:nameHash,round,committed_at:Date.now()})});
+  }catch(e){console.warn('[Flock] commit log failed (non-fatal):',e);}
+  return nameHash;
+}
+
+// ── STATE ENCODING (replay links) ──────────────────────────────────────────
+// The payload is {n: [...names], d: durationSeconds, s: seed}. For a big
+// battle `n` is extremely repetitive (e.g. 300x "BWall (###)") — gzip
+// crushes that kind of text by 80-90%+, which is the difference between a
+// replay link Discord will actually accept (<2000 chars) and one it won't.
+// Format: a plain-ASCII tag ('.' is NOT part of the base64url alphabet, so
+// it can never collide with an old un-tagged link) followed by the payload:
+//   "gz." + gzip-then-base64url   — new links, when CompressionStream exists
+//   "pl." + base64url of raw JSON — new links, fallback if it doesn't
+//   (no tag at all)               — OLD links posted before this change;
+//                                    decoded exactly as they always were.
+function _bytesToB64url(bytes){
+  let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function _b64urlToBytes(str){
+  let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+  const bin=atob(b),out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+async function _streamAll(stream,input){
+  const writer=stream.writable.getWriter();writer.write(input);writer.close();
+  const reader=stream.readable.getReader();const chunks=[];let total=0;
+  while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);total+=value.length;}
+  const out=new Uint8Array(total);let off=0;for(const c of chunks){out.set(c,off);off+=c.length;}
+  return out;
+}
+async function _gzip(bytes){return _streamAll(new CompressionStream('gzip'),bytes);}
+async function _gunzip(bytes){return _streamAll(new DecompressionStream('gzip'),bytes);}
+
+async function encodeState(o){
+  const json=JSON.stringify(o);
+  if(typeof CompressionStream!=='undefined'){
+    try{
+      const compressed=await _gzip(new TextEncoder().encode(json));
+      return 'gz.'+_bytesToB64url(compressed);
+    }catch(e){ /* fall through to plain */ }
+  }
+  return 'pl.'+_bytesToB64url(new TextEncoder().encode(json));
+}
+async function decodeState(str){
+  try{
+    if(str.startsWith('gz.')){
+      const bytes=await _gunzip(_b64urlToBytes(str.slice(3)));
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+    if(str.startsWith('pl.')){
+      return JSON.parse(new TextDecoder().decode(_b64urlToBytes(str.slice(3))));
+    }
+    // Legacy link — no tag, un-gzipped base64 of a UTF-8-escaped JSON string.
+    let b=str.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    return JSON.parse(decodeURIComponent(escape(atob(b))));
+  }catch(e){return null;}
+}
+function parseNames(text){return text.split('\n').map(l=>l.replace(/^\s*\d+[.)\]]\s*/,'').trim()).filter(l=>l.length>0).slice(0,1000);}
+// Deprecated: this was the client-generated seed that could be rerolled
+// from devtools to pick a winner. No longer called anywhere — the seed now
+// comes from deriveDrandSeed(). Left here only in case anything else in
+// this file still references it; safe to delete once confirmed unused.
+function newSeed(){return [...crypto.getRandomValues(new Uint32Array(4))].map(x=>x.toString(36)).join('');}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+
+const FLOCK_API = 'https://ducks.bbothq.com/flock';
+
+const _urlBattleId = new URLSearchParams(location.search).get('b') || null;
+
+function captureSeed(battleId, seed, names){
+  if(!battleId) return;
+  fetch(FLOCK_API + '/capture', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({battle_id: battleId, seed, ducks: names})
+  }).catch(e=>console.warn('[Flock] seed capture failed (non-fatal):', e));
+}
+
+const DUCKPAL=['#f2c14e','#e9884a','#5cb8c4','#c98fca','#8fca8f','#efc94e','#e0625a','#9db4c9','#d98f5a','#7fc9b8'];
+const WEAPONS=['sword','dagger','ballchain','cleaver','waterpistol','blunderbuss'];
+const HITWORDS=['BOOM','BANG','SLAM','SLASH','WHACK','SMACK','POW','BLAM','CRACK','THUD',
+  'CRUNCH','SPLAT','WHAM','KAPOW','CHOMP','CLOBBERED','SMASHED','WRECKED','CRUSHED','DOWN'];
+const SPARKWORDS=['CLANG','CLASH','OOF','OW','BONK','TAP','SWIPE','JAB','BLOCK','DING'];
+
+const DUCK_NAMES = [
+  'army','astronaut','beach','chef','coach','cool','cop','cowboy','detective','dragon',
+  'fairy','firefighter','flash','gold','hawaiian','king','lifeguard','mallard','monocle','ninja',
+  'penguin','pirate','queen','rainbow','sailor','skeleton','sky','sunglasses','unicorn','vampire','yellow',
+];
+const DUCK_SHEETS = DUCK_NAMES.map(n => 'ducks/' + n + '.png');
+const DUCK_SHEETS_RED = DUCK_NAMES.map(n => 'duckred/' + n + '.png');
+const POSE_CELL = {idle:[0,0], windup:[1,0], strike:[2,0], hit:[0,1], defeated:[1,1], victory:[2,1]};
+const SHEETS = [];
+let SHEETS_SETTLED = 0;
+const SHEETS_READY_PROMISE = new Promise((resolve) => {
+  let settled = 0;
+  const done = () => { settled++; if (settled >= DUCK_SHEETS.length) resolve(); };
+  DUCK_SHEETS.forEach((url, k) => {
+    const rec = {img:new Image(), ready:false, cw:0, ch:0, imgRed:new Image(), readyRed:false, cwR:0, chR:0};
+    let toSettle = 2; const maybeDone = () => { if (--toSettle <= 0) done(); };
+    rec.img.onload = () => { rec.cw = rec.img.naturalWidth/3; rec.ch = rec.img.naturalHeight/2; rec.ready = true; maybeDone(); };
+    rec.img.onerror = () => { maybeDone(); };
+    rec.img.src = url;
+    rec.imgRed.onload = () => { rec.cwR = rec.imgRed.naturalWidth/3; rec.chR = rec.imgRed.naturalHeight/2; rec.readyRed = true; maybeDone(); };
+    rec.imgRed.onerror = () => { maybeDone(); };
+    rec.imgRed.src = DUCK_SHEETS_RED[k];
+    SHEETS[k] = rec;
+  });
+  if (DUCK_SHEETS.length === 0) resolve();
+});
+
+function tileBloodied(nx,ny,curSec){
+  if(!tileState||curSec==null)return false;
+  const col=Math.floor(clamp(nx,0,0.999)*GRID_COLS), row=Math.floor(clamp(ny,0,0.999)*GRID_ROWS);
+  const t=tileState[row*GRID_COLS+col];
+  return t>=0 && (curSec-t)>=TILE_FADE*0.5;
+}
+
+const WATER = new Image(); WATER.okay = false;
+WATER.onload = () => { WATER.okay = true; };
+WATER.src = 'water.png';
+
+const WATER_RED = new Image(); WATER_RED.okay = false;
+WATER_RED.onload = () => { WATER_RED.okay = true; };
+WATER_RED.src = 'water_red.png';
+
+let READY_INDICES = [];
+function _rebuildReadyIndices(){ READY_INDICES = SHEETS.map((s,i)=>s.ready?i:-1).filter(i=>i>=0); }
+
+let SPRITE_SALT = 0;
+function spriteFor(i){
+  if (!READY_INDICES.length) return 0;
+  return READY_INDICES[(((i+1)*2654435761 + SPRITE_SALT)>>>0) % READY_INDICES.length];
+}
+
+const GRID_COLS = 220, GRID_ROWS = 138, TILE_FADE = 0.35, BLOOD_SPREAD_SEC = 130;
+let bloodCanvas = null, bloodCtx = null, bloodAW = 0, bloodAH = 0;
+let tileState = null;
+let pendingTiles = [];
+function coverFit(iw, ih, aw, ah, over) {
+  const s = Math.max(aw / iw, ah / ih) * (over || 1);
+  return { s, dw: iw * s, dh: ih * s, dx: (aw - iw * s) / 2, dy: (ah - ih * s) / 2 };
+}
+function resetBlood(aw, ah) {
+  bloodAW = aw; bloodAH = ah;
+  const dpr = window.devicePixelRatio || 1;
+  bloodCanvas = document.createElement('canvas');
+  bloodCanvas.width = Math.max(1, Math.round(aw * dpr));
+  bloodCanvas.height = Math.max(1, Math.round(ah * dpr));
+  bloodCtx = bloodCanvas.getContext('2d');
+  bloodCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  tileState = new Float32Array(GRID_COLS * GRID_ROWS).fill(-1);
+  pendingTiles = [];
+  STATE.bloodFinaleTriggered = false;
+}
+function tileRectLocal(col, row, aw, ah) {
+  const x0 = Math.round(col / GRID_COLS * aw), x1 = Math.round((col + 1) / GRID_COLS * aw);
+  const y0 = Math.round(row / GRID_ROWS * ah), y1 = Math.round((row + 1) / GRID_ROWS * ah);
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+function drawRedTile(ctx2, col, row, aw, ah, alpha, driftX, driftY) {
+  if (!WATER_RED.okay) return;
+  const rt = tileRectLocal(col, row, aw, ah);
+  const fit = coverFit(WATER_RED.naturalWidth, WATER_RED.naturalHeight, aw, ah, 1.16);
+  const dx = fit.dx + (driftX || 0), dy = fit.dy + (driftY || 0);
+  const sx = (rt.x - dx) / fit.s, sy = (rt.y - dy) / fit.s;
+  const sw = rt.w / fit.s, sh = rt.h / fit.s;
+  ctx2.save(); ctx2.globalAlpha = alpha;
+  ctx2.drawImage(WATER_RED, sx, sy, sw, sh, rt.x, rt.y, rt.w + 0.75, rt.h + 0.75);
+  ctx2.restore();
+}
+
+function triggerBloodAt(nx, ny, curSec) {
+  if (!tileState) return;
+  const aw = bloodAW, ah = bloodAH;
+  const ex = nx * aw, ey = ny * ah;
+  const speed = Math.hypot(aw, ah) / BLOOD_SPREAD_SEC;
+  const seed = Math.random() * 6.283, seed2 = Math.random() * 6.283, seed3 = Math.random() * 6.283;
+  const w1 = 0.28 + Math.random() * 0.15, w2 = 0.16 + Math.random() * 0.12, w3 = 0.1 + Math.random() * 0.1;
+  for (let row = 0; row < GRID_ROWS; row++) {
+    const tcy = (row + 0.5) / GRID_ROWS * ah;
+    for (let col = 0; col < GRID_COLS; col++) {
+      const idx = row * GRID_COLS + col;
+      const tcx = (col + 0.5) / GRID_COLS * aw;
+      const dx = tcx - ex, dy = tcy - ey;
+      const d = Math.hypot(dx, dy);
+      const ang = Math.atan2(dy, dx);
+      const warp = 1 + w1*Math.sin(ang*3+seed) + w2*Math.sin(ang*7+seed2) + w3*Math.sin(ang*13+seed3);
+      const dEff = d / Math.max(0.4, warp);
+      const candidate = curSec + dEff / speed + Math.random() * 0.06;
+      if (tileState[idx] === -1) { tileState[idx] = candidate; pendingTiles.push(idx); }
+      else if (candidate < tileState[idx]) { tileState[idx] = candidate; }
+    }
+  }
+}
+
+function triggerAllRemaining(curSec, spreadWindow, fromX, fromY) {
+  if (!tileState) return;
+  const aw = bloodAW, ah = bloodAH;
+  const ex = (fromX != null ? fromX : 0.5) * aw, ey = (fromY != null ? fromY : 0.5) * ah;
+  const maxD = Math.hypot(aw, ah);
+  for (let idx = 0; idx < tileState.length; idx++) {
+    if (tileState[idx] !== -1) continue;
+    const col = idx % GRID_COLS, row = (idx / GRID_COLS) | 0;
+    const tcx = (col + 0.5) / GRID_COLS * aw, tcy = (row + 0.5) / GRID_ROWS * ah;
+    const d = Math.hypot(tcx - ex, tcy - ey);
+    tileState[idx] = curSec + (d / maxD) * spreadWindow + Math.random() * 0.15;
+    pendingTiles.push(idx);
+  }
+}
+function nameAbove(x,y,r,name,win,isDead){
+  const fs=win?Math.max(16,Math.min(r*1.3,30)):Math.max(10,Math.min(r*0.85,17));
+  ctx.save();ctx.font=win?`700 ${fs}px Anton, sans-serif`:`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const t=shortLabel(name);ctx.lineWidth=Math.max(2.5,fs*0.4);ctx.strokeStyle=isDead?'rgba(6,15,20,.55)':'rgba(6,15,20,.9)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
+  ctx.fillStyle=win?'#ffd76b':(isDead?'rgba(255,255,255,.42)':'#ffffff');ctx.fillText(t,x,y);ctx.restore();}
+
+function drawFighter(x,y,r,i,pose,facing,win,hp,isDead,simple,bloodied,showHp){
+  const idx=spriteFor(i), sh=SHEETS[idx];
+  if(!sh||!sh.ready){
+    if(isDead) drawDuckGhost(x,y,r,STATE.plan.meta[i].nm,STATE.plan.meta[i].col,simple);
+    else drawDuck(x,y,r,STATE.plan.meta[i].nm,win,STATE.plan.meta[i].col,weaponAt(STATE.plan,i,0),facing,hp,simple);
+    return;
+  }
+  const useRed=!!(bloodied && sh.readyRed);
+  const cell=POSE_CELL[pose]||POSE_CELL.idle, cw=useRed?sh.cwR:sh.cw, ch=useRed?sh.chR:sh.ch, box=r*2.7;
+  const atlas=useRed?sh.imgRed:sh.img;
+  ctx.save();
+  ctx.globalAlpha=.16;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.95,r*1.25,r*0.42,0,0,6.283);ctx.fill();ctx.globalAlpha=1;
+  if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=24;}
+  if(isDead)ctx.globalAlpha=.82;
+  ctx.translate(x,y);
+  if(facing<0)ctx.scale(-1,1);
+  ctx.drawImage(atlas, cell[0]*cw, cell[1]*ch, cw, ch, -box/2, -box/2 - r*0.15, box, box);
+  ctx.restore();
+  // HP bars ONLY exist once the final duel has begun (showHp). Out in the
+  // melee there are no bars at all — kills there are a one-shot or a two-beat
+  // exchange, so there's no bar to drain, and it strips a lot of tiny UI
+  // clutter at high duck counts. Bars appearing IS the signal that the real
+  // duel has started.
+  if(showHp && !isDead && hp<0.999) drawHpBar(x,y,r,hp);
+  if(!win) nameAbove(x, Math.max(16, y - r*1.9), r, STATE.plan.meta[i].nm, win, isDead);
+}
+
+// Dedicated final-duel window, in seconds. Declared here because
+// battleLength() below builds its total from it — a `const` further down
+// the file would sit in the temporal dead zone if anything ever called
+// battleLength during module load.
+const FINAL_SHOWDOWN_SEC = 10;
+function battleLength(n){
+  // Scale from how many eliminations actually have to happen, not flat tiers.
+  // Flat tiers gave a 3-duck fight the same 40s as a 20-duck fight — but with
+  // one elimination to fill it, that's ~30 seconds of ducks milling around
+  // doing nothing. Clamped so tiny fights still breathe and huge ones cap out.
+  const elims = Math.max(0, n - 2);
+  const pre = Math.min(60, Math.max(4, elims * 1.6));
+  return Math.round(pre + FINAL_SHOWDOWN_SEC);
+}
+
+function planFight(names,seed){
+  SPRITE_SALT = cyrb128(seed)[0];
+  const rng=rngFromSeed(seed), n=names.length;
+  // Separate seeded stream for purely-cosmetic combat flavour (one-shot vs
+  // back-and-forth). Kept OFF the main `rng` on purpose: that one's draw order
+  // determines the actual winner, so consuming from it here would change
+  // outcomes. Seeded (not Math.random) so replays stay bit-identical.
+  const exchangeRng = rngFromSeed(seed + "\u241Fexchange");
+  const idx=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const winner=idx[n-1], elimOrder=idx.slice(0,n-1);
+  const order=[winner,...elimOrder.slice().reverse()].map(i=>({i,nm:names[i]}));
+  const RR=Math.max(0.012,Math.min(0.05,0.36/Math.sqrt(n)));
+  const density=Math.max(1,n/15);
+  const speedScale=Math.min(1,1/Math.sqrt(density));
+  const jitScale=Math.min(1,1/density);
+  const SPEED=0.34*Math.max(0.22,speedScale),dt=1/60,KILL=RR*1.7,MARGIN=RR*1.1,MINK=(n<=8?6:16),JIT=0.5*Math.max(0.10,jitScale);
+  // Field size at which survivors start drifting toward centre, and how hard.
+  // Matches the camera's focus threshold so the two work together.
+  const CONVERGE_AT = 14, CONVERGE_PULL = 0.30, CONVERGE_RING = 0.32;
+  const MHITS = n<=40 ? 3 : (n<=120 ? 2 : 1);
+  const HCOOL = 10;
+
+  const FORCE_AFTER = Math.max(3, Math.floor(3200/Math.max(1,n-1)));
+  const px=[],py=[],ang=[],wep=[];
+  for(let i=0;i<n;i++){px[i]=MARGIN+rng()*(1-2*MARGIN);py[i]=MARGIN+rng()*(1-2*MARGIN);ang[i]=rng()*6.283;wep[i]=WEAPONS[Math.floor(rng()*WEAPONS.length)];}
+  const meta=names.map((nm,i)=>({nm,col:DUCKPAL[i%DUCKPAL.length],weapon:wep[i]}));
+  const npick=0;
+  const pickups=[];
+  for(let k=0;k<npick;k++){pickups.push({x:0.1+rng()*0.8,y:0.12+rng()*0.76,weapon:WEAPONS[Math.floor(rng()*WEAPONS.length)],takenStep:Infinity});}
+  const weaponBreaks=Array.from({length:n},()=>[]);
+  const hpBreaks=Array.from({length:n},()=>[]);
+  const dead=new Array(n).fill(false), deathStep=new Array(n).fill(Infinity), hp=new Array(n).fill(1);
+  const frames=[], events=[]; let nv=0,alive=n,step=0,duelStart=-1,lastClash=-999,vHits=0,lastHit=-999,curVictim=-2,victimStart=0,retreatUntil=-1,duelHitsL=null,duelHitsW=null,duelTarget=null,duelK=0,duelIdx=0,duelClashN=0; const MAX=60*90;
+  while(alive>1&&step<MAX){
+    const victim=nv<elimOrder.length?elimOrder[nv]:-1; let target=-1;
+    if(victim!==curVictim){curVictim=victim;victimStart=step;}
+    if(alive===2){
+      if(duelStart<0){duelStart=step;
+
+        duelK=4+Math.floor(rng()*7);
+        const winEnd=0.05+rng()*0.50;
+        let a=[],b=[];
+        for(let kk=0;kk<duelK;kk++){
+          let av=0.15+rng()*1.2, bv=0.15+rng()*1.2;
+          if(rng()<0.22)av*=1.6+rng()*0.8;
+          if(rng()<0.22)bv*=1.6+rng()*0.8;
+          a.push(av);b.push(bv);
+        }
+
+        duelTarget=new Array(duelK);
+        for(let kk=0;kk<duelK;kk++)duelTarget[kk]=(b[kk]>a[kk])?'winner':'victim';
+        duelTarget[duelK-1]='victim';
+        let lsum=0,wsum=0;
+        for(let kk=0;kk<duelK;kk++){if(duelTarget[kk]==='victim')lsum+=a[kk];else wsum+=b[kk];}
+        duelHitsL=new Array(duelK).fill(0);
+        duelHitsW=new Array(duelK).fill(0);
+        for(let kk=0;kk<duelK;kk++){
+          if(duelTarget[kk]==='victim')duelHitsL[kk]=a[kk]/Math.max(0.0001,lsum);
+          else duelHitsW[kk]=b[kk]/Math.max(0.0001,wsum)*(1-winEnd);
+        }
+        duelIdx=0;
+      }
+      target=winner;
+    }
+    else if(victim>=0){let bd=1e9;for(let i=0;i<n;i++){if(i===victim||dead[i])continue;const dx=px[i]-px[victim],dy=py[i]-py[victim],d=dx*dx+dy*dy;if(d<bd){bd=d;target=i;}}}
+    for(let i=0;i<n;i++){if(dead[i])continue;ang[i]+=(rng()-0.5)*JIT;
+      let vx=Math.cos(ang[i])*SPEED,vy=Math.sin(ang[i])*SPEED;const duelPair=(alive===2)&&(i===victim||i===target);
+      if(i===victim&&target>=0){let dx=px[target]-px[i],dy=py[target]-py[i];if(duelPair&&step<retreatUntil){dx=-dx;dy=-dy;}const L=Math.hypot(dx,dy)||1;const k=duelPair?0.5:0.4;vx=vx*(1-k)+dx/L*SPEED*k;vy=vy*(1-k)+dy/L*SPEED*k;ang[i]=Math.atan2(vy,vx);}
+      else if(i===target&&victim>=0){let dx=px[victim]-px[i],dy=py[victim]-py[i];if(duelPair&&step<retreatUntil){dx=-dx;dy=-dy;}const L=Math.hypot(dx,dy)||1;const k=duelPair?0.45:0.18;vx=vx*(1-k)+dx/L*SPEED*k;vy=vy*(1-k)+dy/L*SPEED*k;ang[i]=Math.atan2(vy,vx);}
+      // ── late-game convergence ────────────────────────────────────────────
+      // Once the field thins to CONVERGE_AT, survivors drift toward the middle
+      // of the pond. Without this the camera zooms in for the endgame while
+      // stragglers are still scattered at the edges — so ducks get killed
+      // completely off-screen, which looks broken. Pulling them in means the
+      // action the camera is framing is actually the action that's happening.
+      // Strength ramps in gradually so it reads as the fight closing in rather
+      // than everyone suddenly teleporting to the centre.
+      if(alive<=CONVERGE_AT && alive>2){
+        const cdx=0.5-px[i], cdy=0.5-py[i];
+        const cl=Math.hypot(cdx,cdy)||1;
+        // Only pull while OUTSIDE the gather ring. Once a duck is inside it,
+        // stop pulling entirely — a constant pull keeps squeezing until every
+        // survivor is piled on the same pixel, which is exactly what made the
+        // final eight unreadable. This gathers them near the middle and then
+        // lets them mill about normally inside that space.
+        if(cl > CONVERGE_RING){
+          const pull=CONVERGE_PULL*(1-(alive-3)/Math.max(1,CONVERGE_AT-3));
+          vx=vx*(1-pull)+(cdx/cl)*SPEED*pull;
+          vy=vy*(1-pull)+(cdy/cl)*SPEED*pull;
+          ang[i]=Math.atan2(vy,vx);
+        }
+      }
+      const s=Math.hypot(vx,vy)||1;vx=vx/s*SPEED;vy=vy/s*SPEED;px[i]+=vx*dt;py[i]+=vy*dt;
+      if(px[i]<MARGIN){px[i]=MARGIN;ang[i]=Math.PI-ang[i];}if(px[i]>1-MARGIN){px[i]=1-MARGIN;ang[i]=Math.PI-ang[i];}
+      if(py[i]<MARGIN){py[i]=MARGIN;ang[i]=-ang[i];}if(py[i]>1-MARGIN){py[i]=1-MARGIN;ang[i]=-ang[i];}
+      for(const p of pickups){if(step<p.takenStep){const dx=px[i]-p.x,dy=py[i]-p.y;if(dx*dx+dy*dy<(RR*1.7)*(RR*1.7)){p.takenStep=step;wep[i]=p.weapon;weaponBreaks[i].push({step,weapon:p.weapon});}}}
+    }
+    if(victim>=0&&target>=0&&step>MINK){const dx=px[victim]-px[target],dy=py[victim]-py[target];const touch=Math.hypot(dx,dy)<KILL;const L=Math.hypot(dx,dy)||1;
+      if(alive>2){
+        // ── melee exchange ──────────────────────────────────────────────────
+        // No HP bars out here (they only appear for the final two), so kills
+        // don't need a multi-hit bar to drain — each elimination is either a
+        // clean one-shot or a short back-and-forth. Coin-flipped per victim:
+        //   ~50%: winner slashes, victim dies.
+        //   ~50%: VICTIM swings first and connects, then the winner answers
+        //         and kills. This is the only place the doomed duck ever gets
+        //         to swing back — previously the victim never struck at all.
+        const overdue = step-victimStart > FORCE_AFTER;
+        if((touch&&step-lastHit>HCOOL) || overdue){lastHit=step;
+          const ex=(px[victim]+px[target])/2,ey=(py[victim]+py[target])/2;
+          if(vHits===0 && !overdue && exchangeRng()<0.5){
+            // Beat 1 of a two-beat exchange: the victim lands one on the
+            // winner. Connects for real (impact + hit pose) so it doesn't
+            // read as a whiff — there's just no HP bar to show for it.
+            vHits=1;
+            events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[nv%SPARKWORDS.length],k:victim,v:target});
+            ang[victim]=Math.atan2(dy/L,dx/L);ang[target]=Math.atan2(-dy/L,-dx/L);
+          } else {
+            // Killing blow — either the clean one-shot, or beat 2 answering
+            // the victim's swing above.
+            vHits=0;
+            events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:target,v:victim});
+            dead[victim]=true;deathStep[victim]=step;nv++;alive--;
+            ang[target]=Math.atan2(-dy/L,-dx/L);
+          }}
+      } else {
+        if(touch&&step-lastClash>26){lastClash=step;
+          const iL=Math.min(duelIdx,duelK-1);
+          const isVictimTarget=duelTarget?duelTarget[iL]==='victim':true;
+          const target=isVictimTarget?victim:winner, striker=isVictimTarget?winner:victim;
+          duelIdx++;
+          const dHit=isVictimTarget?(duelHitsL?duelHitsL[iL]:0.17):(duelHitsW?duelHitsW[iL]:0.09);
+          if(isVictimTarget)hp[victim]=Math.max(0,hp[victim]-dHit);
+          else hp[winner]=Math.max(0.03,hp[winner]-dHit);
+          hpBreaks[target].push({step,hp:hp[target]});
+          const ex=(px[victim]+px[winner])/2,ey=(py[victim]+py[winner])/2;
+          const lethal = isVictimTarget && (duelIdx>=duelK || hp[victim]<=0.0001);
+          duelClashN++;
+          if(lethal){hp[victim]=0;hpBreaks[victim].push({step,hp:0});events.push({step,x:ex,y:ey,kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:victim});dead[victim]=true;deathStep[victim]=step;nv++;alive--;}
+          else{events.push({step,x:ex,y:ey,kill:false,word:SPARKWORDS[hpBreaks[victim].length%SPARKWORDS.length],k:striker,v:target});ang[victim]=Math.atan2(dy/L,dx/L);ang[winner]=Math.atan2(-dy/L,-dx/L);retreatUntil=step+18;}}
+      }}
+    const snap=new Float32Array(2*n);for(let i=0;i<n;i++){snap[2*i]=px[i];snap[2*i+1]=py[i];}frames.push(snap);step++;
+  }
+  while(nv<elimOrder.length){const v=elimOrder[nv];if(!dead[v]){dead[v]=true;deathStep[v]=step;events.push({step,x:px[v],y:py[v],kill:true,word:HITWORDS[nv%HITWORDS.length],k:winner,v:v});}nv++;}
+  let finalKillStep=-1;for(const e of events){if(e.kill&&e.step>finalKillStep)finalKillStep=e.step;}
+  // Step at which only FOCUS_AT ducks remain — the camera starts easing in
+  // from here, so the late game reads clearly instead of staying wide.
+  const FOCUS_AT = 8;
+  let focusStep = -1;
+  if(n > FOCUS_AT){
+    const deaths = deathStep.filter(s=>isFinite(s)).sort((a,b)=>a-b);
+    const needed = n - FOCUS_AT;              // deaths required to reach 8 alive
+    if(deaths.length >= needed) focusStep = deaths[needed-1];
+  }
+  return {frames,S:frames.length,events,deathStep,meta,order,winner,n,RR,hpBreaks,pickups,weaponBreaks,finalKillStep,focusStep,
+    duelStart:duelStart<0?frames.length:duelStart,duelDucks:[winner,(elimOrder.length?elimOrder[elimOrder.length-1]:winner)],durSec:battleLength(n)};
+}
+
+const STATE={names:[],seed:'',plan:null,raf:null,playDur:14,remain:null};
+
+let PLAY_GEN=0;
+
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+function fitCanvas(){const shell=cv.parentElement;const w=shell.clientWidth||shell.getBoundingClientRect().width;
+  const h=Math.max(360,Math.min(780,Math.round(window.innerHeight*0.74)));
+  const dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);return {w,h};}
+let VIEW=fitCanvas();
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function shortLabel(s){return s.length>16?s.slice(0,15)+'…':s;}
+function eRng(step){let x=(step*2654435761)>>>0;return function(){x^=x<<13;x^=x>>>17;x^=x<<5;x>>>=0;return x/4294967296;};}
+function hpAt(P,i,stepF){const b=P.hpBreaks[i];let v=1;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)v=b[k].hp;else break;}return v;}
+
+function hpAtSmooth(P,i,curSec){
+  const b=P.hpBreaks[i];const EASE=0.3;let prev=1;
+  for(let k=0;k<b.length;k++){
+    const t=stepToPlaySec(b[k].step);
+    if(curSec<t)return prev;
+    if(curSec<t+EASE){const p=(curSec-t)/EASE;return prev+(b[k].hp-prev)*p;}
+    prev=b[k].hp;
+  }
+  return prev;
+}
+function weaponAt(P,i,stepF){const b=P.weaponBreaks[i];let w=P.meta[i].weapon;for(let k=0;k<b.length;k++){if(b[k].step<=stepF)w=b[k].weapon;else break;}return w;}
+
+function drawWater(ax,ay,aw,ah,clock,curSec){
+  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+
+  const t=(clock||0)*0.001;
+  const driftX=Math.sin(t*0.17)*aw*0.036+Math.sin(t*0.41)*aw*0.015;
+  const driftY=Math.cos(t*0.14)*ah*0.028+Math.sin(t*0.33)*ah*0.012;
+  if(WATER.okay){
+    const fit=coverFit(WATER.naturalWidth,WATER.naturalHeight,aw,ah,1.16);
+    ctx.drawImage(WATER,ax+fit.dx+driftX,ay+fit.dy+driftY,fit.dw,fit.dh);
+  } else {
+    const g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,'#155066');g.addColorStop(1,'#0b2734');
+    ctx.fillStyle=g;ctx.fillRect(ax,ay,aw,ah);
+    ctx.strokeStyle='rgba(180,230,240,.08)';ctx.lineWidth=2;
+    for(let yy=ay+18;yy<ay+ah;yy+=24){ctx.beginPath();for(let xx=ax;xx<=ax+aw;xx+=10){const off=Math.sin(xx*0.03+clock*0.0022+yy*0.12)*3;xx===ax?ctx.moveTo(xx,yy+off):ctx.lineTo(xx,yy+off);}ctx.stroke();}
+  }
+
+  if(curSec!=null && bloodCanvas && bloodAW===aw && bloodAH===ah){
+    ctx.drawImage(bloodCanvas,0,0,bloodCanvas.width,bloodCanvas.height,ax,ay,aw,ah);
+    if(pendingTiles.length){
+      const still=[];
+      for(const idx of pendingTiles){
+        const t=tileState[idx];const elapsed=curSec-t;
+        if(elapsed<0){still.push(idx);continue;}
+        const col=idx%GRID_COLS,row=(idx/GRID_COLS)|0;
+        if(elapsed>=TILE_FADE){drawRedTile(bloodCtx,col,row,aw,ah,1);}
+        else{ctx.save();ctx.translate(ax,ay);drawRedTile(ctx,col,row,aw,ah,elapsed/TILE_FADE,driftX,driftY);ctx.restore();still.push(idx);}
+      }
+      pendingTiles=still;
+    }
+  }
+  ctx.restore();}
+function drawBarbedWire(ax,ay,aw,ah){
+  ctx.save();ctx.strokeStyle='rgba(200,210,220,.5)';ctx.lineWidth=2;roundRect(ax,ay,aw,ah,18);ctx.stroke();
+  ctx.strokeStyle='rgba(200,210,220,.55)';ctx.lineWidth=1.5;const step=26;
+  function barb(x,y){ctx.beginPath();ctx.moveTo(x-4,y-4);ctx.lineTo(x+4,y+4);ctx.moveTo(x-4,y+4);ctx.lineTo(x+4,y-4);ctx.stroke();}
+  for(let x=ax+18;x<ax+aw-14;x+=step){barb(x,ay+2);barb(x,ay+ah-2);}
+  for(let y=ay+18;y<ay+ah-14;y+=step){barb(ax+2,y);barb(ax+aw-2,y);}
+  ctx.restore();}
+function drawPickup(x,y,r,type,clock){const bob=Math.sin(clock*0.004+x*40)*r*0.18;
+  ctx.save();ctx.translate(x,y+bob);ctx.globalAlpha=.32;ctx.fillStyle='#0d2f3d';ctx.beginPath();ctx.ellipse(0,r*0.55,r*2.1,r*0.6,0,0,6.283);ctx.fill();
+  ctx.strokeStyle='rgba(180,230,240,.22)';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(0,r*0.55,r*2.3,r*0.66,0,0,6.283);ctx.stroke();ctx.restore();
+  ctx.save();ctx.translate(x,y+bob);ctx.rotate(0.25);ctx.globalAlpha=.95;drawWeapon(r*1.25,type);ctx.restore();}
+function drawWeapon(r,type){ctx.save();ctx.translate(r*1.2,-r*0.15);ctx.rotate(-0.5);ctx.lineCap='round';ctx.lineJoin='round';
+  if(type==='sword'){ctx.strokeStyle='#e7eef4';ctx.lineWidth=r*0.22;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(r*1.7,-r*1.7);ctx.stroke();
+    ctx.strokeStyle='#c8a24a';ctx.lineWidth=r*0.34;ctx.beginPath();ctx.moveTo(-r*0.22,r*0.05);ctx.lineTo(r*0.22,-r*0.28);ctx.stroke();
+    ctx.strokeStyle='#3a2c15';ctx.lineWidth=r*0.26;ctx.beginPath();ctx.moveTo(-r*0.35,r*0.35);ctx.lineTo(-r*0.05,r*0.05);ctx.stroke();}
+  else if(type==='dagger'){ctx.strokeStyle='#dfe7ee';ctx.lineWidth=r*0.2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(r*0.95,-r*0.95);ctx.stroke();
+    ctx.strokeStyle='#8a6d3b';ctx.lineWidth=r*0.28;ctx.beginPath();ctx.moveTo(-r*0.15,r*0.15);ctx.lineTo(r*0.15,-r*0.15);ctx.stroke();}
+  else if(type==='ballchain'){ctx.strokeStyle='#5a4632';ctx.lineWidth=r*0.22;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(r*0.7,-r*0.7);ctx.stroke();
+    ctx.strokeStyle='#9aa3ab';ctx.lineWidth=r*0.12;ctx.beginPath();ctx.moveTo(r*0.7,-r*0.7);ctx.lineTo(r*1.25,-r*1.05);ctx.stroke();
+    ctx.save();ctx.translate(r*1.45,-r*1.2);ctx.fillStyle='#8b939b';ctx.beginPath();ctx.arc(0,0,r*0.5,0,6.283);ctx.fill();
+    ctx.fillStyle='#c3ccd3';for(let i=0;i<8;i++){const a=i/8*6.283;ctx.beginPath();ctx.moveTo(Math.cos(a)*r*0.4,Math.sin(a)*r*0.4);ctx.lineTo(Math.cos(a)*r*0.85,Math.sin(a)*r*0.85);ctx.lineTo(Math.cos(a+0.4)*r*0.4,Math.sin(a+0.4)*r*0.4);ctx.closePath();ctx.fill();}ctx.restore();}
+  else if(type==='cleaver'){ctx.strokeStyle='#3a2c15';ctx.lineWidth=r*0.26;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(r*0.55,-r*0.55);ctx.stroke();
+    ctx.save();ctx.translate(r*0.75,-r*0.75);ctx.rotate(-0.5);ctx.fillStyle='#c3ccd3';ctx.fillRect(-r*0.15,-r*0.85,r*0.95,r*1.1);
+    ctx.fillStyle='#8b939b';ctx.fillRect(-r*0.15,-r*0.85,r*0.2,r*1.1);ctx.restore();}
+  else if(type==='waterpistol'){ctx.save();ctx.rotate(0.35);ctx.fillStyle='#ff8a3c';ctx.fillRect(-r*0.1,-r*0.35,r*1.2,r*0.7);
+    ctx.fillStyle='#ffbe5c';ctx.fillRect(-r*0.1,r*0.05,r*0.45,r*0.9);
+    ctx.fillStyle='#4bb8c4';ctx.fillRect(r*1.05,-r*0.28,r*0.55,r*0.56);
+    ctx.fillStyle='#2b7f8a';ctx.beginPath();ctx.arc(r*1.6,0,r*0.2,0,6.283);ctx.fill();ctx.restore();}
+  else { ctx.save();ctx.rotate(0.2);ctx.fillStyle='#5a3d22';ctx.fillRect(-r*0.5,-r*0.16,r*1.5,r*0.34);
+    ctx.strokeStyle='#3a2814';ctx.lineWidth=r*0.28;ctx.beginPath();ctx.moveTo(-r*0.45,r*0.05);ctx.lineTo(-r*0.9,r*0.6);ctx.stroke();
+    ctx.fillStyle='#9aa3ab';ctx.beginPath();ctx.moveTo(r*1.0,-r*0.16);ctx.lineTo(r*1.7,-r*0.5);ctx.lineTo(r*1.7,r*0.5);ctx.lineTo(r*1.0,r*0.16);ctx.closePath();ctx.fill();ctx.restore();}
+  ctx.restore();}
+function duckBody(r,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(0,0,r*1.25,r*0.82,0,0,6.283);ctx.fill();
+  ctx.beginPath();ctx.moveTo(-r*1.05,-r*0.05);ctx.lineTo(-r*1.7,-r*0.5);ctx.lineTo(-r*1.0,-r*0.5);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.ellipse(r*0.55,-r*0.35,r*0.5,r*0.62,0,0,6.283);ctx.fill();
+  const hx=r*0.95,hy=-r*0.85,hr=r*0.6;ctx.beginPath();ctx.arc(hx,hy,hr,0,6.283);ctx.fill();
+  ctx.fillStyle='#e8862a';ctx.beginPath();ctx.moveTo(hx+hr*0.45,hy-hr*0.05);ctx.lineTo(hx+hr*1.55,hy-hr*0.12);ctx.lineTo(hx+hr*1.55,hy+hr*0.3);ctx.lineTo(hx+hr*0.45,hy+hr*0.4);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#12181f';ctx.beginPath();ctx.arc(hx+hr*0.15,hy-hr*0.12,Math.max(1,hr*0.17),0,6.283);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,.13)';ctx.beginPath();ctx.ellipse(-r*0.1,r*0.06,r*0.72,r*0.42,0.2,0,6.283);ctx.fill();return {hx,hy,hr};}
+function labelTag(x,y,name,win){const fs=Math.max(8,Math.min(12,VIEW.w*0.008));ctx.font=`600 ${fs}px Inter, sans-serif`;ctx.textBaseline='middle';
+  const t=shortLabel(name),tw=ctx.measureText(t).width;
+  ctx.fillStyle='rgba(6,15,20,.72)';roundRect(x-tw/2-5,y-fs*0.85,tw+10,fs*1.7,5);ctx.fill();
+  ctx.fillStyle=win?'#ffd76b':'#e9eef2';ctx.textAlign='left';ctx.fillText(t,x-tw/2,y+1);}
+function bodyLabel(x,y,r,name,win){const fs=Math.max(9,Math.min(r*0.9,18));ctx.save();ctx.font=`700 ${fs}px Inter, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const t=shortLabel(name);ctx.lineWidth=Math.max(2,fs*0.34);ctx.strokeStyle='rgba(6,15,20,.85)';ctx.lineJoin='round';ctx.strokeText(t,x,y);
+  ctx.fillStyle=win?'#ffd76b':'#ffffff';ctx.fillText(t,x,y);ctx.restore();}
+function drawHpBar(x,y,r,hp){const w=r*2.4,h=Math.max(2,r*0.34),bx=x-w/2,by=y+r*1.15;
+  ctx.fillStyle='rgba(0,0,0,.5)';roundRect(bx-1,by-1,w+2,h+2,2);ctx.fill();
+  const col=hp>0.5?'#5cc46a':hp>0.25?'#e0b23a':'#d64b34';ctx.fillStyle=col;roundRect(bx,by,w*clamp(hp,0,1),h,2);ctx.fill();}
+function drawDuck(x,y,r,label,win,color,weapon,facing,hp,simple){
+  ctx.save();ctx.globalAlpha=.18;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(x,y+r*0.9,r*1.2,r*0.4,0,0,6.283);ctx.fill();ctx.restore();
+  if(simple){ctx.save();if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=14;}ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,6.283);ctx.fill();
+    ctx.fillStyle='#e8862a';ctx.beginPath();ctx.arc(x+r*0.7,y-r*0.2,r*0.32,0,6.283);ctx.fill();ctx.restore();}
+  else{ctx.save();ctx.translate(x,y);ctx.scale(facing,1);if(win){ctx.shadowColor='rgba(255,215,107,.9)';ctx.shadowBlur=22;}
+    drawWeapon(r,weapon);const {hx,hy,hr}=duckBody(r,color);
+    if(win){ctx.fillStyle='#ffd76b';const cw=r*1.3,cy=hy-hr-r*0.5;ctx.beginPath();ctx.moveTo(hx-cw/2,cy+r*0.5);ctx.lineTo(hx-cw/2,cy);ctx.lineTo(hx-cw/4,cy+r*0.28);ctx.lineTo(hx,cy-r*0.15);ctx.lineTo(hx+cw/4,cy+r*0.28);ctx.lineTo(hx+cw/2,cy);ctx.lineTo(hx+cw/2,cy+r*0.5);ctx.closePath();ctx.fill();}
+    ctx.restore();}
+  if(hp<0.999)drawHpBar(x,y,r,hp);
+  bodyLabel(x,y-r*0.05,r,label,win);}
+function drawDuckGhost(x,y,r,label,color,simple){
+  ctx.save();ctx.globalAlpha=.34;
+  if(simple){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r*0.9,0,6.283);ctx.fill();}
+  else{ctx.translate(x,y);ctx.scale(1,-1);ctx.translate(-x,-y);duckBody(r*0.9,color);}
+  ctx.restore();
+
+  ctx.save();ctx.globalAlpha=.6;ctx.strokeStyle='#0c141b';ctx.lineWidth=Math.max(1,r*0.14);const ex=x+r*0.7,ey=y-r*0.2,s=r*0.22;
+  ctx.beginPath();ctx.moveTo(ex-s,ey-s);ctx.lineTo(ex+s,ey+s);ctx.moveTo(ex+s,ey-s);ctx.lineTo(ex-s,ey+s);ctx.stroke();ctx.restore();
+
+  ctx.save();ctx.globalAlpha=.45;labelTag(x,y-r*1.5,label,false);ctx.restore();}
+function drawStain(x,y,r,step){const g=eRng(step);ctx.save();ctx.fillStyle='rgba(120,20,12,.42)';
+  for(let i=0;i<6;i++){const a=g()*6.283,d=g()*r*1.6,rr=r*(0.25+g()*0.5);ctx.beginPath();ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,rr,0,6.283);ctx.fill();}ctx.restore();}
+function drawSpark(x,y,r,p,word){ctx.save();ctx.globalAlpha=1-p;const rad=r*(0.4+p*1.4);ctx.strokeStyle='rgba(255,240,170,'+(1-p)+')';ctx.lineWidth=2.5;
+  for(let i=0;i<6;i++){const a=i/6*6.283+p;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*rad*0.4,y+Math.sin(a)*rad*0.4);ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad);ctx.stroke();}
+  if(word&&p<0.6){ctx.fillStyle='#fff3c0';ctx.font=`700 ${Math.min(r*0.42,22)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.8);}ctx.restore();}
+function drawHit(x,y,r,p){ctx.save();ctx.fillStyle='#b41e10';const g=eRng((x*97+y)|0);
+  for(let i=0;i<8;i++){const a=g()*6.283,sp=r*(1.5+g()*3),t=p*0.4;const dx=Math.cos(a)*sp*t,dy=Math.sin(a)*sp*t+r*5*t*t;ctx.globalAlpha=Math.max(0,1-p);ctx.beginPath();ctx.arc(x+dx,y+dy,r*0.18,0,6.283);ctx.fill();}ctx.restore();}
+function drawKill(x,y,r,p,word,step){const g=eRng(step);ctx.save();
+  const rad=r*(0.6+p*3.2);ctx.globalAlpha=1-p;ctx.strokeStyle='rgba(255,170,50,'+(1-p)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,rad,0,6.283);ctx.stroke();
+  ctx.fillStyle='rgba(255,120,40,'+(1-p)+')';ctx.beginPath();for(let i=0;i<16;i++){const a=i/16*6.283;const o=(i%2)?rad*0.45:rad*0.9;const px=x+Math.cos(a)*o,py=y+Math.sin(a)*o;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.fill();ctx.restore();
+  ctx.save();ctx.fillStyle='#b41e10';for(let i=0;i<20;i++){const a=g()*6.283,sp=r*(2+g()*5),t=p*0.55;const dx=Math.cos(a)*sp*t,dy=Math.sin(a)*sp*t+r*9*t*t;ctx.globalAlpha=Math.max(0,1-p*1.1);ctx.beginPath();ctx.arc(x+dx,y+dy,Math.max(0.6,r*0.2*(1-p)),0,6.283);ctx.fill();}ctx.restore();
+  if(word&&p<0.55){ctx.save();ctx.globalAlpha=1-p/0.55;ctx.fillStyle='#3a0d06';ctx.font=`700 ${Math.min(r*0.6,30)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(word,x,y-r*0.4);ctx.restore();}}
+function drawTimer(remain){if(remain==null)return;const {w}=VIEW;const s=Math.max(0,remain);const mm=Math.floor(s/60),ss=Math.floor(s%60);
+  const txt=`${mm}:${String(ss).padStart(2,'0')}`;ctx.save();ctx.font=`700 ${Math.max(15,w*0.022)}px 'JetBrains Mono', monospace`;ctx.textAlign='center';ctx.textBaseline='top';
+  const tw=ctx.measureText(txt).width;ctx.fillStyle='rgba(6,15,20,.66)';roundRect(w/2-tw/2-12,14,tw+24,26,7);ctx.fill();
+  ctx.fillStyle=s<=10?'#e0625a':'#e9eef2';ctx.fillText(txt,w/2,18);ctx.restore();}
+function drawShowdownBanner(p){const {w}=VIEW;ctx.save();ctx.globalAlpha=0.9*Math.min(1,p);
+  ctx.font=`700 ${Math.max(16,w*0.028)}px Anton, sans-serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=10;ctx.fillStyle='#ffd76b';
+  ctx.fillText('⚔️  FINAL SHOWDOWN  ⚔️',w/2,46);ctx.restore();}
+function drawWinnerTag(x,y,r,name){ctx.save();ctx.textAlign='center';
+  name=shortLabel(name);
+  const nameSize=Math.min(Math.max(20,r*1.25),34), ebSize=Math.min(Math.max(11,r*0.6),18);
+  let nameY=y-r*3.5, ebY=nameY-nameSize*0.95;
+  let boxTop=ebY-ebSize*1.2;
+  if(boxTop<16){const shift=16-boxTop;nameY+=shift;ebY+=shift;boxTop=16;}
+  ctx.font=`700 ${nameSize}px Anton, sans-serif`;
+  const tw=Math.min(Math.max(ctx.measureText(name).width,ctx.measureText('WINNER').width)+r*1.4, VIEW.w-24);
+  const boxH=nameY-boxTop+nameSize*0.35;
+  ctx.fillStyle='rgba(7,19,26,.78)';roundRect(x-tw/2,boxTop,tw,boxH,10);ctx.fill();
+  ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=8;ctx.fillStyle='#ffd76b';ctx.textBaseline='alphabetic';ctx.font=`700 ${ebSize}px Anton, sans-serif`;ctx.fillText('⚔️ WINNER ⚔️',x,ebY);
+  ctx.fillStyle='#fff';ctx.font=`700 ${nameSize}px Anton, sans-serif`;ctx.fillText(name,x,nameY);ctx.restore();}
+
+let lastRosterKey=-1;let lastFeedKey=-1;
+function updateRoster(stepF){const P=STATE.plan;const living=[],dead=[];
+  for(let i=0;i<P.n;i++){(stepF<P.deathStep[i]?living:dead).push(i);}
+  dead.sort((a,b)=>P.deathStep[a]-P.deathStep[b]);
+  const key=living.length;if(key===lastRosterKey&&stepF>0)return;lastRosterKey=key;
+  const el=document.getElementById('roster');const win=living.length===1?living[0]:-1;
+  let html=`<h4>🦆 ${living.length} alive</h4>`;
+  for(const i of living){html+=`<div class="ritem ${i===win?'win':''}"><span class="rdot" style="background:${P.meta[i].col}"></span><span class="rname">${escapeHtml(P.meta[i].nm)}</span></div>`;}
+  if(dead.length){html+=`<div class="rsep"></div>`;for(const i of dead){html+=`<div class="ritem dead"><span class="rdot" style="background:${P.meta[i].col}"></span><span class="rname">${escapeHtml(P.meta[i].nm)}</span></div>`;}}
+  el.innerHTML=html;}
+
+function drawEmptyArena(){
+  VIEW=fitCanvas();const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,performance.now(),0);
+}
+function renderScene(stepF,curSec,clock,finale,finalePhase){
+  const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock,curSec);
+  const n=P.n,S=P.S,a=Math.max(0,Math.min(S-1,Math.floor(stepF))),b=Math.min(S-1,a+1),m=stepF-a,fa=P.frames[a],fb=P.frames[b];
+  const simple=n>200;
+  if(finale && !STATE.bloodFinaleTriggered){STATE.bloodFinaleTriggered=true;triggerAllRemaining(curSec,1.2,fa[2*P.winner],fa[2*P.winner+1]);}
+  let zoom=1,cx=0.5,cy=0.5;
+  if(stepF>=P.duelStart){
+
+    const ramp=clamp((stepF-P.duelStart)/(0.7*60),0,1);
+    const nearEnd=clamp((stepF-(P.S-1-70))/70,0,1);
+    zoom=1+1.6*ramp+0.9*nearEnd;
+    const[d0,d1]=P.duelDucks;const mx=(fa[2*d0]+fa[2*d1])/2,my=(fa[2*d0+1]+fa[2*d1+1])/2;const half=0.5/zoom;cx=clamp(mx,half,1-half);cy=clamp(my,half,1-half);
+  }
+  else if(P.focusStep>=0 && stepF>=P.focusStep){
+    // Late game: once the field is down to ~8, ease the camera in and centre
+    // it on whoever's still alive. Deliberately NOT done earlier — with 70
+    // ducks and a kill every second, chasing the action would just be
+    // disorienting. Ramps to a modest zoom so the handoff into the duel
+    // camera above (which starts at 1x and ramps up) doesn't jump.
+    const fr=clamp((stepF-P.focusStep)/(2.5*60),0,1);
+    zoom=1+0.55*fr;
+    let sx=0,sy=0,cnt=0;
+    for(let i=0;i<n;i++){if(stepF<P.deathStep[i]){sx+=fa[2*i];sy+=fa[2*i+1];cnt++;}}
+    if(cnt>0){const half=0.5/zoom;cx=clamp(sx/cnt,half,1-half);cy=clamp(sy/cnt,half,1-half);}
+  }
+  const W2Sx=nx=>ax+aw*((nx-cx)*zoom+0.5), W2Sy=ny=>ay+ah*((ny-cy)*zoom+0.5);
+  const r=Math.max(6,P.RR*Math.min(aw,ah)*1.15)*zoom;
+  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+
+  for(const e of P.events){if(!e.kill)continue;const eSec=stepToPlaySec(e.step);if(curSec>=eSec+0.2){if(!e._blooded){e._blooded=true;triggerBloodAt(e.x,e.y,eSec+0.2);}}}
+
+  for(const p of P.pickups){if(stepF<p.takenStep)drawPickup(W2Sx(p.x),W2Sy(p.y),r,p.weapon,clock);}
+
+  const soleSurvivor=finalOne(stepF);
+  const pose=new Array(n).fill('idle');
+  const duelSet=new Set(P.duelDucks);
+
+  for(let i=0;i<n;i++){if(duelSet.has(i))continue;const b=P.hpBreaks[i];for(let k=0;k<b.length;k++){const t=stepToPlaySec(b[k].step);if(curSec>=t&&curSec<t+0.32){pose[i]='hit';break;}}}
+
+  const lockedFacing={};
+  for(const e of P.events){if(e.k==null)continue;const t=stepToPlaySec(e.step),d=curSec-t;
+    if(d>=0&&d<0.4)pose[e.k]='strike';else if(d>=-0.25&&d<0)pose[e.k]='windup';
+    if(e.v!=null&&d>=0&&d<0.35)pose[e.v]='hit';
+    if(d>=-0.25&&d<0.4){
+      const fe=P.frames[Math.max(0,Math.min(P.S-1,e.step))];
+      const ax=fe[2*e.k];const tx=(e.v!=null)?fe[2*e.v]:e.x;
+      lockedFacing[e.k]=(tx>=ax)?1:-1;
+    }}
+
+  for(let i=0;i<n;i++){if(stepF<P.deathStep[i])continue;drawFighter(W2Sx(fa[2*i]),W2Sy(fa[2*i+1]),r,i,'defeated',1,false,0,true,simple,tileBloodied(fa[2*i],fa[2*i+1],curSec));}
+
+  let alive=0;
+  for(let i=0;i<n;i++){if(stepF>=P.deathStep[i])continue;alive++;const x0=fa[2*i],y0=fa[2*i+1],x1=fb[2*i],y1=fb[2*i+1];
+    const X=W2Sx(x0+(x1-x0)*m),Y=W2Sy(y0+(y1-y0)*m),facing=(lockedFacing[i]!==undefined)?lockedFacing[i]:((x1-x0)>=0?1:-1);
+
+    const midSwing=(pose[i]==='strike'||pose[i]==='windup');
+    const isWin=(i===P.winner)&&(finale||soleSurvivor)&&!midSwing;
+    const ps=isWin?'victory':pose[i];
+    let hpShow=hpAtSmooth(P,i,curSec);
+    drawFighter(X,Y,r,i,ps,isWin?1:facing,isWin,hpShow,false,simple,tileBloodied(x0,y0,curSec),stepF>=P.duelStart);}
+
+  if(!finale){
+    for(const e of P.events){const eSec=stepToPlaySec(e.step);const dt=curSec-eSec;if(dt<0)continue;
+      const isFinalBlow=(e.kill && e.step===P.finalKillStep);
+      if(e.kill){
+        if(dt<0.55&&!isFinalBlow){
+          if(!e._sounded){e._sounded=true;playKillHit();}
+          drawKill(W2Sx(e.x),W2Sy(e.y),r*1.5,dt/0.55,e.word,e.step);
+        }
+      } else {
+        if(dt<0.5){
+          if(!e._sounded){e._sounded=true;playClash();}
+          drawSpark(W2Sx(e.x),W2Sy(e.y),r*1.4,dt/0.5,e.word);drawHit(W2Sx(e.x),W2Sy(e.y),r,dt/0.5);
+        }
+      }}
+  }
+  ctx.restore();
+  if(alive===2&&stepF>=P.duelStart)drawShowdownBanner(Math.min(1,(stepF-P.duelStart)/30));
+  if(finale){const wx=W2Sx(fa[2*P.winner]),wy=W2Sy(fa[2*P.winner+1]);drawWinnerTag(wx,wy,r,P.meta[P.winner].nm);}
+  drawTimer(finale?null:STATE.remain);
+  updateRoster(stepF);updateFeed(curSec);}
+function updateFeed(curSec){const P=STATE.plan;const shown=[];for(const e of P.events){if(e.kill&&stepToPlaySec(e.step)<=curSec)shown.push(e);}
+  const key=shown.length;if(key===lastFeedKey)return;lastFeedKey=key;
+  const el=document.getElementById('killfeed');let html='<h4>💀 Kill Feed</h4>';
+  const recent=shown.slice(-40).reverse();
+  for(const e of recent){const kk=(e.k!=null&&P.meta[e.k])?P.meta[e.k].nm:'—',vv=(e.v!=null&&P.meta[e.v])?P.meta[e.v].nm:'—';
+    html+=`<div class="kfitem"><span class="kk">${escapeHtml(kk)}</span><span class="kx">⚔</span><span class="kv">${escapeHtml(vv)}</span></div>`;}
+  el.innerHTML=html;}
+function finalOne(stepF){const P=STATE.plan;let c=0;for(let i=0;i<P.n;i++)if(stepF<P.deathStep[i])c++;return c<=1;}
+
+
+const SLOWMO_STEP_FRAC = 0.16, SLOWMO_SEC = 2.2;
+function _timeSplit(P){
+  const dS=P.duelStart,S=P.S;
+  if(dS<=4||S-dS<=4){return {preSec:0,duelSec:P.durSec};}
+  const duelSec=Math.min(FINAL_SHOWDOWN_SEC,P.durSec-4);
+  return {preSec:P.durSec-duelSec,duelSec};
+}
+function _timeMap(P){
+  const dS=P.duelStart,S=P.S;const {preSec,duelSec}=_timeSplit(P);
+  const hasDuel=(S-dS)>20;
+  const slowStep=hasDuel?dS+Math.floor((S-dS)*(1-SLOWMO_STEP_FRAC)):S-1;
+  const normalDuelSec=hasDuel?duelSec*(1-SLOWMO_STEP_FRAC):duelSec;
+  const timerEnd=preSec+normalDuelSec;
+  const mapEnd=timerEnd+(hasDuel?SLOWMO_SEC:0);
+
+  const totalEl=(P.finalKillStep!=null && P.finalKillStep>=0)?mapEnd+0.75:mapEnd;
+  return {dS,S,preSec,duelSec,hasDuel,slowStep,normalDuelSec,timerEnd,mapEnd,totalEl};
+}
+function stepToPlaySec(step){
+  const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
+  if(step<=dS)return preSec<=0?0:(step/Math.max(1,dS))*preSec;
+  if(step<=slowStep)return preSec+((step-dS)/Math.max(1,(slowStep-dS)))*(timerEnd-preSec);
+  return timerEnd+((step-slowStep)/Math.max(1,(S-1-slowStep)))*(mapEnd-timerEnd);
+}
+
+function dropIn(cb,myGen){const P=STATE.plan,DUR=1400,t0=performance.now();cancelAnimationFrame(STATE.raf);STATE.remain=null;lastRosterKey=-1;lastFeedKey=-1;
+  function frame(now){if(myGen!==PLAY_GEN)return;const p=Math.min(1,(now-t0)/DUR);renderDrop(p,now);if(p>=1){cb();return;}STATE.raf=requestAnimationFrame(frame);}
+  STATE.raf=requestAnimationFrame(frame);}
+function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
+  const n=P.n,f0=P.frames[0],r=Math.max(6,P.RR*Math.min(aw,ah)*1.15),simple=n>200;
+  const ease=t=>1-Math.pow(1-t,3);
+
+  P.pickups.forEach((pk,pi)=>{const tx=ax+pk.x*aw,ty=ay+pk.y*ah;
+    const delay=((pi*40503)%1000)/1000*0.3;const lp=clamp((p-delay)/(1-0.3),0,1);const e=ease(lp);
+    const Y=ty-(1-e)*(ah+ay+40);drawPickup(tx,Y,r,pk.weapon,clock);
+    const land=delay+(1-0.3),sa=p-land;if(sa>=0&&sa<0.14){const sp=sa/0.14;ctx.save();ctx.globalAlpha=(1-sp)*0.5;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.5,r*(0.5+sp*1.8),r*(0.2+sp*0.7),0,0,6.283);ctx.stroke();ctx.restore();}});
+  ctx.save();roundRect(ax,ay,aw,ah,18);ctx.clip();
+  for(let i=0;i<n;i++){const tx=ax+f0[2*i]*aw,ty=ay+f0[2*i+1]*ah;
+    const delay=((i*2654435761>>>0)%1000)/1000*0.45;const lp=clamp((p-delay)/(1-0.45),0,1);const e=ease(lp);
+    if(lp<1){const Y=ty-(1-e)*(ah+ay+40);drawFighter(tx,Y,r,i,'idle',1,false,1,false,simple);}
+    else{drawFighter(tx,ty,r,i,'idle',1,false,1,false,simple);
+      const land=delay+(1-0.45),sa=p-land;if(sa>=0&&sa<0.16){const sp=sa/0.16;ctx.save();ctx.globalAlpha=(1-sp)*0.6;ctx.strokeStyle='#bfe6ee';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(tx,ty+r*0.6,r*(0.6+sp*2.2),r*(0.25+sp*0.9),0,0,6.283);ctx.stroke();ctx.restore();}}}
+  ctx.restore();drawBarbedWire(ax,ay,aw,ah);updateRoster(0);
+  const tag=document.getElementById('aliveTag');if(tag){tag.style.display='block';tag.textContent=`🦆 ${n} entering…`;}}
+let _lastQuackAt=0;
+function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
+  STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
+  let finalKillSounded=false;
+
+  const liveLoopCutoff=mapEnd+0.3;
+  const hitFreezeSec=mapEnd+0.15;
+  const victoryFreezeSec=mapEnd+0.6;
+  function stepAtEl(el){
+    if(el<=preSec)return (el/Math.max(0.001,preSec))*dS;
+    if(el<=timerEnd)return dS+((el-preSec)/Math.max(0.001,(timerEnd-preSec)))*(slowStep-dS);
+    const t=Math.min(1,(el-timerEnd)/Math.max(0.001,(mapEnd-timerEnd)));return slowStep+t*(S-1-slowStep);
+  }
+  function frame(now){if(myGen!==PLAY_GEN)return;const el=(now-t0)/1000;
+    if(el>=liveLoopCutoff){
+      if(!finalKillSounded){finalKillSounded=true;playKillHit();}
+      renderScene(S-1,hitFreezeSec,now,true,1);STATE.remain=0;
+      setTimeout(()=>{
+        if(myGen!==PLAY_GEN)return;
+        renderScene(S-1,victoryFreezeSec,now,true,1);
+        setTimeout(()=>{if(myGen===PLAY_GEN)playFinale(onDone,victoryFreezeSec,myGen);},VICTORY_HOLD_MS);
+      },HIT_HOLD_MS);
+      return;
+    }
+    // Ambient quacking — throttled so it doesn't fire every frame; roughly
+    // once every 1.5-3s on average while the melee is live.
+    if(now-_lastQuackAt>1500 && Math.random()<0.02){_lastQuackAt=now;playQuack();}
+    STATE.remain=Math.max(0,timerEnd-el);renderScene(stepAtEl(el),el,now);STATE.raf=requestAnimationFrame(frame);}
+  STATE.raf=requestAnimationFrame(frame);}
+const HIT_HOLD_MS=1250;
+const VICTORY_HOLD_MS=2000;
+function playFinale(onDone,elBase,myGen){const P=STATE.plan,S=P.S,t0=performance.now(),HOLD=3500,RISE=900;cancelAnimationFrame(STATE.raf);STATE.remain=null;
+  const base=elBase!=null?elBase:P.durSec;
+  function frame(now){if(myGen!==PLAY_GEN)return;const dt=now-t0;const finalePhase=clamp(dt/RISE,0,1);renderScene(S-1,base+dt/1000,now,true,finalePhase);if(dt>=HOLD){onDone();return;}STATE.raf=requestAnimationFrame(frame);}
+  STATE.raf=requestAnimationFrame(frame);}
+function countdownThen(cb,myGen){const el=document.getElementById('count3');const seq=['3','2','1','FIGHT'];let k=0;lastRosterKey=-1;lastFeedKey=-1;STATE.remain=null;{const kf=document.getElementById('killfeed');if(kf)kf.innerHTML='<h4>💀 Kill Feed</h4>';}renderEmptyPond(performance.now());
+  const introT0=performance.now();let introRaf;
+  (function loop(){if(myGen!==PLAY_GEN)return;renderEmptyPond(performance.now());introRaf=requestAnimationFrame(loop);})();
+  let curAnim=null;
+  (function tick(){if(myGen!==PLAY_GEN){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();return;}
+    if(k>=seq.length){cancelAnimationFrame(introRaf);if(curAnim)curAnim.cancel();el.style.opacity=0;cb();return;}
+
+    if(curAnim)curAnim.cancel();
+    el.textContent=seq[k];
+    playCountBeep(seq[k]);
+    curAnim=el.animate([
+      {opacity:0,offset:0},
+      {opacity:1,offset:0.18},
+      {opacity:1,offset:0.75},
+      {opacity:0,offset:1}
+    ],{duration:850,easing:'linear'});
+    k++;setTimeout(tick,900);})();}
+function renderEmptyPond(clock){const {w,h}=VIEW;ctx.clearRect(0,0,w,h);ctx.fillStyle='#050b10';ctx.fillRect(0,0,w,h);
+  const pad=16,ax=pad,ay=pad+8,aw=w-pad*2,ah=h-pad*2-8;drawWater(ax,ay,aw,ah,clock);
+  drawBarbedWire(ax,ay,aw,ah);
+  const el=document.getElementById('killfeed');if(el)el.innerHTML='<h4>💀 Kill Feed</h4>';
+  const ros=document.getElementById('roster');if(ros)ros.innerHTML='<h4>🦆 ready…</h4>';}
+async function showResults(){const P=STATE.plan;document.getElementById('winnerName').textContent=P.order[0].nm;
+  const pod=document.getElementById('podium');pod.innerHTML='';
+  P.order.slice(0,3).forEach((o,idx)=>{const medal=['🥇','🥈','🥉'][idx];const li=document.createElement('li');li.innerHTML=`<span class="pos">${medal}</span><span class="nm">${escapeHtml(o.nm)}</span>`;pod.appendChild(li);});
+  const lh=await sha256hex(lockInput(STATE.seed,STATE.names));
+  document.getElementById('verifyBody').innerHTML=`seed <b>${escapeHtml(STATE.seed.slice(0,10))}…</b> · seal <b>${lh.slice(0,10)}…</b>`;
+  document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='inline-block';document.getElementById('backBtn').style.display='';}
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('standingsBtn').addEventListener('click',()=>{
+  const box=document.getElementById('standingsBox');
+  if(box.style.display==='none'){
+    const P=STATE.plan;
+    box.innerHTML=P.order.map((o,i)=>`<div>#${i+1} — ${escapeHtml(o.nm)}</div>`).join('');
+    box.style.display='block';document.getElementById('standingsBtn').textContent='📋 Hide Full Standings';
+  } else {box.style.display='none';document.getElementById('standingsBtn').textContent='📋 View Full Standings';}
+});
+
+function setLedger(show){const el=document.querySelector('.ledger-link');if(el)el.style.display=show?'':'none';}
+function _arenaDims(){const pad=16;return {aw:VIEW.w-pad*2,ah:VIEW.h-pad*2-8};}
+
+async function ensureSpritesReady(btn){
+  if(READY_INDICES.length)return;
+  let orig;if(btn){orig=btn.textContent;btn.disabled=true;btn.textContent='🦆 Loading fighters…';}
+  await SHEETS_READY_PROMISE;_rebuildReadyIndices();
+  if(btn){btn.disabled=false;btn.textContent=orig;}
+}
+function beginFight(){setLedger(false);document.getElementById('backBtn').style.display='none';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
+  document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';document.getElementById('replayBtn').style.display='none';
+  const myGen=++PLAY_GEN;
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
+async function replayFight(){const replayBtn=document.getElementById('replayBtn');await ensureSpritesReady(replayBtn);
+  document.getElementById('backBtn').style.display='none';document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='none';
+  const myGen=++PLAY_GEN;
+  VIEW=fitCanvas();const {aw,ah}=_arenaDims();resetBlood(aw,ah);STATE.plan=planFight(STATE.names,STATE.seed);countdownThen(()=>dropIn(()=>playFight(showResults,myGen),myGen),myGen);}
+async function replayLink(){return location.origin+location.pathname+'#r='+await encodeState({n:STATE.names,d:Math.round(battleLength(STATE.names.length)),s:STATE.seed});}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>toast('Copy failed'));}
+// Pre-battle "Seal" is now a commitment to the LOCKED DUCK LIST only — the
+// seed can't exist yet, since it's derived from a drand round that hasn't
+// published. That's the point: nobody (host included) can see an outcome
+// and then decide whether to proceed.
+async function refreshLock(){const el=document.getElementById('lockHash');if(STATE.names.length<2){el.textContent='—';return;}
+  const h=await sha256hex(STATE.names.join('\u241F'));el.textContent=h.slice(0,16)+'…';el.dataset.full=h;}
+function syncFromTextarea(){STATE.names=parseNames(document.getElementById('names').value);const c=STATE.names.length;
+  document.getElementById('count').textContent=c+(c===1?' duck':' ducks');refreshLock();}
+function fisher(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let shuffling=false;
+function doShuffle(){const ta=document.getElementById('names');const names=parseNames(ta.value);if(names.length<2){toast('Add at least 2 ducks');return;}
+  if(shuffling)return;shuffling=true;ta.classList.add('shuffling');const flips=8+Math.floor(Math.random()*5);let k=0;
+  (function flip(){ta.value=fisher(names).map((n,i)=>`${i+1}.  ${n}`).join('\n');k++;
+    if(k<flips)setTimeout(flip,70+k*6);
+    else{const fo=fisher(names);ta.value=fo.map((n,i)=>`${i+1}.  ${n}`).join('\n');STATE.names=fo;
+      document.getElementById('count').textContent=fo.length+' ducks';ta.classList.remove('shuffling');shuffling=false;refreshLock();toast('Shuffled 🔀');}})();}
+
+document.getElementById('names').addEventListener('input',syncFromTextarea);
+document.getElementById('shuffle').addEventListener('click',doShuffle);
+document.getElementById('seal').addEventListener('click',()=>{const f=document.getElementById('lockHash').dataset.full;if(f)copy(f,'Seal copied');});
+document.getElementById('verify').addEventListener('click',()=>copy(STATE.seed,'Seed copied'));
+document.getElementById('soundToggle').addEventListener('click',()=>{
+  SOUND_ON=!SOUND_ON;
+  document.getElementById('soundToggle').textContent=SOUND_ON?'🔊 Sound: On':'🔇 Sound: Off';
+  if(SOUND_ON) ensureAudio();
+});
+document.getElementById('start').addEventListener('click',async ()=>{const names=parseNames(document.getElementById('names').value);if(names.length<2){toast('Add at least 2 ducks');return;}
+  await ensureSpritesReady(document.getElementById('start'));
+  STATE.names=names;
+  const startBtn=document.getElementById('start'),origLabel=startBtn.textContent;
+  startBtn.disabled=true;
+  try{
+    const round=drandRoundAt(Math.floor(Date.now()/1000))+DRAND_ROUND_BUFFER;
+    startBtn.textContent='Starting…';
+    const nameHash=await commitBattle(_urlBattleId,names,round);
+    STATE.seed=await deriveDrandSeed(round,nameHash);
+  }catch(e){
+    console.error('[Flock] drand seed derivation failed, refusing to start:',e);
+    startBtn.disabled=false;startBtn.textContent=origLabel;
+    toast('Randomness beacon unreachable — battle not started');
+    return;
+  }
+  startBtn.disabled=false;startBtn.textContent=origLabel;
+  captureSeed(_urlBattleId, STATE.seed, STATE.names);
+  beginFight();});
+document.getElementById('replayBtn').addEventListener('click',replayFight);
+document.getElementById('closeResult').addEventListener('click',()=>{document.getElementById('result').classList.remove('show');document.getElementById('reopenResult').style.display='flex';});
+document.getElementById('reopenResult').addEventListener('click',()=>{document.getElementById('result').classList.add('show');document.getElementById('reopenResult').style.display='none';});
+document.getElementById('backBtn').addEventListener('click',()=>{PLAY_GEN++;setLedger(true);cancelAnimationFrame(STATE.raf);document.getElementById('stage').classList.remove('show');
+  document.getElementById('result').classList.remove('show');document.getElementById('setup').style.display='block';history.replaceState(null,'',location.pathname);});
+document.getElementById('copyLink').addEventListener('click',async ()=>{copy(await replayLink(),'Replay link copied');});
+window.addEventListener('resize',()=>{if(document.getElementById('stage').classList.contains('show')){VIEW=fitCanvas();if(STATE.plan)renderScene(STATE.plan.S-1,STATE.plan.durSec,performance.now());}});
+
+SHEETS_READY_PROMISE.then(_rebuildReadyIndices);
+
+window.addEventListener('pageshow',(e)=>{if(e.persisted)location.reload();});
+(async function initFromHash(){const m=location.hash.match(/^#r=(.+)$/);if(!m)return;const st=await decodeState(m[1]);if(!st||!Array.isArray(st.n)||st.n.length<2)return;
+  STATE.names=st.n;STATE.seed=st.s||'seed';document.getElementById('setup').style.display='none';document.getElementById('stage').classList.add('show');
+  setLedger(false);document.getElementById('backBtn').style.display='none';
+  drawEmptyArena();
+  document.getElementById('replayBtn').style.display='inline-block';toast('Battle loaded — press Replay');})();
+</script>
+</body>
+</html>
