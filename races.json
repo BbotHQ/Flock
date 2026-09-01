@@ -2,10 +2,18 @@
   {
     "battle_id": "1543766980107046943-1",
     "title": "Jack 12-4",
-    "status": "pending",
+    "status": "official",
+    "winner": "Hank-David (2)",
+    "podium": [
+      "Hank-David (2)",
+      "Bearded Bees",
+      "Lorcat02 (1)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788223570
+    "lock": "8a6c35b0a6246c373f94f8c0847d44581d3f25d4f930b7ebde20e98e14679591",
+    "seed": "596da3bda0819dbd398ad496b3081018ebe1596e88f9967c73ba0979157cfc44",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE23MvQrCQBAE4FeRrRROuJ8kd5tSLSysbEVk73YFDclJFCGI7y4GEQTLb5iZB3RQ7-DiKLmWGtfbwoOCTe4T3bSdTM3sh_bNJbWXDAqG3MjhnFMjAyjYUqtt7j6TNXXNfEX3E_8Jxpdvf9RCqGfhyULkCnsFDLV1Cq5QQ4kVk4tMOhjkyA4DcYFVdDoYbYJEMSVWEsIRsfLJu0gaPZrSp2MqCni-AAYXG2rmAAAA",
+    "ts": 1788223701
   },
   {
     "battle_id": "1543757842496888835-1",
