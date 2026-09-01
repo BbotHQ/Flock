@@ -2,10 +2,18 @@
   {
     "battle_id": "1544138018326192228-1",
     "title": "RR13 45th Anny",
-    "status": "pending",
+    "status": "official",
+    "winner": "lquid (1)",
+    "podium": [
+      "lquid (1)",
+      "Thagame501 (2)",
+      "Hoog (2)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788224083
+    "lock": "2e98af0d611ab319bdf3644da19ea7d866131fe7bab8a8aece7496ecd1d3751d",
+    "seed": "6e7ac012de7e790ab63eb673d82b3a0321704dcab480bb88047c5ef4eff8b8ee",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE41RS07DMBC9iuVVKkXI39hkGSHBglXLDrGwnUlalTiCEiRASGw4ADtY9SDchhP0CChgqU6KFJYzb96befOesMf5JS4eO8sEStgMp_hiaWrTgCQUJbRvnINZuyW4dajP2rYOs_MH49HiKFRF2zaF8TVK-IgnhrDsy-ubblUG6PR21RgHXy8fmzncg68B7bbvn2i3fXsNI5GanKbQsZPfC4LPA1QO76PRfXx6mRzL_XAWd_0kOul8bXz4UGTiH7oHcbBpzl-r6SAqOvTK9pHGtkeBigiSIycsfi3fy_GIQ2f4KsUlzjOe4g3OcQbKOEJZCQrUMTE242AzxUvNLDeEM6qIKJ2xQhNrtSZCOQmVgKrSVgPg52_0a8T0vAIAAA",
+    "ts": 1788224244
   },
   {
     "battle_id": "1544060772546646121-1",
