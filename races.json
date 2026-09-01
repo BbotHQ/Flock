@@ -10,10 +10,18 @@
   {
     "battle_id": "1544032918823764039-1",
     "title": "JD BH2 (375ml)",
-    "status": "pending",
+    "status": "official",
+    "winner": "Juggernaut",
+    "podium": [
+      "Juggernaut",
+      "Thagame501 (3)",
+      "Thagame501 (9)"
+    ],
     "ducks": 15,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788223891
+    "lock": "c6196b94eec6f20ccf3c803244f815dd459360b30aaa962e274fbd759799c26d",
+    "seed": "b08b64167b21b2c1d543404a43ce99ee9f4a60e2ed944d16af73af85995cb3d2",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2XLvwrCMBCA8VeRmyxkyOUuSdNHENzERRwuf1qltEi1k_ju0tG4_vi-N8zQXeB0k0GmYjXu9qgbUD_iNniQJJpkpMWwBwWHdRjKMsv6qmqud6oBsZbwl9Rgamg3ON7Hcq7Xv9TXYBu4KsjQESp4QgdRt9ExOh8NRpMwWybWLEyphFBK6FmcLqbkwJzRSe9J-taGYFOkbODzBc_UC7hJAQAA",
+    "ts": 1788224035
   },
   {
     "battle_id": "1544098837822447747-1",
