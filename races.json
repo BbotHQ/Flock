@@ -10,10 +10,18 @@
   {
     "battle_id": "1544438998297092218-1",
     "title": "RR13 45th Round \u270c\ud83c\udffb",
-    "status": "pending",
+    "status": "official",
+    "winner": "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (5)",
+    "podium": [
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (5)",
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (2)",
+      "BoomBang (4)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788299787
+    "lock": "9b3f7fc3eebe78fec3fe8c2ab708a6edecbfe605ae700af557fb52ee179b742d",
+    "seed": "85c415dc3b7014023fc88b311aa2fbe0019eca689046d13577831d7837d0637d",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE41RS07DMBS8iuVVKhXJjvNrlwGBFHbQHWLxEruulcQWcVqpICQ2HKA7WPUg3IYTcASUNAuSlMLyzZs3M5r3hDWe3-GrSpWQic-Xd3sjNkJLgb72bx_oa797RY43wVN8W4OU6Fpp2aA7dJYYu0KO2-wWpkwLyHISIMdvgASs0ehSVHJtjR4wWMMoHtaK_y5LG87pVAcjo6Fege4uYmPKGLTsTE4LuH9TaN-jFU2UlMU2VrUdmbZFLbaFqFBcgV5B2cUcYIczJW2tspyyTvhnR__INgrDhqp0yBg9a5C_HTfnUMdr6SSQi_7aHxq4_XrcPr0dL6DKc3gU4xKOleUewUbdeBN8P8UczwM2xRbPceRnHvV5xtKQUI-4bJlFUcooBXCXqSCEzkQGQTQjXsAp88MwYpSHEQs5CVjI8fM3oTl1aQcDAAA",
+    "ts": 1788299937
   },
   {
     "battle_id": "1543892220736704564-1",
