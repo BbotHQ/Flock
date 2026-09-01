@@ -256,7 +256,7 @@ function _pick(entry){
   });
 })();
 
-const CLASH_CHANCE = 0.7; // not every swing gets a clash sound — most do, some don't
+const CLASH_CHANCE = 0.95; // damn near every swing now — just enough headroom to occasionally skip so it doesn't feel mechanically 1:1
 function playClash(){
   if(Math.random() < CLASH_CHANCE) _playSound(_pick(SOUND_FILES.clash), 0.6);
 }
@@ -1049,7 +1049,7 @@ function renderDrop(p,clock){const {w,h}=VIEW;const P=STATE.plan;ctx.clearRect(0
 let _lastQuackAt=0;
 const QUACK_MIN_GAP_MS = 1500;   // never fires more often than this
 const QUACK_CHANCE_PER_FRAME = 0.02; // rolled once the min gap has passed — "often but not nonstop"
-const FINISH_LEAD_SEC = 0.7; // how far ahead of the final blow "finish.mp3" cues in
+const FINISH_LEAD_SEC = 1.3; // how far ahead of the final blow "finish.mp3" cues in — enough lead to clearly read as "before," not simultaneous with, the last swing
 function playFight(onDone,myGen){const P=STATE.plan;const {dS,S,preSec,slowStep,timerEnd,mapEnd}=_timeMap(P);
   STATE.playDur=P.durSec;const t0=performance.now();cancelAnimationFrame(STATE.raf);
   let finalKillSounded=false, finishCued=false;
