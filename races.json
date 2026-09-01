@@ -2,10 +2,18 @@
   {
     "battle_id": "1543766856341520576-1",
     "title": "WFP",
-    "status": "pending",
+    "status": "official",
+    "winner": "Brooom (4)",
+    "podium": [
+      "Brooom (4)",
+      "Lorcat02 (9)",
+      "Jason Ferguson (12)"
+    ],
     "ducks": 105,
-    "started_by": "Neww_",
-    "started_ts": 1788227005
+    "lock": "0476278d36ac83177f7a097c8b090ba78c70e892e948dcdfa492b0de87dd7c68",
+    "seed": "6976bda4b9afed615f4d5c4d96ae724379add6b8e7edd802337309b884fb232e",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACnVUwW7bMAz9FUEnB8gAi5IlK8di6Iagu3S7DTvIkeK4aezBTgYEw_59sFM4lvp6My3ykXx85F_e8s1PvnVD17LH0NeX8SMjs-Jr_tB3XXdimR2NZ3fKaXwTYjS_N6_H60t3aIeuFZpl5fjzxyGw52tgXy5Xlj0-rVgm49B8CUujkWa-ufyWbidP7ih7UuYN5Z3nlPKp63funBPLRGyWKGZqa3up69C37nJeFFOCtBDi9rOp69frQ3Me3vImkXGjNytlbGrqq2uPnz67P43_iA-KkJCLijimtL4CxRBEIoo5tLAiCxpWePxqWfzU8Is7sEzD5Pn8rkAGO7_S_AV1QQpWrecoNDBCQ5wjLJpftCJ3dANrwgqOJycwh1gWqCKLAYp4qCZKqu60IF4m52_NMbBt14bhAwXGW470oXFpIhVrIkCJ2oSCFvdpFVE1GkFQ2hYhLxianBko5bgCeEYE1ImQMTqUsk5Ji2VUAPqLNAQSC7NRBA7jbvftXWDMgok7g6qmxZLm8W5Af7tcwSRBsXzDN7BcutwXoUwPM9S8KFb815p7vjH5mg98w7U1uvJOVdbtg9ei2Ctf7JS32gVDShrrvNdVGUzwvsxJSiNzW5Wl2lckKfB__wHbAPtvjgcAAA",
+    "ts": 1788227154
   },
   {
     "battle_id": "1544138018326192228-1",
