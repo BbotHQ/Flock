@@ -10,10 +10,18 @@
   {
     "battle_id": "1544525993014722681-1",
     "title": "Bowman Batch 3",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (5)",
+    "podium": [
+      "BoomBang (5)",
+      "Mpulse2005",
+      "Jonathan (3)"
+    ],
     "ducks": 34,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386224
+    "lock": "b24108fd6b27482f970676b824cf17e87c5fa3b5502c83b7ab16cc3b68fb186d",
+    "seed": "9a59001158e3084aade6831dc61dd05a4c76b5f042ca9c2de99c691b7d23edca",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21QS0vDQBD-K2VOKUTYd7I51h5EsAh6Ew_T3W0Tm2yiSQUr_nfpWjWv43yPmfm-T_CQPcE1evtRoV9EdAkx3OdFWRbNut3UdXdaROIMruq6WqHfXzS3tccu_7M85rjHyklCFxEb8sF9g_5wtcb3wk74MD68Hs8UHV7iQ6UcjoF9wfxi65-YAHwMiLmgQXXXHMvWMUIkxL1mAvc_snHq2eaCquFoeIUH_sZEMsk4WcTnFsmhSc7s7ffIhnL1k_5UYbdx2P3WxuYujd4TS3iOwUKmaAwtZKBRakIolanjJBWI1qmUU2sUtZZIFCZRW7kjghnUhlmntVGabhPLuLMG4esbVlHe83UCAAA",
+    "ts": 1788386432
   },
   {
     "battle_id": "1544520817650573463-1",
