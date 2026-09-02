@@ -10,10 +10,18 @@
   {
     "battle_id": "1544503365394894921-1",
     "title": "RR13 45th Round 3\ufe0f\u20e3",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (3)",
+    "podium": [
+      "BoomBang (3)",
+      "PhillipDsNootz (1)",
+      "Juggernaut"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386044
+    "lock": "3871fa78f89ca20ed09f2dc78a892600d97edc1800724db580c3084da3448c15",
+    "seed": "5678ad70c781829a4a70b29fcb9b36b8d206619902653359fe65e84128a3eddd",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE42STU7DMBCFrxLNKkhZxL_5WVaVkBAgBEvEwrHdJGrqQBMjUYTEhgOwg1UPwm04QY-A0haIo4iyfDPPz9-M_QgG0ms4qY1oC2E8Hx1BAGcPUyvnzZWVc8_HXWWiTVObb1HXi4kwueezTp5qMZeF_vH-hhHXvZMrm2EKARwvy4WQ-vP5vbnU99rk2tus3z68zfr1xfNp563ubKn2qQ4T6nWJeycdIKE-_rZ5UZRVVd5Om_O6blf7-L9pyCCUjOWwsSJyVzCQzm7R2PlRYnKYmPU2hA7b8WBA2gf7x3WDuaj7JsyVu19i81wvjbAt3ASgIOUkgAZSYDyKhYpCGcUoxomgIgoznMxklmSEZ7HCIecoSULMGSEsmWnOdEwRjgXRSil4-gI86lrw1QIAAA",
+    "ts": 1788386181
   },
   {
     "battle_id": "1544105056465326151-1",
