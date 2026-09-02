@@ -10,10 +10,18 @@
   {
     "battle_id": "1544547433273368658-1",
     "title": "Weller SiB",
-    "status": "pending",
+    "status": "official",
+    "winner": "Prophesy",
+    "podium": [
+      "Prophesy",
+      "Ram02on (2)",
+      "Alberto Barajas\ud83d\udc22 (1)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386646
+    "lock": "31cd09e90dd55dfab48b89966ae4109c4e9bd7a49eca0d96d63587925cb7f55c",
+    "seed": "01fa7f420778186d3a70591506d33534fd49f6f968b015ece7da7f31b89a8725",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3WMvQrCMBRGX6XcqUKHJLf5aTc7OomrONw2CaI2KamLiO_gGwg-oY8gFhdF1_N955whQL2GAanDnvaYRKmznM-g-GbixVbUMxHD-7FMcdi68QQFzA-tS8eYNZRoR-Pjdr1nOX4oU6BxYYzhnzBVfy6TvIjJUoBNARZqgQWMUAPjnrQvBdPacKMskmay4pIpiyix9LasvPKVMi3j0nVOW9IeeWsqMlpIuDwB_hJEVAQBAAA",
+    "ts": 1788386827
   },
   {
     "battle_id": "1544721121658675221-1",
