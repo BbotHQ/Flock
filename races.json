@@ -10,10 +10,18 @@
   {
     "battle_id": "1544721121658675221-1",
     "title": "RR13 B7 (\ud83d\udc2e not included)",
-    "status": "pending",
+    "status": "official",
+    "winner": "jcwells03 (9)",
+    "podium": [
+      "jcwells03 (9)",
+      "jcwells03 (1)",
+      "jcwells03 (4)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386508
+    "lock": "4d7f009c36f80dbf27870618ada5de9e590ddf246c9d3eb3feb9e657ae408f15",
+    "seed": "e1a335b7d621d935b3e3d1760447a3aa807c6843030d8a189ebe2462c8b6ccfd",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3WRzU7DMBCEXyXaUyLlYGf9lxwjuPVWTiAOG9u0oNaRmkgFId4dpYAUb8Rx9tOMZ9efkKB7gn4czz2lQ1G6CuqVbHJpFnlHKX0UjxuoF_nmr_F0mgQWpcpxm3nloh6OdKBz1EL-hUW6hBj6cZqKcn-ka6p-ySpXSjZgnZHhjZ_1vsXdv8-vyc-bpaTIKH_aMm2Ym6VZhm9xuzHFaabL-h3MjsU3-im1GuC_x-OF27yBYljzb-F-WcFzDQE6gzVM0EGUhKgHG0wjQ4t6wIhBWiOUsoRETlhvnEKBIjiSro1DbJRpvBuM9y8Bvr4B4SUENYQCAAA",
+    "ts": 1788386724
   },
   {
     "battle_id": "1544492812811378771-1",
