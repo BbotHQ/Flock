@@ -10,10 +10,18 @@
   {
     "battle_id": "1544492812811378771-1",
     "title": "Peerless DO SiB Rye \u201cDouble Glazed Caramel Donut\u201d",
-    "status": "pending",
+    "status": "official",
+    "winner": "yoke_jockey",
+    "podium": [
+      "yoke_jockey",
+      "MyDucksSuck (2)",
+      "Sam H (5)"
+    ],
     "ducks": 60,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386353
+    "lock": "42054b426a92ddbc29328b28dc21d02c8c46f2dc9f2385bed21d17f88c4aad0d",
+    "seed": "01e7f6c1beaa27405edc9659307ec308dc1e7884afdd151680d6805602af9036",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21STWvDMAz9K8anFHqQnNhOeux6GIPCaI9jFNdWaZs1GclyCGP_fTR0YCu7SbwnvaePb9nI1Zu8urPIcCGXcke3MYdKZPk9e3Fd14a1yNQ9W5PrAgWxJuofhCfXhPHmGpEpmFOmqqn3FO3dTTyLrIxiG8Wo0o4YEye1nfPnw_7RLSJO4Gs7dGJD_tJf2qafk3SaM_sYO6wYdk-342bwdb8ffJ2Oo5O1Tcj2c_joSQHov821R---Ni7MbTEtE3U2rJRZLtgBuDKmuJ3fhzHQJKNgfBsmpiNMJZ-SVGk2AesSHxhhtuWp1djWdLi2vqYxNZsI8Uls_C781MDy4r_3QWadKVQMjhdSxM7iOHliXMj3pQxyZWEpe7mSgGRPxuORnFO2AE3BV0ZXOVjyOZTBI9myLNwpBNRoSgimBG1AuVMFuZE_v8QHtlbOAwAA",
+    "ts": 1788386581
   },
   {
     "battle_id": "1544525993014722681-1",
