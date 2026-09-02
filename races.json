@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1544525993014722681-1",
+    "title": "Bowman Batch 3",
+    "status": "pending",
+    "ducks": 34,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788386224
+  },
+  {
     "battle_id": "1544520817650573463-1",
     "title": "RR13 45th",
     "status": "pending",
