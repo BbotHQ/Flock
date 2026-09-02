@@ -10,10 +10,18 @@
   {
     "battle_id": "1544520817650573463-1",
     "title": "RR13 45th",
-    "status": "pending",
+    "status": "official",
+    "winner": "DrNeuroLab (2)",
+    "podium": [
+      "DrNeuroLab (2)",
+      "ihatehangovers (1)",
+      "ihatehangovers (5)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386140
+    "lock": "31d3d27de22fc8f6c0487083d46658c2a3cd8e4f5db55de946dd98903e6ed9cf",
+    "seed": "5bc3bf755c1ea8ee1595b3f6268ada09e5e298948e9c505a1a13a9c8b5a68031",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22RP2vDQAzFv4rR5IAHn88633ltyFBKlwwZSgfZUWzTcgb_CbSl3724DZTcaf0hPb339AUe6hcYelq4J9-NV57mJMUdZLCfnnmdxidqktRu4LjwlX2yX31H_sbCzSLc1Bt4HD0t_bYUKasQGEm2FO5rgUVqThiSWCEwFFi1sVM_zG_8kZyGT5rOSXocH-hdsh3ZkSRVHk79pj3Q0vN0GNfuphOKS_nL-7aD8qPnVCEowsuRFR0CqTlzfzeq4S_y_0C5g9cMzlAbncEMNWDT6uZSIbaKyTIrdNjoiymMpTPljpELZ11p2bWYIylSmlxrGyRjc63g-wdLQ2av2gIAAA",
+    "ts": 1788386307
   },
   {
     "battle_id": "1544503365394894921-1",
