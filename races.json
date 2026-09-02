@@ -2,10 +2,18 @@
   {
     "battle_id": "1544708493888462910-1",
     "title": "TWB Rootbeer Pair",
-    "status": "pending",
+    "status": "official",
+    "winner": "Ram02on (1)",
+    "podium": [
+      "Ram02on (1)",
+      "Jim Harden (SS / Mooresville) (3)",
+      "Jim Harden (SS / Mooresville) (4)"
+    ],
     "ducks": 34,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788387075
+    "lock": "b61dea7e0276725db57dfbb95e14350ec427706195736079abf0b568170ae2df",
+    "seed": "a7889673ffe44c35303933426abdd11f213b57d4af5e757b2cd0e2dacc0cd9b8",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE42R3UrDMBTHXyWcqxQqNh9tt13WIVIZwnqneJE2aVe3JdB0ExUfYk_gK_oI0jAHKSK9yz_nf37n6wM0LJ4gez-UlEMImRKdVDIz1iJcbMSrDhCmAYTw0Ld2rSTCbFCrdqtQbrSyEEIurNHoVnXNYXhg4vld9ovYOGPXGZkhzIe_tdhHdPA74iV2Vj7SQZZC6zf0OFauXNGLpkH3rW7Q99fphK5yYzdnZ2bKSvRL8dv8pbXYK0w8lXgtEk85at7u0d2wLY1wUaBrtDKmU_bY7nYqGNPiCRn0nzkc7c_jkAlkNtqCf6ApBO5NM96q08cb0WeHBudiqzw-n8CPA3gOQcIiISFYWIBIZ7N5krK6VpxXLGYRmzPGaSJKKQmpKWFlnEou6lilcVrSSkaKSlFVUSXn5Qw-fwBqp8ee2wIAAA",
+    "ts": 1788387272
   },
   {
     "battle_id": "1544550460927770658-1",
