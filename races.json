@@ -2,10 +2,18 @@
   {
     "battle_id": "1544695759805489163-1",
     "title": "Nobunaga 99",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB",
+    "podium": [
+      "JarrodB",
+      "BoomBang (7)",
+      "Hank-David (2)"
+    ],
     "ducks": 30,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386792
+    "lock": "2d0beefdf894f07f7c27d54a1f28740365705e21f88041bb5619fe4793425c05",
+    "seed": "0f52da4fcd335bd3ebc593c53ab4410d8fd3036d464b469ef22edb4a0a61b7c3",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12QTUvDQBCG_0qYUwIr7Hc-bgZBqaBSBA_Sw-7Opg2l2ZJYQcT_Lukh283tnfd9ZpiZXxig-YQ2hFNrhn2W6wIITJezH6cw9A4v7ggE3g9mb05eUQYEnsxwvHsw3z1mOStWhpiNOE7O5fblMcv5rJ7vPzZZXkVZLvmqsYwMowvEoqtTXsWknuXrVz9tPSZMHZkr_jaG88FPPwlUpXPFzR5RXo_ZmHEM2C7m6oIbXK6_xFOUF7AjgNAoRWCCBminOBrZORRCWRTeOlULp4SxUjKKVYeCCo1SSyt17TvOPVppqNHMlk7A3z9CSm3v2QEAAA",
+    "ts": 1788386987
   },
   {
     "battle_id": "1544547433273368658-1",
