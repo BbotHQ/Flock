@@ -2,10 +2,18 @@
   {
     "battle_id": "1544105056465326151-1",
     "title": "EC C923 & MMCA 25- WTA",
-    "status": "pending",
+    "status": "official",
+    "winner": "Pour Decisions (2)",
+    "podium": [
+      "Pour Decisions (2)",
+      "Bearded Bees (5)",
+      "Campo"
+    ],
     "ducks": 45,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788385819
+    "lock": "f8171c7f625142d8098e842f298170ee4cd499f1c5252ee39f7705b48d8140af",
+    "seed": "7c51d51d6c8d2df6da3b667f291244220dce48697c56c2a47d130734af061e88",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21SPWvDMBD9K-amBFKQTl-2xzRDhwYKHUsHVZLBxLGN1WQp_e-lakql-sZ79z6OJ33ACO0LPE6Ls-8Mqw3fwg72wS4--GofQiQh-Q09TZelOgTXx34aY7VBChQ_4jFO4032O3BdTESuIbDEe7Dj6e5gr72_pZYkAqrzrJrwFf99ea5Qxalp9VcZ5kuyhMKLMyI-BRznyxADMqZyuiDoLDcse0wdPw_2GvDYDyGuxA3hJ9eYXkNqDZk8uykOSex7e56ndV5xcuHBicfjRcOpj1lYJ872JBaUJpcTf0Zs4XUHHlrDdhChBeMU94p77WqPvtPeijetTYcNRykRmXdB1roxTmmHVhrPBTNC2o5pHuoaPr8ANGVTfTcDAAA",
+    "ts": 1788386032
   },
   {
     "battle_id": "1544053435828273233-1",
