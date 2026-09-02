@@ -2,10 +2,18 @@
   {
     "battle_id": "1544719222876414043-1",
     "title": "2022 WLW",
-    "status": "pending",
+    "status": "official",
+    "winner": "Alberto Barajas\ud83d\udc22 (9)",
+    "podium": [
+      "Alberto Barajas\ud83d\udc22 (9)",
+      "BoomBang (11)",
+      "Alberto Barajas\ud83d\udc22 (21)"
+    ],
     "ducks": 100,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788387277
+    "lock": "7cb0e5f134409317e74ba41260ed2c75b6c0f754f7dde7d41a1d0a103689fb03",
+    "seed": "855485bedcd598dc35c9f200cb5bcf8ddea156ec9f17e9736beaa0e51415fd89",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE31UzY6bMBB-FeQTK1HJBsxPbqWoiqoqrbp7q3oYsLOwgL11yFabqu_QN6jUJ-wjVEEkwU7sm0fj-Wbm-2bmJxJo9RW97SuuRukVoOAJdv_-_P7r-WF6hwL0BA0K0EMDjzBwigkKUP993zLPj47u25Hx0VVIORQgHj2fTF8_gFKSFZ4fWgPp0fMFBhxK4fkzSlXDWALzfDKhSAFjA2KGWSQhWvCUsgTVdXDgZ6zTZ8PMdXNCXoPo3pTwcm71nVSC9-1-N1eyhrqbSy7Vhu-V_AiVXlJu7ZTgCRLU-PoehlMzXOzkqbNLo3pjk_N-L5j8cSHhzJFJSqLFEms9qV3MqcPPTdv37XO520g5HlxI0YWb6fkcQR0N0EUqjNM58B4Gbz2_52kiul5n89MLV0MrmGtsCDUFM2hI7KGLcmMTxZgSaudoMRD2MhNDm9iOl-lshDeIdNBBjER2cYkdJTNADJMudLSDOBYgvlbYzBFef3EcHQchmamsMW3zEBwGGDccRs1Hjd13pDEFvkp7c5UcgA7hjFR4eT8W00i0a-FgL9FOdGQcRKzbjmuBtYTLDQ_1i2e_II6zGWpVThAPrz1XXqFANDBoVWZWGMfmGZ1Hd-hbgBhapThAO7RCGaVxRivOakbzjNURrfNtiHFd0areZoxxIDThdb4lKc_TKKk4AOaUxIRuWZajX_8B8tM0mHQHAAA",
+    "ts": 1788387442
   },
   {
     "battle_id": "1544708493888462910-1",
