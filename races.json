@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1544547433273368658-1",
+    "title": "Weller SiB",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788386646
+  },
+  {
     "battle_id": "1544721121658675221-1",
     "title": "RR13 B7 (\ud83d\udc2e not included)",
     "status": "pending",
