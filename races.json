@@ -10,10 +10,18 @@
   {
     "battle_id": "1544550460927770658-1",
     "title": "River Roots 18 Yr \"Christmas Miracle\" Pick",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (4)",
+    "podium": [
+      "BoomBang (4)",
+      "BoomBang (8)",
+      "Bearded Bees (3)"
+    ],
     "ducks": 47,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788386998
+    "lock": "9c09aeb3a83cc2a2e3af7adb630a9495bd0b7b12affe3fff384bf16503b79d21",
+    "seed": "c568cea6b4eace58005d8185c7c47920816e14ba44a88ec9f590e32190488f2e",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3VSu27DMAz8FUGTA3iQZD0ob1E2d-zQoeigyEwCFLUBu4-h6L8XCQxIVJvtDjwepSO_-cT7Z_6wfxpYo3a83aC5wiEuyzyGrRAwLiOOYV5X1jxe4te0Y40kOqkI7WjxRsM8v4U4nVkjBeWWqD3t1YQa2gmVsaT8NvfzEN_Dx7kZ4isSL0vFmlJHqaom5cC6DKtMaJSuiJIFxHXTF6Y0RMjGOkNHZ-RCIaeBFs118lXW4u62q4VWDzd_v1av_B_J_dsqztFXPtWWrqf10vKR9060fOU9T8ZCwmiPGmNCA0KYESSY5JJ2XgmQFqU-Rq0jACZ_Ml5gp6QXGuCkkP_8At7BkYUaAwAA",
+    "ts": 1788387149
   },
   {
     "battle_id": "1544695759805489163-1",
