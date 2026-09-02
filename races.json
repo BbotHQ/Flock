@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1544719222876414043-1",
+    "title": "2022 WLW",
+    "status": "pending",
+    "ducks": 100,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788387277
+  },
+  {
     "battle_id": "1544708493888462910-1",
     "title": "TWB Rootbeer Pair",
     "status": "official",
