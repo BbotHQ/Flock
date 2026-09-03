@@ -2,10 +2,18 @@
   {
     "battle_id": "1544823831028301917-1",
     "title": "fortaleza winter blend",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (3)",
+    "podium": [
+      "Bearded Bees (3)",
+      "CartyFam (4)",
+      "justv (11)"
+    ],
     "ducks": 40,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788404669
+    "lock": "8bfe596f3afec6cc19959a477ce2637831f3492addc1bb9b641c0d593703e6c7",
+    "seed": "9eac63a61bfb1c7016ec5aecf8d0b850487af8abe357e08cbc763ebd851b0bf6",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22QyU7DMBCGXyWaUyPlYGex3d5oETc4wA3EYWxPmgBZlAWpQrw7aojArnub7f9m5v-CFnYv8DaP02e04TEkcMBhOt1hE22yc7q2pBOLc_yIDUu79k_U9B0k8FAfq-mepqqzkMAtno7dU933NATwNL4c2DorlBNz5u0Lhb8D_-jCEbvQpX6o6v5Q4cfcY7S5eY7Xw9aRLIC7JnAetJdD94SDJRvtiUaflweC1OUtyb4-TkiMrz0flnq_h-eJ6z-FJsmgkofbFv449zSMXVsbO5v3S1Xhe537Kfcfcq1IY3hNwMJOsgRG2MGW0IgMBdel5kYyLsgUSKZUlmlVsFxJLBVqygpJTBltpMhIW1VwzXQp4PsHePAnVb4CAAA",
+    "ts": 1788404841
   },
   {
     "battle_id": "1544870090896576574-1",
