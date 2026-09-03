@@ -10,10 +10,18 @@
   {
     "battle_id": "1544482039456075806-1",
     "title": "Old Forester Presidents Choice Rye",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (1)",
+    "podium": [
+      "BoomBang (1)",
+      "BoomBang (2)",
+      "BoomBang (5)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788404477
+    "lock": "64e7265ef848efe0796f27df5d46cf3765423407eed4f524336ab07355458dfc",
+    "seed": "904b015a610ad1b469af2ef9784c15634136ad0a6597bc5ba30b28b926ff1fbb",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12LOw6DMBAFr4K2AsmF1z-wS1cp00cpdrFNmmAEVRTl7hFNEOneaOa9YYZwg1jrM9I8Na3uQEDMtKacmpjzBgKua10eeXvt5heq7oR2x0utU9PiMfU5Mof5u2MHdwEJgtICNgjgpWGJlhxKSsjGeSoqF98PZkTrtEHtKEly1vc8WiYtWQ3slSsFCzN8vksWgkTbAAAA",
+    "ts": 1788404609
   },
   {
     "battle_id": "1544719222876414043-1",
