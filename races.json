@@ -2,10 +2,18 @@
   {
     "battle_id": "1544877029596467254-1",
     "title": "WFE Purple Top 14 Yr Sourced \"Willett Texas Ranger\"",
-    "status": "pending",
+    "status": "official",
+    "winner": "Ram02on (1)",
+    "podium": [
+      "Ram02on (1)",
+      "RNG (6)",
+      "RNG (9)"
+    ],
     "ducks": 67,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788404854
+    "lock": "3282086c6c0fd7d718d2743febbaedfb056424f86f8a8c738b45fbcb2ed49538",
+    "seed": "ddfe42b770516be5b7eba794ccba05cb23b584e7322f61aae941660b098153a4",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2VSy2rDMBD8FaOTAz7oZcvOrWmgUPqAptBD6UGyFBxiS0VuUkLpv5e4xrZWN3s1O7Mzuz_IovU7ejDyWDemPiYpKVYoWxYouRY2b7Jtk3T4fpEdps4mKb3-7U5Wu287vm2lPz6fje8OVo-AJReNMRxgqkHi6W4kvJfeO71JUjaM4U5eOZtsvPtqjE-28mxQhrzR_V5axsampR-xCgHRTGISDP1AIKlAQUCmMkiHTLwsdr0MNYdCJSSGCIr_w3BdbJjCBTIM-afBoKPQAIN90Rgs2FCU7KQTOYxGglp86oV2CDQMWym8KDqflIg3MbTf9E1rLslr47rP3tl5N8PrrbT60sno4tliiVC0CKIh877mVMqQe8DsWnk29PHQmj48EhhuFGl0rjzim6X5Cn1kSKO1wBnq0RppvTecKiFwTgplciWMkqLida0kzmtFmcpLbgSjdF8QKU3FSVFghauS5Exy9PsHEHgwOEsEAAA",
+    "ts": 1788404997
   },
   {
     "battle_id": "1544823831028301917-1",
