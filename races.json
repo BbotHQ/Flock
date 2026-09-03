@@ -10,10 +10,18 @@
   {
     "battle_id": "1544870090896576574-1",
     "title": "A. Smith Bowman CS B5",
-    "status": "pending",
+    "status": "official",
+    "winner": "Justin C",
+    "podium": [
+      "Justin C",
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (1)",
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (2)"
+    ],
     "ducks": 17,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788404578
+    "lock": "4bcfd2eca1822bcddb2ef645cc8efc2f067264f2c1a5a0c904f3efdb6b464e0a",
+    "seed": "dd580830f522b62bbdc9b080cc8fdfc30ddee11e8d0d750cb9b3d07669f37f84",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE6tWylOyilZyL8rMTUxOfdQwszgotSw1Lz1V4cP8GbsVPsyf2KqgYaSppKPkVVpckpmn4Kyko-SSWJSdnViVCpVxTswtyFfQMASx8RtEhBITkBKnosri_Dyo-uCcxLJUI9_MnNRiqAjCfkNk1ciOMSJskylEeVFJpVtiLtSorNLM5EoUYSIMMsZwpZGmUqyOUoqSlbGJjlKxkpVSSoqphYGFsUGaqZFRkplRUlJKsmWSgYVBcrJFWkpasrFBSkpqqqFhqkWKQYq5qUFykmWScYqBuZmZZZqxeZqFiVItAINee0WpAQAA",
+    "ts": 1788404710
   },
   {
     "battle_id": "1544482039456075806-1",
