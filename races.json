@@ -2,10 +2,18 @@
   {
     "battle_id": "1545251084719755325-1",
     "title": "HH22",
-    "status": "pending",
+    "status": "official",
+    "winner": "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (1)",
+    "podium": [
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (1)",
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (3)",
+      "Grimace\u2019sRevenge \ud83d\ude3b \ud83d\udc45 (4)"
+    ],
     "ducks": 120,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788562174
+    "lock": "098952a05282752d8a9ed19d115ccd368854e69e99e18294d5b839c40a7d041b",
+    "seed": "51f313844cf2ef3a8f0f61ddd6a59723315f283bbc07135ae6fb04fe97f6891f",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE41Vy47TMBT9lcirVuoifiR2uixIjGbBAkYCCSHkJnYmbZpISQrqICQ2fAA7WM2H8Dd8wXwCSmKKfW3RLv24j3Pu8fFn1KD1O3R3L0t5UEmMowVeohV6PaiPqomeH5tSNtEiHfdedNVB5ur315_9q_G0VNHT449f0dPj92_RggTCknGvU0WvZUNptKBgzcb17ljlJ3N3U5WDVGMXU7pnbdeoujr25vi2Ksv6tKmG80bbyOF-LIXd8GxaKtkVqog2SvUGw63surbYmPBd_knVdR9TE_AvHfHjYfMww9yxbIrTYWoodupR95ReJnRO4PbAXZSmxrlr5pScAJ_avfqwa_O9Opmq9qxn0h-OW8LM4v89ZYEhUztHGriAvT64j8y_lNl5mR8h7HM4nJCImTuC1I6fmbSmyaHepugb-XCQw0slh78SMfEZCKfOJHxwwtu5gn0K3sTM_BtZ127xxEs-YZX7qs6FWNzcvV2GGRKXe0iBAv3ExIFO3Pvca81o2GKaAC7NQzjnoJZrhFBwqHLmxgtAI7mMWvjyc-SJgfyge9lGxyBeYA2hNwYpuWJQwCqA-Jk_BxsPd2YI-APOSyEe7JOVhGwh4G_zntMXhH7FVwSwOkYhQLqAsTConysEkkB3wEAB4H8K-WRmiYT6bTl-472RK_4TKz34qxJ3ycFPBvkAgiXezNgSvV-hAq15vEI9WqMEa4qpYCzXRGkqhY51iouiSGWScUIpTjQRdLvNY45pIlWqtzHTKuM6FRnW6Msfz7cOdqkIAAA",
+    "ts": 1788562345
   },
   {
     "battle_id": "1545205040296366223-1",
