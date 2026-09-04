@@ -2,10 +2,18 @@
   {
     "battle_id": "1545096378890584185-1",
     "title": "SA Sonora",
-    "status": "pending",
+    "status": "official",
+    "winner": "Hoog",
+    "podium": [
+      "Hoog",
+      "thatonedude421 (2)",
+      "KAWJ"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788562485
+    "lock": "1040a3e6557b4ee91df118c8de1043c8042b9d7615a8d843db0df17d548c1323",
+    "seed": "7732c9fd9a4f9370eac527db874e8a9b9180b923fd442a06a44d4071f99acc73",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12NuwrCMBRAf0XupJAhL03TzToo-gEO4nCbe1ODmEJTBxH_XSouup7D4TwhQ32C8YJjn5nuxFar2VwvQMDAVCJmY0DABjM9bpi_qkldGVO4qslthxRjyhNmHIhp1jAXELDr--6nVVP7__rAw_q4h7MAglobAQVqcM7o4CN5tNEbJxnDUjtqK2e5Qt96VcnWaxPJWo1yhdaSlU5F7zEEZ-D1BsrVJq_dAAAA",
+    "ts": 1788562585
   },
   {
     "battle_id": "1545217509744058389-1",
