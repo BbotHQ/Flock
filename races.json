@@ -2,10 +2,18 @@
   {
     "battle_id": "1545337956838154281-1",
     "title": "Good Times DO \ud83c\uddf2\ud83c\uddfd Vanilla",
-    "status": "pending",
+    "status": "official",
+    "winner": "BobcatDad (1)",
+    "podium": [
+      "BobcatDad (1)",
+      "BobcatDad (2)",
+      "bbnbtlchasr"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788562927
+    "lock": "a5ee0d955de2465d8cd87eb3730a62d5a33559f7db5ead20834edccd2e851f2b",
+    "seed": "ae3ea1ee8853efb4742ca4b37d0f6eb0ae89ca77c2c7b32df0b4b25ce94b4b0c",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE1WNTWrDMBSEryJmlYICsiRHjpehEHB37bJ08Z70_FNSC2zvQg_hE_SKOUKIF6Vdfsx8M1eMqN_R0DTldFK74gkazCMvl9jTPEHjbaGuUy_D2Knbz7qqfZPnHhqnzJGWZ0pqZx_W78ZGf1L34HPO7XARaLzSl7F5_N_Zfj-px4dGQm2dxowaJE6oEKmq0knLPngbybMLybQHYUNSHSOFEG0M7GxqDXu2ZZSjZ88m4vsODjoA3eEAAAA",
+    "ts": 1788563018
   },
   {
     "battle_id": "1544166669545377813-1",
