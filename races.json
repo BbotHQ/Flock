@@ -10,10 +10,18 @@
   {
     "battle_id": "1545497566337179762-1",
     "title": "26a/26b/BBH",
-    "status": "pending",
+    "status": "official",
+    "winner": "Jason Ferguson",
+    "podium": [
+      "Jason Ferguson",
+      "JigglyBits",
+      "BoomBang (2)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788563084
+    "lock": "aedc5edcfcbb7fdb677177b13930ccfeb2d04a153626ba58a8bea8fca10a86fd",
+    "seed": "86decd4e8ae175ef97fe30087a0950644978a4e93bb17bdbdbf2cf0212a442d9",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE1WNsQ6CMBQAf4W8SZMOpRRKGRmMcTQ6GWNe7WvBQBupDMT474aR8e6G-0KA5gaXZaApaycMHY7A4NR7Pyxt_0nA4IUdMGhjHFsMPtsV-w3mKx7npQ8bLVZ9xpGLuIZres9kcPbdI8Ro1gemGLIDTX5OMcCdgYVGFAwSNFBXlp5WUo2Uq5KcVo4KzmuFXJe8klKrGiXpwphcGWusceLpuMgFSimsht8fkK96x9oAAAA",
+    "ts": 1788563241
   },
   {
     "battle_id": "1545328612473831480-1",
