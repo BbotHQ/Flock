@@ -10,10 +10,18 @@
   {
     "battle_id": "1545557518913372171-1",
     "title": "Silver Springs Sweet Rye (Round 1)",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB (4)",
+    "podium": [
+      "JarrodB (4)",
+      "Hoog (4)",
+      "JarrodB (3)"
+    ],
     "ducks": 17,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788563199
+    "lock": "01a02c537808894e658859f55c3f54f0bcf56e6ca28513de9712d918d9896b54",
+    "seed": "038af469179dd063c5bd87f85f24f81e4015fd0ed30a47a4f985651b8571e35a",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE22OMQ7CMAxFr1J5aqUOcWwnaUcmxBUQg9s0DAhalRFxdwRCtEHd_vf7evIDbtAe4aDzPMZdUWIFNezH8VyU9h1_QLJGy2wVeYk-m9sFfDwTaU9XvdBs2X8Vf7eVCzcwZn6XNd7Yrz5wFZxqiNAS13CHFgwFTewa9E2MxlEvXQw-BUmWU8CBDUqKZohklL1yaoI4wS6Ix4FE4fkCdQQZfkYBAAA",
+    "ts": 1788563329
   },
   {
     "battle_id": "1545497566337179762-1",
