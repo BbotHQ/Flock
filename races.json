@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1545251084719755325-1",
+    "title": "HH22",
+    "status": "pending",
+    "ducks": 120,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788562174
+  },
+  {
     "battle_id": "1545205040296366223-1",
     "title": "SJR b14",
     "status": "official",
