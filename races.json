@@ -10,10 +10,18 @@
   {
     "battle_id": "1545328612473831480-1",
     "title": "Black Maple Hill 11 Year",
-    "status": "pending",
+    "status": "official",
+    "winner": "KAWJ (3)",
+    "podium": [
+      "KAWJ (3)",
+      "JarrodB (2)",
+      "BoomBang (3)"
+    ],
     "ducks": 30,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788563028
+    "lock": "5030d0da2235addf178781bf18814562fd45cc61e755828b74b23945c7d9d9ff",
+    "seed": "384292f654b60f15ec7a124878d6a07599f916359e82217b984d4188730d7674",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3WQTUrEQBCFr9LUKoEI6f_u7OyVZDbCiAriojOdn2HGbkkUEfEQcwKv6BEkY2TSktk9qr5XvHof4KF4gNXlXYkSkkI2SXWSfJQmhCdjfRtBYpTrF9u2aLX1Lfr-OhzQRRmGDiV43N1ab8JrXwWPTHifhmcMx7ul7fvgzETa3Xa_USq5urlPJ-C6D89dPfzd-s1Bjwlr27vamTAMKFl39s2nEYTzmT5rmH2no0Bk6R8WR5qZ2RJO4ybpEvOvbXY6KeMNX3KTmFloEafwmIGDgvMMBiiAKkY0aQRnlcgbzOuNtJgwJZUTNpdc60ZjQbmuFSFYVloxx7BSkuZOCsng8weAcbEdRAIAAA",
+    "ts": 1788563162
   },
   {
     "battle_id": "1545337956838154281-1",
