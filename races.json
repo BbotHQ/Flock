@@ -2,10 +2,18 @@
   {
     "battle_id": "1544166669545377813-1",
     "title": "CGF/Putter/Peerless Whiskey Soaked Raisin Bread Rye",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (9)",
+    "podium": [
+      "BoomBang (9)",
+      "Campo (17)",
+      "KAWJ (6)"
+    ],
     "ducks": 192,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788562715
+    "lock": "8640e67afb080d69263573dc6e9ae1e8af459f7b9df119acc41937787d1e52dc",
+    "seed": "9eb1f99a208a782ff4c444b5a1e7cc52bfe272592bcd90134154e2a49114d0bf",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21WSW-bQBT-K4iTI_nALGy5hURK5CapZHc5VD08YLCpbbDApLWr_vfKGMPMBzfPeOYt3_KGv3Zh3_-wn6s8y_LCmok7e24_UpGe9lRYM35Zrnb0ofhbvlN1d2CRr9e7U5Qfa2sWXjaW78_WzL_8ispyH1GxtmYiuKy_BMvXz8unLtSnh--LLsbHIx2jZj1b0FbdWTNpXmaOueYQPOizepDVmwjO2jOKqlSlVqQufbhtZ02Rlr9vfQ5tu9fl_lB2d79REZVNFZeFFZWnbrMHjUEJLSQxJdu4pCrtin0tq4SODu-SacehVYTRNdcygLU7ABvodQMw3IWq8P_JRq-15uv6mCdbJrrq6uagqros8iRtki1KhKNE2jvLPNlQlS7KTVGXxURkOSZJQKsITXvlUKlzofIdc2-pqarKNOp46QXITI5DDSuIyxHiNs8Lnfd0fFd0vDGuFc96PbKBDq_fbBt5OzS7WnHHcS-L01OTbOtVk2xHAuIdNXFCxydKOz1q5riqX-1PwgnNSoUha4zrgATkFOWTm1OWNS0kBgQcXYZtDb9oA4AFhoNQm0AIg7WExjqtG9rhWhGBSb2EbK0UXqlIS-uRdlV-Pp_suV2ptM6oEDdp9sWCfxkDtpiWOTStL1A3oVkZm3IKNAti8MwMSLnsaQmhbBdtKnFjdELTdsvI1wchjd3BBu1dQ-QcYBK6Sq7Gberjgpp6gxOlDXsQlIg9bUXFpd_taRzhrND5xxHqoZ-1x2liDGkN8gkfeAgTh9LMqcQnmuGgyBHy0J0YzVhPR1OHVgLso5tXu0JPvoZCVNa1NVtt6HdhqnWk5pvzbwf8MZYS72Dr5tMqwR8OXgdq8ekF3Fj7_4r21ksvX7CzxC-PUZcG1L62gEiaqMDm8PSiZ3HADB4OJqjCrOhzAZCMBNAG3dM5pfqgVFqpP8CI0-eXE_lhuAZD1y74YMrGw7OhG9aYDfj66QcnxStA8vBtKfSBBWwLNFrLr_6JoU93D6WBt_VKJ99VnEx39s-5ndr3vjO3a_veDlXMsjAk7gTkBzzLZCKljF1iyk8Sl8eZ4j53Qx4naegwIZkrFScZMiZTJ87sf_8BT0Qx1uILAAA",
+    "ts": 1788562921
   },
   {
     "battle_id": "1544718962955124748-1",
