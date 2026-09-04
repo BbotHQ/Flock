@@ -2,10 +2,18 @@
   {
     "battle_id": "1545217509744058389-1",
     "title": "Four Roses LE SmB \u201824 750ml",
-    "status": "pending",
+    "status": "official",
+    "winner": "Bearded Bees (3)",
+    "podium": [
+      "Bearded Bees (3)",
+      "Vol4Life",
+      "Ram02on"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788562358
+    "lock": "da90842404a60ad8614e6bf3caa1aab791eca7d60a85b6d5fab13ddaa71c3ed3",
+    "seed": "87aebf40ffd6af7a3305c68dd5c36b9e7602c41d7b223a5ae3aa1b947ea2a560",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE12NsQ6CMBRFf4XcCZLGlLa0wIibcZLExTg86Gs0kZIICxr_3ciG87nnnjci6gsapqdnnzTMU5KqDALn8WGO98AQ2FP0y0AxSfMfOdEg1Rgh0M7MrwXiz9fraqGYtDsIHMZI843i5mltbLU8w1XAo1ZaYEKN0hF3wcgQvKXgSGtZ9Lb0vui17Sp2Vqre5N51SmkqiDVR3lXGMSkqrMTnC-xbY2rfAAAA",
+    "ts": 1788562462
   },
   {
     "battle_id": "1545251084719755325-1",
