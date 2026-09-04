@@ -2,10 +2,18 @@
   {
     "battle_id": "1545559394186690601-1",
     "title": "Silver Springs Sweet Rye (Round 2)",
-    "status": "pending",
+    "status": "official",
+    "winner": "JigglyBits (7)",
+    "podium": [
+      "JigglyBits (7)",
+      "BobcatDad (4)",
+      "JigglyBits (1)"
+    ],
     "ducks": 17,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788563283
+    "lock": "344396bf68f2ea506ba88c10fce898d3a7cd5f59e27fbebaf62b43a072a9bc28",
+    "seed": "69b20d080bc14ec367345368db20c416c855becccf7c5f140ab635e8c5b7a7cc",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2WPvQ7CMAyEXwV5olKHJM4fHQsTAy-AGBKnLZUQkdosCPHuSBUdasb77s4nv-EJzRXO4zA8Xu1Y5t1eV1BvgOFALSBMU07tL9_mSKGcQlr7q6uYu-hLnsr9mMNc2GXHp5DVJdO4Gdsqnv37w3IgK7jVkKBBXcMMDdhDVCIJLyJJ3RFah9qg9SkqQVpa8sbEjoh6R6aXWoRo0XSeTHTBEcHnC6eEq9lhAQAA",
+    "ts": 1788563429
   },
   {
     "battle_id": "1545557518913372171-1",
