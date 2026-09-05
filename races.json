@@ -2,10 +2,18 @@
   {
     "battle_id": "1545026746397757444-1",
     "title": "THH 2025",
-    "status": "pending",
+    "status": "official",
+    "winner": "BWall (1)",
+    "podium": [
+      "BWall (1)",
+      "yoke_jockey (4)",
+      "p3ac3mak3r247 (3)"
+    ],
     "ducks": 35,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788628169
+    "lock": "f804281376a813d8ec7f376dc9afe69a23418e1bc88b4cf91324b729799d52fd",
+    "seed": "451d969646c4d090d985d21c57df73a19d38cda6be14638c59e0523ae5a4148f",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3VRQU7DMBD8SuRTKxUpztpO3BspB9QTF8QBoWpjb2mb1C5Oi1QQf-AHSLyQJ6CgSEDjXmdmZ0azr8yx6T3bARrYYg0hE3kyysZswkrCYMkmJVGbjIoOumwqCnuflBhwg-3Xx_tnMuJDMU_PqsVZBs4yP3WOvqbFxpuajr3Lbft0oAoPj6uF877qWtxh0_SNdoFeHK0bLgf1dMffBO-XM-9as_aHtg-5RldfXOHz2vYup6ofcI4heFv2N3PvcL9C95ufxS7h1D8ycgSSHTTD7c739MmrIuurwVx8gMAAiWTzSB4MZeJPxUgd-DdZRJCP2cOEWTZVMGEtmzIhudVKK6GMsKlOrS6kzbiRuV3mgFxbKIxFVREXCgojNaUyAySJgotiyd6-AY5cPM_XAgAA",
+    "ts": 1788628346
   },
   {
     "battle_id": "1545285561550512130-1",
