@@ -1,5 +1,13 @@
 [
   {
+    "battle_id": "1545285561550512130-1",
+    "title": "Stagg 25B",
+    "status": "pending",
+    "ducks": 10,
+    "started_by": "The Rye Guy (FL)",
+    "started_ts": 1788628048
+  },
+  {
     "battle_id": "1545576864003657762-1",
     "title": "JD WTA",
     "status": "official",
