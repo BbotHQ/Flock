@@ -2,10 +2,18 @@
   {
     "battle_id": "1545584886407233556-1",
     "title": "JD WTA TRIO RD 2",
-    "status": "pending",
+    "status": "official",
+    "winner": "JarrodB (8)",
+    "podium": [
+      "JarrodB (8)",
+      "Hank-David (1)",
+      "JarrodB (10)"
+    ],
     "ducks": 44,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788628466
+    "lock": "1fc0174fbd4c495c96c8d7b37ac5b7ff75250f83eea8b313ffb16a8dfeb9a9ac",
+    "seed": "1302bce3aa847bd1c67ed748f0669d7338d149acb2ebb434dfb8a8835fa31c87",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE21Sy2rDMBD8FaOTAynoZUvJ0cmhFAKltKdSyspaJyaxlVpxKS3992KTgiXnOPua2dn9IS1Zv5LCmRIuW7BJyhdkSR56f6nbZPMPoeucLZJ0NaCdcyfn6gsmqQyyIdID2kBzdkkqgkw2oCdoKHdtzMAmXVGGDrBA6CzapED01-p7aI93W_is7ZXosXOu2rjWl7Xr_ZRrrH8-wB4azCi7ERBzEhmTsEBXqDKf6JfzWSIykAVWxFk-H6DmIR7ru9E2Wt7AtwV_RrQdfkV7h7dTky1Gibtzf_LIKc1mo8c7v_iPHg30-8N765wJXmgcMPkwFm0p4huEjt64SL4gb0tiyVrRJfFkTZig3JQoALRUxrIyV2iV1BXN85VVQmjL5ApKw9EYKaStjAatRVaBYKVW5PcPcsBpGwkDAAA",
+    "ts": 1788628628
   },
   {
     "battle_id": "1545026746397757444-1",
