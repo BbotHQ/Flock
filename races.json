@@ -1069,11 +1069,18 @@
   {
     "battle_id": "1542735380850409503-1",
     "title": "Joseph Magnus 10yr Rye  batch 1",
-    "status": "unofficial",
+    "status": "official",
+    "winner": "Bearded Bees (22)",
+    "podium": [
+      "Bearded Bees (22)",
+      "Usquebaugh_noob (13)",
+      "p3ac3mak3r247 (19)"
+    ],
     "ducks": 180,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788007407,
-    "resolved_ts": 1788008622
+    "lock": "94aa984df401ff69498146ea4714314ceab0e213ab0a150fb9bdcf06bbe3a92d",
+    "seed": "2e5b439ff1a6fd38e65a975a32a80de8850d37f2d3b7c1b39de4c07ec5ddb45d",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAACA3WWTY_aMBCG_wryaVfiEHvsOOHISltp1VPVqoeqqhxsQFoIWyCVUNX_XiD9gOTxkWEyH6_fd2Z-qlbNvqh5CvuY4mSe0mHyoB_VVP14Csd5t3p4Ca_p8WyrL8aP6zT5cEqTd91p8vD8_mKv2G6Ki_0-rjNgs2ObdRfbU2jjaRvacw7wkTJTD9QuBRgdxHTgZzIN9kW9SVjINrzK3lh_rpwCXJH7dPjepSZ0q_W3drdr_hQ6tlbjsrQAbPXYZsDPAOTGcmoHDWVQpooIPF1iKoMMKziXh7I0vahG9D0Y_T2_bP9z-7Y7-1Ngx13YAU2pq_4BgD4lOZf3EUsgQ01wZGAGDQp6QqIeuIGtoqJBnQYCOqHKQYZ92f9RyEwe0l_GtcKmQUKoAU2Fc0gzmFy9Tj6HzYZJwMTSgJ7wFIFHcgX1ADaA3t8oQQbs5oZhvtBE14NgQjIjG8QXbNAMMtCEQM1lBjHtKhjOzmf0TfkNq88gGtV9Q4bLJLCB2LRWKoIRxwvNUEOvIBkwNNtLSsbvgRBp6GrINJe5T26YnmHAQABXuF661Srt29Ad_4X4-z_IyQ3mucdEt-uHnpPejlYd3Qk2dyYBRyysC01nHIfMmCGRwNSyuHjJka-XofwNUQvQzaxO1AHtUwugCw0tmm70sqQ1yEGwjhgK-hA6EmkJZ-Y9jtDx5xlUMyceMbekAUpXb-a8prOR6MSaxEMnw3DmGu2KK6ZN0zbHzWIdDnsOd7uE6R4BuGlbkaAylz_xhF3P9Xydqqhm2k7VQc2USa6xUi-XOpTLKFUqXai9C2JCVcRUVa6I4pcmSuMXupE6JrsofFq4GBvrovr1G-xlaVyDDgAA",
+    "ts": 1788579423
   },
   {
     "battle_id": "1543065654452555797-1",
