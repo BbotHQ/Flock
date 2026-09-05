@@ -2,10 +2,18 @@
   {
     "battle_id": "1545576864003657762-1",
     "title": "JD WTA",
-    "status": "pending",
+    "status": "official",
+    "winner": "BoomBang (8)",
+    "podium": [
+      "BoomBang (8)",
+      "Steven Dungan (6)",
+      "Steven Dungan (8)"
+    ],
     "ducks": 44,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788578335
+    "lock": "226dcb08522016c6508dfef25f71d61b9113175102a9c22805c1c17c8cc09845",
+    "seed": "f4de985cd64305d3315c5402b5c0edc770f8e5f2bbb811c5bde690b88ac927e5",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE3WSP0_EMAzFv0rkqZU6JGnSpN3oMd3KgARiyB-3h1TSU-_Kgvju6MoAoWbMT8_PL7Y_IEH3DP08v_UujawwJVTQo1siRtYjXlghb-hwej0fTm5az44Vd08lKxSN5d6gvqGHK75jYvdrGl1ihdAElJKCVDVluTke3bLMsWeFoOOJfTxBNaCgJdg_U6DyNVm-rfBn7nX-JDPJXKMoTZtrGkqjsiDfnR_dNP2mf3qRi-EEbCmhyM2o1Qu7Xwz5we1Aj-s44pLcet0rDFVFzoHKT95qHt-W8FJBhM7wCi7QwaAitlaH2Kia61jXQgetuPQ6cIzBGD5Y1IP03lshgvYRm5Z7a11opUENn1-GKqyDhwMAAA",
+    "ts": 1788578622
   },
   {
     "battle_id": "1545576097104662612-1",
