@@ -10,10 +10,18 @@
   {
     "battle_id": "1545576097104662612-1",
     "title": "Silver Springs Sweet Rye \ud83c\udf50 (Round 3)",
-    "status": "pending",
+    "status": "official",
+    "winner": "Hank-David",
+    "podium": [
+      "Hank-David",
+      "Hoog (1)",
+      "Bearded Bees (2)"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788578322
+    "lock": "0b978c0272f46710945efea4c05f2e176b1ce362242df48a816215e25a8f63a1",
+    "seed": "23ff38921175c55dc119a1e12d886210eaad9a2970c81a6cc06a298c43cac1fa",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2XLMQvCMBAF4L8iN1mIkLvYNukYOjgoQhEcxOG4pCLWRiy6iP9dLOig4_veew_oodqBj3wNMUx8jMNkShmoH8KRUjp77g9_cTysLrduiKR1DgoWKX3cb7nrQMHGNst1U79L7k-zmu_H8F1iBnsFASoyCgaogEzbGusIscwlz4MgOsaIFKwtCHVkDo7JlVosciGiCyZnZW6EBVuG5wuWAj552wAAAA",
+    "ts": 1788578488
   },
   {
     "battle_id": "1545559394186690601-1",
