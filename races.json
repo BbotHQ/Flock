@@ -2,10 +2,18 @@
   {
     "battle_id": "1545829555619504299-1",
     "title": "RR13 45th",
-    "status": "pending",
+    "status": "official",
+    "winner": "yoke_jockey (1)",
+    "podium": [
+      "yoke_jockey (1)",
+      "vCatBug(Jake) (4)",
+      "Justin C (1)"
+    ],
     "ducks": 70,
-    "started_by": "Neww_",
-    "started_ts": 1788634241
+    "lock": "be2b0769fe2368b7af266e6cc04375b98973e1c5adf3200b86ae20af8cf1941b",
+    "seed": "6e96e0703b9485ecbbbe70b3dfc0a9a8ad708fffb9161e1ef753e729048b39c9",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAACo1UwU7jMBD9FcunVCqSY8dN0xsNolJ3uVScWKHVJJmkoW1SJQ0oICQufAC35cSH7N_sF_AJqwa3WjtewTHjN29m3rzJAy3o5AedfgvzDCriuAM6pBfbZl0jZ0wSh-8DtyHspk3mzGGFAxVryxX-vCnjFbYqzUC5PZTcR46lOpYzKIqWXCn0TXyH63XNhK2G12WXUQy7M0j6GR37AjaMl4VCz5t6lxckVJ__gPvNiX3kcolk0SKZNS1xzr8fpgiX-TZcwrrZAnFOrw7hKUKVYEKmiLWqP7vP41VWQaogsyrfQIx_nl7rBd5ikSF5f_v1m7y_vTyrmloX3NTfNaaWmmodwfwkKTPifAx76O0I6RhDqHbtOWzU41ElqT96NjrPmItrWxQan87O7ZLyvnZc35ZuDe9zIb-gtbTNZmlFGE4RdgNYMk1DfqFvYzmGDObuhSaLsTtpF9uzXKYtJvrzmAdn-xVIA-PZu7CKLzQjGQer--o_xyl0CcTnglsdLu0rFgN6PaQJnfhsSGs6oSMMRsh8JqLAG0uMoyhCn0UiSWMGAYwh8dk4TdMocEcuupj6UqDPA-aNIxHEAX38C5r11VNvBQAA",
+    "ts": 1788634401
   },
   {
     "battle_id": "1545584886407233556-1",
