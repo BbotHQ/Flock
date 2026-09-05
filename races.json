@@ -10,10 +10,18 @@
   {
     "battle_id": "1545285561550512130-1",
     "title": "Stagg 25B",
-    "status": "pending",
+    "status": "official",
+    "winner": "jah (2)",
+    "podium": [
+      "jah (2)",
+      "bbnbtlchasr (3)",
+      "Ram02on"
+    ],
     "ducks": 10,
-    "started_by": "The Rye Guy (FL)",
-    "started_ts": 1788628048
+    "lock": "e23bc0cef6ae1f695c3a281b4583fcc687a12ca8403ea18389b55121fb166e49",
+    "seed": "a6d0a6e1d7dd26f6fde94178082c64ac88ce7b1713731ffa7b85427950ee35df",
+    "replay": "https://bbothq.github.io/Flock/#r=gz.H4sIAAAAAAAAE2XLywrCMBCF4Vcps2ohi2RymbSP4VZcTDIJRWwF60bEd5e6EEp2Px_nvGGF6Qwprel5yzNvj653Ayi48tz1-C-z14kXjfd1r7K8rB5BHZ-_1UFCI74RbMQOcFEgMKFVsMEEHERzKEZIBEMNVcroDEUdMQfHOcZcKBkylqyplSlF75BGr0uxXip8vhm_DrDpAAAA",
+    "ts": 1788628213
   },
   {
     "battle_id": "1545576864003657762-1",
